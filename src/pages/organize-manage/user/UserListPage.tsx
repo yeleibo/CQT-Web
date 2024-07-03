@@ -1,14 +1,11 @@
 import DeleteButton from '@/components/DelectButton';
-import InventoryHouseService from '@/pages/inventory/house/InventoryHouseService';
 import CommonSelectDialog from '@/pages/organize-manage/common';
 import OrganizeSelectDialog from '@/pages/organize-manage/organize/OrganizeSelectDialog';
-import OrganizeTreeSelect from '@/pages/organize-manage/organize/OrganizeTreeSelect';
 import MessageSendDialog from '@/pages/organize-manage/user/MessageSendDialog';
 import UserAddPage from '@/pages/organize-manage/user/UserAddPage';
 import UserService from '@/pages/organize-manage/user/UserService';
 import {
   UserItem,
-  UserManagementInventoryHouse,
   UsersQueryParam,
 } from '@/pages/organize-manage/user/UserTypings';
 import { PlusOutlined } from '@ant-design/icons';
@@ -33,32 +30,14 @@ const UserListPage: React.FC = () => {
     setCurrent(undefined);
     setIsAddPage(false);
   };
-
-  const openMessageDialog = (record?: UserItem) => {
-    setCurrent(record);
-    setIsMessageSend(true);
-  };
-
   const closeMessageDialog = () => {
     setIsMessageSend(false);
     setCurrent(undefined);
   };
-
-  const openOrganizeDialog = (record?: UserItem) => {
-    setCurrent(record);
-    setIsOrganizeSelect(true);
-  };
-
   const closeOrganizeDialog = async () => {
     setIsOrganizeSelect(false);
     setCurrent(undefined);
   };
-
-  const openHouseDialog = (userId: number, houses: UserManagementInventoryHouse[]) => {
-    setCurrent({ id: userId, userManagementInventoryHouses: houses } as UserItem);
-    setHouseSelectDialog(true);
-  };
-
   const closeHouseDialog = async () => {
     setHouseSelectDialog(false);
     setCurrent(undefined);
@@ -71,21 +50,7 @@ const UserListPage: React.FC = () => {
       valueType: 'textarea',
       hideInTable: true,
     },
-    {
-      title: '部门',
-      dataIndex: 'organizeIds',
-      valueType: 'treeSelect',
-      hideInTable: true,
-      renderFormItem: (_, { defaultRender, ...rest }, form) => (
-        <OrganizeTreeSelect
-          {...rest}
-          style={{ width: 300 }}
-          value={form.getFieldValue(_.dataIndex)}
-          onChange={(value) => form.setFieldValue(_.dataIndex, value)}
-          multiple
-        />
-      ),
-    },
+
     {
       title: '账号',
       dataIndex: 'account',
@@ -106,25 +71,6 @@ const UserListPage: React.FC = () => {
       valueType: 'textarea',
       search: false,
       width: 100,
-    },
-    {
-      title: '管理部门',
-      dataIndex: 'userManagementOrganizes',
-      valueType: 'textarea',
-      search: false,
-      ellipsis: true,
-      width: 300,
-      render: (_, record) => record.userManagementOrganizes.map((e) => e.organizeName).join(', '),
-    },
-    {
-      title: '管理仓库',
-      dataIndex: 'userManagementInventoryHouses',
-      valueType: 'textarea',
-      search: false,
-      ellipsis: true,
-      width: 300,
-      render: (_, record) =>
-        record.userManagementInventoryHouses.map((e) => e.inventoryHouseName).join(', '),
     },
     {
       title: '操作',
@@ -151,46 +97,7 @@ const UserListPage: React.FC = () => {
         >
           密码重置
         </Button>,
-        <Button
-          type="link"
-          onClick={() => openMessageDialog(record)}
-          key="message"
-          style={{ padding: 0 }}
-        >
-          发送消息
-        </Button>,
-        <Button
-          type="link"
-          onClick={async () => {
-            try {
-              await UserService.clearDeviceId(record.id!);
-              message.success('操作成功');
-              await actionRef.current?.reload();
-            } catch (error) {
-              message.error('操作失败');
-            }
-          }}
-          key="clearDevice"
-          style={{ padding: 0 }}
-        >
-          清除绑定设备
-        </Button>,
-        <Button
-          type={'link'}
-          onClick={() => openOrganizeDialog(record)}
-          key="view1"
-          style={{ padding: 0 }}
-        >
-          分配管理部门
-        </Button>,
-        <Button
-          type={'link'}
-          onClick={() => openHouseDialog(record.id!, record.userManagementInventoryHouses)}
-          key="view2"
-          style={{ padding: 0 }}
-        >
-          分配管理仓库
-        </Button>,
+
         <DeleteButton
           key="delete"
           onDelete={async () => {
@@ -244,34 +151,6 @@ const UserListPage: React.FC = () => {
               : []
           }
         />
-      )}
-      {isHouseSelect && current?.id && (
-        <CommonSelectDialog
-          open={isHouseSelect}
-          close={closeHouseDialog}
-          reload={() => actionRef.current?.reload()}
-          userId={current.id}
-          title={'选择仓库'}
-          initSelectedIds={
-            current.userManagementInventoryHouses
-              ? current.userManagementInventoryHouses.map((e) => e.inventoryHouseId)
-              : []
-          }
-          onSubmit={async (selectedIds) => {
-            await UserService.UserManagementInventoryHouses(current.id!, selectedIds);
-          }}
-          fetchFunction={InventoryHouseService.getAllInventoryHouse()}
-        />
-        // <HouseSelectDialog
-        //   open={isHouseSelect}
-        //   close={closeHouseDialog}
-        //   userId={current.id}
-        //   houseIds={
-        //     current.userManagementInventoryHouses
-        //       ? current.userManagementInventoryHouses.map((e) => e.inventoryHouseId)
-        //       : []
-        //   }
-        // />
       )}
     </PageContainer>
   );

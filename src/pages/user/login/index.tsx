@@ -2,7 +2,7 @@
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { LoginForm, ProFormText } from '@ant-design/pro-components';
 import { Helmet, history, useModel } from '@umijs/max';
-import {Alert, App, message} from 'antd';
+import {Alert, message} from 'antd';
 import { createStyles } from 'antd-style';
 import React, { useState } from 'react';
 import { flushSync } from 'react-dom';
@@ -40,7 +40,7 @@ const useStyles = createStyles(({ token }) => {
       alignItems: 'center',
       height: '100vh',
       overflow: 'auto',
-      backgroundImage: "url('/login_bg.png')",
+      backgroundImage: "url('/web_login_bg.png')",
       backgroundSize: '100% 100%',
     },
   };
@@ -112,6 +112,7 @@ const Login: React.FC = () => {
         style={{
           flex: '1',
           padding: '32px 0',
+          marginTop:'250px'
         }}
       >
         <LoginForm
@@ -119,18 +120,7 @@ const Login: React.FC = () => {
             minWidth: 280,
             maxWidth: '75vw',
           }}
-          title={
-            <div
-              style={{
-                color: 'white',
-                marginBottom: '100px',
-                fontSize: '40px',
-                height: '5px',
-              }}
-            >
-              综合资源GIS平台
-            </div>
-          }
+
           initialValues={{
             autoLogin: true,
           }}
