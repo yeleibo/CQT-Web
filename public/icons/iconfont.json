@@ -1,0 +1,44 @@
+{
+  "id": "",
+  "name": "",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "564071",
+      "name": "审批",
+      "font_class": "shengpi",
+      "unicode": "e63b",
+      "unicode_decimal": 58939
+    },
+    {
+      "icon_id": "566972",
+      "name": "系统管理",
+      "font_class": "xitongguanli",
+      "unicode": "e64b",
+      "unicode_decimal": 58955
+    },
+    {
+      "icon_id": "571466",
+      "name": "成员管理",
+      "font_class": "chengyuanguanli",
+      "unicode": "e663",
+      "unicode_decimal": 58979
+    },
+    {
+      "icon_id": "587683",
+      "name": "项目",
+      "font_class": "xiangmu",
+      "unicode": "e691",
+      "unicode_decimal": 59025
+    },
+    {
+      "icon_id": "5390806",
+      "name": "物资仓库",
+      "font_class": "wuzicangku",
+      "unicode": "e790",
+      "unicode_decimal": 59280
+    }
+  ]
+}

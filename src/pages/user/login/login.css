@@ -1,0 +1,12 @@
+.login-title {
+  color: #1890ff;
+  font-size: 24px;
+  text-align: center;
+}
+.ant-pro-form-login-top {
+  height: 60px;
+}
+/* 登录按钮的高度 */
+.ant-pro-form-login-main .ant-btn {
+  height: 50px;
+}

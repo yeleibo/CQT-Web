@@ -1,0 +1,69 @@
+/*!* 隐藏底部的版权信息 *!*/
+/*.cesium-viewer-bottom {*/
+/*    display: none;*/
+/*}*/
+
+/*!* 隐藏右上角的信用信息 *!*/
+/*.cesium-viewer-cesiumWidgetContainer .cesium-widget-credits {*/
+/*    display: none;*/
+/*}*/
+
+/*!* 隐藏其他不需要的文字元素 *!*/
+/*.cesium-widget-geocoderContainer,*/
+/*.cesium-viewer-toolbar button {*/
+/*    display: none;*/
+/*}*/
+
+/*#cesiumContainer {*/
+/*    width: 100%;*/
+/*    height: 80%;*/
+/*    position: relative;*/
+/*}*/
+/*.cesium-button {*/
+/*    z-index: 1;*/
+/*    position: absolute;*/
+/*    top: 10px;*/
+/*    color: black;*/
+/*    background-color: white;*/
+/*    margin: 5px;*/
+/*    padding: 10px;*/
+/*    cursor: pointer;*/
+/*    font-size: 16px;*/
+/*    border: none;*/
+/*    border-radius: 4px;*/
+/*}*/
+
+
+/*!*!*绘制*!*!*/
+/*!*.cesium-button-draw {*!*/
+/*!*    position: absolute;*!*/
+/*!*    top: 10px;*!*/
+/*!*    left: 10px;*!*/
+/*!*    z-index: 1; !* 确保按钮在地图上方 *!*!*/
+/*!*    border: none;*!*/
+/*!*    color: black;*!*/
+/*!*    background-color: white;*!*/
+/*!*    padding: 15px;*!*/
+/*!*    text-align: center;*!*/
+/*!*    text-decoration: none;*!*/
+/*!*    display: inline-block;*!*/
+/*!*    font-size: 14px;*!*/
+/*!*    cursor: pointer;*!*/
+/*!*}*!*/
+
+/*!*!*图层*!*!*/
+/*!*.cesium-button-Layers {*!*/
+/*!*    position: absolute;*!*/
+/*!*    top: 70px;*!*/
+/*!*    left: 10px;*!*/
+/*!*    z-index: 1; !* 确保按钮在地图上方 *!*!*/
+/*!*    border: none;*!*/
+/*!*    color: black;*!*/
+/*!*    background-color: white;*!*/
+/*!*    padding: 15px;*!*/
+/*!*    text-align: center;*!*/
+/*!*    text-decoration: none;*!*/
+/*!*    display: inline-block;*!*/
+/*!*    font-size: 14px;*!*/
+/*!*    cursor: pointer;*!*/
+/*!*}*!*/
