@@ -1,7 +1,6 @@
 import DeleteButton from '@/components/DelectButton';
-import CommonSelectDialog from '@/pages/organize-manage/common';
 import OrganizeSelectDialog from '@/pages/organize-manage/organize/OrganizeSelectDialog';
-import MessageSendDialog from '@/pages/organize-manage/user/MessageSendDialog';
+
 import UserAddPage from '@/pages/organize-manage/user/UserAddPage';
 import UserService from '@/pages/organize-manage/user/UserService';
 import {
@@ -16,9 +15,6 @@ import React, { useRef, useState } from 'react';
 const UserListPage: React.FC = () => {
   const [current, setCurrent] = useState<UserItem | undefined>();
   const [isAddPage, setIsAddPage] = useState<boolean>(false);
-  const [isMessageSend, setIsMessageSend] = useState<boolean>(false);
-  const [isOrganizeSelect, setIsOrganizeSelect] = useState<boolean>(false);
-  const [isHouseSelect, setHouseSelectDialog] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
 
   const openAddPage = (record?: UserItem) => {
@@ -29,18 +25,6 @@ const UserListPage: React.FC = () => {
   const closeAddPage = () => {
     setCurrent(undefined);
     setIsAddPage(false);
-  };
-  const closeMessageDialog = () => {
-    setIsMessageSend(false);
-    setCurrent(undefined);
-  };
-  const closeOrganizeDialog = async () => {
-    setIsOrganizeSelect(false);
-    setCurrent(undefined);
-  };
-  const closeHouseDialog = async () => {
-    setHouseSelectDialog(false);
-    setCurrent(undefined);
   };
 
   const columns: ProColumns<UserItem>[] = [
@@ -134,22 +118,6 @@ const UserListPage: React.FC = () => {
           data={current}
           open={isAddPage}
           reload={() => actionRef.current?.reload()}
-        />
-      )}
-      {isMessageSend && current?.id && (
-        <MessageSendDialog open={isMessageSend} close={closeMessageDialog} id={current.id} />
-      )}
-      {isOrganizeSelect && current?.id && (
-        <OrganizeSelectDialog
-          open={isOrganizeSelect}
-          close={closeOrganizeDialog}
-          reload={() => actionRef.current?.reload()}
-          userId={current.id}
-          organizeIds={
-            current.userManagementOrganizes
-              ? current.userManagementOrganizes.map((e) => e.organizeId)
-              : []
-          }
         />
       )}
     </PageContainer>
