@@ -7,6 +7,17 @@ export default [
     routes: [{ name: '登录', path: '/user/login', component: './user/login' }],
   },
   {
+    path:'/create-code',
+    name:'生成编码',
+    routes: [
+      {
+        path: '/create-code/boxCode',
+        name: 'BoxCodes',
+        component: '@/pages/create-code/BoxCodeCreatePage'
+      }
+    ]
+  },
+  {
     path: '/topology',
     name: '拓扑图',
     routes: [

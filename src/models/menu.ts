@@ -40,6 +40,17 @@ export const getMenus = function (initialState: any): MenuDataItem[] {
 
   let menus: MenuDataItem[] = [
     {
+      path:'/create-code',
+      name:'生成编码',
+      icon:'icon-xiangmu',
+      children:[
+        {
+          path: '/create-code/boxCode',
+          name: 'BoxCodes'
+        }
+      ]
+    },
+    {
       path: '/map',
       name: '资源管理',
       icon: 'icon-xiangmu',
