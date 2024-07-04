@@ -14,6 +14,16 @@ export default [
         path: '/create-code/boxCode',
         name: 'BoxCodes',
         component: '@/pages/create-code/BoxCodeCreatePage'
+      },
+      {
+        path: '/create-code/cascadeCode',
+        name: 'CascadeCableCodes',
+        component: '@/pages/create-code/CascadeCodePage'
+      },
+      {
+        path: '/create-code/dropCode',
+        name: 'DropCableCodes',
+        component: '@/pages/create-code/DropCablePage'
       }
     ]
   },
@@ -60,4 +70,6 @@ export default [
       },
     ],
   },
+  { path: '/', redirect: '/create-code/boxCode' },
+  { path: '*', layout: false, component: './404' },
 ];

@@ -47,6 +47,14 @@ export const getMenus = function (initialState: any): MenuDataItem[] {
         {
           path: '/create-code/boxCode',
           name: 'BoxCodes'
+        },
+        {
+          path: '/create-code/cascadeCode',
+          name: 'CascadeCableCodes'
+        },
+        {
+          path: '/create-code/dropCode',
+          name: 'DropCableCodes'
         }
       ]
     },
