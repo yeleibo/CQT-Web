@@ -10,6 +10,7 @@ import Settings from '../../../../config/defaultSettings';
 import './login.css';
 import Service from "@/pages/user/login/service";
 import Token from "@/utils/token";
+import {useIntl} from "@@/plugin-locale";
 const useStyles = createStyles(({ token }) => {
   return {
     action: {
@@ -105,7 +106,7 @@ const Login: React.FC = () => {
     <div className={styles.container}>
       <Helmet>
         <title>
-          {'登录'}- {Settings.title}
+          {useIntl().formatMessage({ id: 'login' })}- {Settings.title}
         </title>
       </Helmet>
       <div
@@ -161,7 +162,7 @@ const Login: React.FC = () => {
                   },
                   prefix: <LockOutlined />,
                 }}
-                placeholder="密码"
+                placeholder="{}"
                 rules={[
                   {
                     required: true,

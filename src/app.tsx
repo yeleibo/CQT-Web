@@ -11,6 +11,7 @@ import { Image, message } from 'antd';
 import 'cesium/Build/Cesium/Widgets/widgets.css';
 import defaultSettings from '../config/defaultSettings';
 import userDefaultAvatar from './assets/images/user_default_avatar.png';
+import { SelectLang  } from '@umijs/max';
 
 const isDev = process.env.NODE_ENV === 'development';
 const loginPath = '/user/login';
@@ -55,7 +56,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
   return {
     // rootContainer:(container:any)=>React.createElement(ConfigProvider, null, container),
     //用户旁边的操作设置
-    actionsRender: () => (isDev ? [<Question key="doc" />] : []),
+    actionsRender: () => (isDev ? [<Question key="doc" />, <SelectLang key="SelectLang" />] : []),
     avatarProps: {
       src: <Image src={userDefaultAvatar} alt="头像"></Image>,
       title: <AvatarName />,
