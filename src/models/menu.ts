@@ -59,6 +59,21 @@ export const getMenus = function (initialState: any): MenuDataItem[] {
       ]
     },
     {
+      path:'/project',
+      name:'Project',
+      icon:'icon-xiangmu',
+      children:[
+        {
+          path: '/project/area',
+          name: 'Zone Configuration',
+        },
+        {
+          path: '/project/boxStatistics',
+          name: 'BoxStatistics',
+        }
+      ]
+    },
+    {
       path: '/map',
       name: '资源管理',
       icon: 'icon-xiangmu',
