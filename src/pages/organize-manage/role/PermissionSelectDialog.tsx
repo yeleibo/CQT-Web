@@ -6,6 +6,7 @@ import {
   PermissionType,
   RoleList,
 } from '@/pages/organize-manage/role/RoleTypings';
+import { useIntl } from '@@/plugin-locale';
 import { Checkbox, Col, Modal, Row, Spin, Tree, message } from 'antd';
 import type { BaseOptionType } from 'antd/es/select';
 import React, { useEffect, useState } from 'react';
@@ -21,6 +22,7 @@ const PermissionSelectDialog: React.FC<PermissionSelectProps> = (props) => {
   const [loading, setLoading] = useState<boolean>(true);
   const [allPermissions, setAllPermissions] = useState<Permission[]>();
 
+  const intl = useIntl();
   const initModule = props.role.permissions
     .filter((e) => e.type === PermissionType.module)
     .map((e) => e.id);
@@ -61,8 +63,8 @@ const PermissionSelectDialog: React.FC<PermissionSelectProps> = (props) => {
           data: dataPermissions,
         });
       } catch (error) {
-        message.error('获取权限数据失败');
-        console.error('获取权限数据失败', error);
+        message.error(intl.formatMessage({ id: 'dataError' }));
+        console.error(intl.formatMessage({ id: 'dataError' }), error);
       } finally {
         setLoading(false);
       }
@@ -80,14 +82,14 @@ const PermissionSelectDialog: React.FC<PermissionSelectProps> = (props) => {
         ...selectedDataPermissions,
       ];
       await RoleService.editPermissions(props.role.id!, selectedPermissions);
-      message.success('设置成功');
+      message.success(intl.formatMessage({ id: 'setSuccess' }));
       props.close();
       if (props.reload) {
         props.reload();
       }
     } catch (ex) {
-      message.error('设置失败');
-      console.error('错误信息', ex);
+      message.error(intl.formatMessage({ id: 'setFailed' }));
+      console.error(intl.formatMessage({ id: 'errorText' }), ex);
     } finally {
       setLoading(false);
     }
@@ -95,7 +97,7 @@ const PermissionSelectDialog: React.FC<PermissionSelectProps> = (props) => {
 
   return (
     <Modal
-      title="设置权限"
+      title={intl.formatMessage({ id: 'setPermissions' })}
       width="40%"
       open={props.open}
       onCancel={props.close}
@@ -105,7 +107,7 @@ const PermissionSelectDialog: React.FC<PermissionSelectProps> = (props) => {
         <Row gutter={16}>
           <Col span={12}>
             <div style={{ marginBottom: 16 }}>
-              <h3>模块权限</h3>
+              <h3>{intl.formatMessage({ id: 'modulePermission' })}</h3>
               <Tree
                 checkable
                 selectable
@@ -118,7 +120,7 @@ const PermissionSelectDialog: React.FC<PermissionSelectProps> = (props) => {
 
           <Col span={12}>
             <div style={{ marginBottom: 16 }}>
-              <h3>页面权限</h3>
+              <h3>{intl.formatMessage({ id: 'pagePermission' })}</h3>
               <Tree
                 checkable
                 checkedKeys={selectedMenuPermissions}
@@ -131,7 +133,7 @@ const PermissionSelectDialog: React.FC<PermissionSelectProps> = (props) => {
         <Row gutter={16}>
           <Col span={12}>
             <div style={{ marginBottom: 16 }}>
-              <h3>按钮权限</h3>
+              <h3>{intl.formatMessage({ id: 'buttonPermission' })}</h3>
               <Checkbox.Group
                 options={permissions.button.map((perm) => ({
                   label: perm.name,
@@ -146,7 +148,7 @@ const PermissionSelectDialog: React.FC<PermissionSelectProps> = (props) => {
           </Col>
           <Col span={12}>
             <div style={{ marginBottom: 16 }}>
-              <h3>数据权限</h3>
+              <h3>{intl.formatMessage({ id: 'dataPermission' })}</h3>
               <Checkbox.Group
                 options={permissions.data.map((perm) => ({
                   label: perm.name,

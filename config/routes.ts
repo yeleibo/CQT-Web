@@ -1,7 +1,5 @@
 //包含两个/的才会开启多标签页
 
-import BoxStatisticsPage from "@/pages/project/BoxStatisticsPage";
-
 export default [
   {
     path: '/user',
@@ -9,25 +7,25 @@ export default [
     routes: [{ name: '登录', path: '/user/login', component: './user/login' }],
   },
   {
-    path:'/create-code',
-    name:'生成编码',
+    path: '/create-code',
+    name: 'createCode',
     routes: [
       {
         path: '/create-code/boxCode',
         name: 'BoxCodes',
-        component: '@/pages/create-code/BoxCodeCreatePage'
+        component: '@/pages/create-code/BoxCodeCreatePage',
       },
       {
         path: '/create-code/cascadeCode',
         name: 'CascadeCableCodes',
-        component: '@/pages/create-code/CascadeCodePage'
+        component: '@/pages/create-code/CascadeCodePage',
       },
       {
         path: '/create-code/dropCode',
         name: 'DropCableCodes',
-        component: '@/pages/create-code/DropCablePage'
-      }
-    ]
+        component: '@/pages/create-code/DropCablePage',
+      },
+    ],
   },
   {
     path: '/project',
@@ -36,14 +34,14 @@ export default [
       {
         path: '/project/area',
         name: 'Zone Configuration',
-        component: '@/pages/project/ZoneConfigurationPage'
+        component: '@/pages/project/ZoneConfigurationPage',
       },
       {
         path: '/project/boxStatistics',
         name: 'BoxStatistics',
-        component: '@/pages/project/BoxStatisticsPage'
-      }
-    ]
+        component: '@/pages/project/BoxStatisticsPage',
+      },
+    ],
   },
   {
     path: '/topology',
@@ -72,18 +70,18 @@ export default [
     routes: [
       { path: '/organize-manage', redirect: '/organize-manage/organize' },
       {
+        title: 'organizeManage',
         path: '/organize-manage/organize',
-        name: '组织管理',
         component: '@/pages/organize-manage/organize/OrganizeListPage',
       },
       {
         path: '/organize-manage/user',
-        name: '用户管理',
+        title: 'userManagement',
         component: '@/pages/organize-manage/user/UserListPage',
       },
       {
         path: '/organize-manage/role',
-        name: '角色管理',
+        title: 'roleManagement',
         component: '@/pages/organize-manage/role/RoleListPage',
       },
     ],

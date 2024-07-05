@@ -7,6 +7,7 @@ import RoleService from '@/pages/organize-manage/role/RoleService';
 import { RoleList } from '@/pages/organize-manage/role/RoleTypings';
 import UserService from '@/pages/organize-manage/user/UserService';
 import { UserItem } from '@/pages/organize-manage/user/UserTypings'; // 假设你有一个 types 文件定义了这些类型
+import { useIntl } from '@@/plugin-locale';
 import { CloseOutlined } from '@ant-design/icons';
 import { Button, Col, Input, List, Modal, Spin, Tree, message } from 'antd';
 import Row from 'antd/lib/row';
@@ -24,6 +25,7 @@ const useOrganizeData = () => {
   const [allUsers, setAllUsers] = useState<UserItem[]>([]);
   const [loading, setLoading] = useState<boolean>(true); // 初始化加载状态为 true
 
+  const intl = useIntl();
   const fetchData = useCallback(async () => {
     try {
       const [organizeData, userData] = await Promise.all([
@@ -33,7 +35,7 @@ const useOrganizeData = () => {
       setAllOrganize(organizeData);
       setAllUsers(userData);
     } catch (error) {
-      console.error('获取数据错误', error);
+      console.error(intl.formatMessage({ id: 'dataError' }), error);
     } finally {
       setLoading(false); // 数据获取完成后设置加载状态为 false
     }
@@ -79,6 +81,7 @@ const RoleUserSelect: React.FC<RoleUserSelectDialogProps> = (props) => {
   const [searchValue, setSearchValue] = useState('');
   const [loadingSubmit, setLoadingSubmit] = useState<boolean>(false); // Separate loading state for submit
 
+  const intl = useIntl();
   const filteredTreeData = useMemo(
     () => filterTreeData(buildTreeDataWithUsers(allOrganize, allUsers), searchValue),
     [allOrganize, allUsers, searchValue],
@@ -109,10 +112,10 @@ const RoleUserSelect: React.FC<RoleUserSelectDialogProps> = (props) => {
       if (props.reload) {
         props.reload();
       }
-      message.success('设置成功');
+      message.success(intl.formatMessage({ id: 'setSuccess' }));
     } catch (ex) {
-      message.error('设置失败');
-      console.error('错误信息', ex);
+      message.error(intl.formatMessage({ id: 'setFailed' }));
+      console.error(intl.formatMessage({ id: 'errorText' }), ex);
     } finally {
       setLoadingSubmit(false); // 提交完成后设置加载状态为 false
     }
@@ -126,7 +129,7 @@ const RoleUserSelect: React.FC<RoleUserSelectDialogProps> = (props) => {
   return (
     <Modal
       open={props.open}
-      title="选择用户"
+      title={intl.formatMessage({ id: 'selectUser' })}
       onCancel={props.close}
       onOk={handleSubmit}
       confirmLoading={loadingSubmit} // 显示提交按钮的加载状态
@@ -138,7 +141,7 @@ const RoleUserSelect: React.FC<RoleUserSelectDialogProps> = (props) => {
             <Input.Search
               value={searchValue}
               onChange={(e) => setSearchValue(e.target.value)}
-              placeholder="搜索用户"
+              placeholder={intl.formatMessage({ id: 'searchUser' })}
               style={{ marginBottom: 8 }}
             />
             <Tree
@@ -154,9 +157,9 @@ const RoleUserSelect: React.FC<RoleUserSelectDialogProps> = (props) => {
             <List
               header={
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <span>已选用户</span>
+                  <span>{intl.formatMessage({ id: 'selectedUsers' })}</span>
                   <Button type="link" onClick={handleClearAll}>
-                    清空
+                    {intl.formatMessage({ id: 'clear' })}
                   </Button>
                 </div>
               }
@@ -166,7 +169,9 @@ const RoleUserSelect: React.FC<RoleUserSelectDialogProps> = (props) => {
                 <List.Item style={{ display: 'flex', justifyContent: 'space-between' }}>
                   <div>
                     <div>{user.name}</div>
-                    <div>所属部门: {user.organizeName}</div>
+                    <div>
+                      ${intl.formatMessage({ id: 'department' })}: {user.organizeName}
+                    </div>
                   </div>
                   <Button
                     type="link"

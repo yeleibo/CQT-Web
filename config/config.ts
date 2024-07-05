@@ -62,6 +62,7 @@ export default defineConfig({
     antd: true,
     // default true, when it is true, will use `navigator.language` overwrite default
     baseNavigator: true,
+    title: true,
   },
   /**
    * @name 代理配置
