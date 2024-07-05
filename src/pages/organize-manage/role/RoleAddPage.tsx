@@ -1,5 +1,6 @@
 import RoleService from '@/pages/organize-manage/role/RoleService';
 import { RoleList } from '@/pages/organize-manage/role/RoleTypings';
+import { useIntl } from '@@/plugin-locale';
 import { ModalForm, ProFormText } from '@ant-design/pro-components';
 import { Col, Form, Row, message } from 'antd';
 import { useEffect, useState } from 'react';
@@ -9,13 +10,14 @@ interface Props {
   close: () => void;
   reload: () => void;
   data?: RoleList;
-  model: 'add' | 'edit';
+  model: string;
 }
 
 const RoleAddPage = (props: Props) => {
   const { data, open, close } = props;
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
+  const intl = useIntl();
 
   useEffect(() => {
     if (open) {
@@ -33,12 +35,12 @@ const RoleAddPage = (props: Props) => {
       const extraFormData = { ...props.data, ...formData };
       setLoading(true);
       try {
-        if (props.model === 'add') {
+        if (props.model === intl.formatMessage({ id: 'add' })) {
           const res: any = await RoleService.add(extraFormData).catch(() => {
             setLoading(false);
           });
           setLoading(false);
-          message.success('添加成功');
+          message.success(intl.formatMessage({ id: 'addSuccessful' }));
           if (props.reload) {
             props.reload();
           }
@@ -52,7 +54,7 @@ const RoleAddPage = (props: Props) => {
           const res = await RoleService.edit(extraFormData);
           setLoading(false);
           form.resetFields();
-          message.success('修改成功');
+          message.success(intl.formatMessage({ id: 'modifySuccessful' }));
           props.close();
           if (props.reload) {
             props.reload();
@@ -74,7 +76,11 @@ const RoleAddPage = (props: Props) => {
       loading={loading}
       layout="vertical"
       form={form}
-      title={props.model === 'add' ? '新增角色' : '编辑角色'}
+      title={
+        props.model === intl.formatMessage({ id: 'add' })
+          ? intl.formatMessage({ id: 'newUser' })
+          : intl.formatMessage({ id: 'modifyUser' })
+      }
       open={open}
       onOpenChange={(open) => {
         form.resetFields();
@@ -90,10 +96,10 @@ const RoleAddPage = (props: Props) => {
             rules={[
               {
                 required: true,
-                message: '角色名称',
+                message: intl.formatMessage({ id: 'roleNameRequired' }),
               },
             ]}
-            label="角色名称"
+            label={intl.formatMessage({ id: 'roleName' })}
             name="name"
             labelCol={{ span: 6 }} // 设置标签占据的栅格数
             wrapperCol={{ span: 18 }} // 设置输入控件占据的栅格数
@@ -102,7 +108,7 @@ const RoleAddPage = (props: Props) => {
 
         <Col span={12}>
           <ProFormText
-            label="排序"
+            label={intl.formatMessage({ id: 'sort' })}
             name="orderNumber"
             labelCol={{ span: 6 }} // 设置标签占据的栅格数
             wrapperCol={{ span: 18 }} // 设置输入控件占据的栅格数
@@ -113,7 +119,7 @@ const RoleAddPage = (props: Props) => {
       <Row>
         <Col span={12}>
           <ProFormText
-            label="备注"
+            label={intl.formatMessage({ id: 'remark' })}
             name="remark"
             labelCol={{ span: 6 }} // 设置标签占据的栅格数
             wrapperCol={{ span: 18 }} // 设置输入控件占据的栅格数

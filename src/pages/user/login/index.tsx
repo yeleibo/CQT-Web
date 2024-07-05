@@ -10,6 +10,7 @@ import Settings from '../../../../config/defaultSettings';
 import './login.css';
 import Service from "@/pages/user/login/service";
 import Token from "@/utils/token";
+import {useIntl} from "@@/plugin-locale";
 const useStyles = createStyles(({ token }) => {
   return {
     action: {
@@ -64,6 +65,7 @@ const Login: React.FC = () => {
   const [type] = useState<string>('account');
   const { initialState, setInitialState } = useModel('@@initialState');
   const { styles } = useStyles();
+  const intl = useIntl();
   const fetchUserInfo = async () => {
     const userInfo = await initialState?.fetchUserInfo?.();
     if (userInfo) {
@@ -90,7 +92,7 @@ const Login: React.FC = () => {
       });
 
        Token.set(loginInfo.token);
-        message.success('登录成功');
+        message.success(intl.formatMessage({ id: 'loginSuccessful' }));
         await fetchUserInfo();
         const urlParams = new URL(window.location.href).searchParams;
         history.push(urlParams.get('redirect') || '/');
@@ -105,7 +107,7 @@ const Login: React.FC = () => {
     <div className={styles.container}>
       <Helmet>
         <title>
-          {'登录'}- {Settings.title}
+          {intl.formatMessage({ id: 'login' })}- {Settings.title}
         </title>
       </Helmet>
       <div
@@ -120,7 +122,11 @@ const Login: React.FC = () => {
             minWidth: 280,
             maxWidth: '75vw',
           }}
-
+          submitter={{
+            searchConfig: {
+              submitText: intl.formatMessage({ id: 'login' }), // 修改登录按钮的文本为"登录"
+            },
+          }}
           initialValues={{
             autoLogin: true,
           }}
@@ -129,7 +135,7 @@ const Login: React.FC = () => {
           }}
         >
           {status === 'error' && loginType === 'account' && (
-            <LoginMessage content={'错误的用户名和密码(admin/ant.design)'} />
+            <LoginMessage content={`${intl.formatMessage({ id: 'loginError' })}(admin/ant.design)`} />
           )}
           {type === 'account' && (
             <>
@@ -143,11 +149,10 @@ const Login: React.FC = () => {
                   },
                   prefix: <UserOutlined />,
                 }}
-                placeholder="用户名"
                 rules={[
                   {
                     required: true,
-                    message: '用户名是必填项！',
+                    message: `${intl.formatMessage({ id: 'userRequired' })}！`,
                   },
                 ]}
               />
@@ -161,11 +166,10 @@ const Login: React.FC = () => {
                   },
                   prefix: <LockOutlined />,
                 }}
-                placeholder="密码"
                 rules={[
                   {
                     required: true,
-                    message: '密码是必填项！',
+                    message: `${intl.formatMessage({id:'passwordRequired'})}！`,
                   },
                 ]}
               />

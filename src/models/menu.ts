@@ -1,5 +1,8 @@
 import type { MenuDataItem } from '@ant-design/pro-layout/es/typing';
 import { useModel } from '@umijs/max';
+import {useIntl} from "@@/plugin-locale";
+
+
 
 const useInitialState = () => {
   return useModel('@@initialState');
@@ -34,14 +37,18 @@ export default useInitialState;
 //   });
 // };
 
-export const getMenus = function (initialState: any): MenuDataItem[] {
+// @ts-ignore
+export const getMenus = function (initialState: any ): MenuDataItem[] {
   let currentUser = initialState.currentUser;
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const intl = useIntl();
+
 
 
   let menus: MenuDataItem[] = [
     {
       path:'/create-code',
-      name:'生成编码',
+      name:intl.formatMessage({ id: 'createCode' }),
       icon:'icon-xiangmu',
       children:[
         {
@@ -59,8 +66,23 @@ export const getMenus = function (initialState: any): MenuDataItem[] {
       ]
     },
     {
+      path:'/project',
+      name:intl.formatMessage({ id: 'project' }),
+      icon:'icon-xiangmu',
+      children:[
+        {
+          path: '/project/area',
+          name: intl.formatMessage({ id: 'zoneConfiguration' }),
+        },
+        {
+          path: '/project/boxStatistics',
+          name: intl.formatMessage({ id: 'boxStatistics' }),
+        }
+      ]
+    },
+    {
       path: '/map',
-      name: '资源管理',
+      name: intl.formatMessage({ id: 'resourceMap' }),
       icon: 'icon-xiangmu',
       children: [
         { path: '/map', redirect: '/map/page' },
@@ -79,13 +101,13 @@ export const getMenus = function (initialState: any): MenuDataItem[] {
     let adminMenu: MenuDataItem[] = [
       {
         path: '/organize-manage',
-        name: '组织管理',
+        name: intl.formatMessage({ id: 'systemSetting' }),
         icon: 'icon-chengyuanguanli',
         children: [
           { path: '/organize-manage', redirect: '/organize-manage/organize' },
-          { path: '/organize-manage/organize', name: '组织管理' },
-          { path: '/organize-manage/user', name: '用户管理' },
-          { path: '/organize-manage/role', name: '角色管理' },
+          { path: '/organize-manage/organize', name: intl.formatMessage({ id: 'organizeManage' }) },
+          { path: '/organize-manage/user', name: intl.formatMessage({ id: 'userManagement' }) },
+          { path: '/organize-manage/role', name: intl.formatMessage({ id: 'roleManagement' }) },
         ],
       },
     ];

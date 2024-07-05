@@ -15,7 +15,7 @@ const Settings: ProLayoutProps & {
   fixedHeader: true,
   fixSiderbar: true,
   colorWeak: false,
-  title: '综合GIS资源管理',
+  title: 'TranMile',
   pwa: false,
   logo: '/logo.png',
   //使用自定义图标时需要加入的

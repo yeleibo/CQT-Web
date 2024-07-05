@@ -4,6 +4,7 @@ import RoleAddPage from '@/pages/organize-manage/role/RoleAddPage';
 import RoleService from '@/pages/organize-manage/role/RoleService';
 import { RoleList, RolesQueryParam } from '@/pages/organize-manage/role/RoleTypings';
 import RoleUserSelect from '@/pages/organize-manage/role/RoleUserSelect';
+import { useIntl } from '@@/plugin-locale';
 import { PlusOutlined } from '@ant-design/icons';
 import { ActionType, PageContainer, ProColumns, ProTable } from '@ant-design/pro-components';
 import { Button } from 'antd';
@@ -18,6 +19,8 @@ const RoleListPage: React.FC = () => {
     isRoleUser: false,
     isRolePermission: false,
   });
+
+  const intl = useIntl();
 
   const openAddPage = (record?: RoleList) => {
     setState((prevState) => ({ ...prevState, current: record, isAddPage: true }));
@@ -46,37 +49,37 @@ const RoleListPage: React.FC = () => {
   const columns: ProColumns<RoleList>[] = useMemo(
     () => [
       {
-        title: '关键字',
+        title: intl.formatMessage({ id: 'keyword' }),
         dataIndex: 'keyword',
         valueType: 'textarea',
         hideInTable: true,
       },
       {
-        title: '角色成员',
+        title: intl.formatMessage({ id: 'roleName' }),
         dataIndex: 'name',
         valueType: 'textarea',
         search: false,
       },
       {
-        title: '排序',
+        title: intl.formatMessage({ id: 'sort' }),
         dataIndex: 'orderNumber',
         valueType: 'textarea',
         search: false,
       },
       {
-        title: '备注',
+        title: intl.formatMessage({ id: 'remark' }),
         dataIndex: 'remark',
         valueType: 'textarea',
         search: false,
       },
       {
-        title: '操作',
+        title: intl.formatMessage({ id: 'operate' }),
         valueType: 'option',
         width: 200,
         fixed: 'right',
         render: (_, record) => [
           <Button type="link" onClick={() => openAddPage(record)} key="edit" style={{ padding: 0 }}>
-            编辑
+            {intl.formatMessage({ id: 'edit' })}
           </Button>,
           <DeleteButton
             key="delete"
@@ -91,7 +94,7 @@ const RoleListPage: React.FC = () => {
             key="view1"
             style={{ padding: 0 }}
           >
-            角色成员
+            {intl.formatMessage({ id: 'roleMember' })}
           </Button>,
           <Button
             type={'link'}
@@ -99,7 +102,7 @@ const RoleListPage: React.FC = () => {
             key="view2"
             style={{ padding: 0 }}
           >
-            角色权限
+            {intl.formatMessage({ id: 'rolePermissions' })}
           </Button>,
         ],
       },
@@ -114,7 +117,7 @@ const RoleListPage: React.FC = () => {
         pagination={{ pageSize: 10 }}
         headerTitle={
           <Button onClick={() => openAddPage()} type="primary" style={{ marginRight: 8 }}>
-            <PlusOutlined /> 新建
+            <PlusOutlined /> {intl.formatMessage({ id: 'add' })}
           </Button>
         }
         rowKey="id"
@@ -128,7 +131,9 @@ const RoleListPage: React.FC = () => {
       {state.isAddPage && (
         <RoleAddPage
           close={closeAddPage}
-          model={!state.current ? 'add' : 'edit'}
+          model={
+            !state.current ? intl.formatMessage({ id: 'add' }) : intl.formatMessage({ id: 'edit' })
+          }
           data={state.current}
           open={state.isAddPage}
           reload={() => actionRef.current?.reload()}

@@ -1,5 +1,7 @@
 //包含两个/的才会开启多标签页
 
+import BoxStatisticsPage from "@/pages/project/BoxStatisticsPage";
+
 export default [
   {
     path: '/user',
@@ -24,6 +26,22 @@ export default [
         path: '/create-code/dropCode',
         name: 'DropCableCodes',
         component: '@/pages/create-code/DropCablePage'
+      }
+    ]
+  },
+  {
+    path: '/project',
+    name: 'Project',
+    routes: [
+      {
+        path: '/project/area',
+        name: 'Zone Configuration',
+        component: '@/pages/project/ZoneConfigurationPage'
+      },
+      {
+        path: '/project/boxStatistics',
+        name: 'BoxStatistics',
+        component: '@/pages/project/BoxStatisticsPage'
       }
     ]
   },

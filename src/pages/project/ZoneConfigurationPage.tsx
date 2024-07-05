@@ -1,16 +1,19 @@
 import React, {useRef, useState} from "react";
-import {AreaDto} from "@/pages/project/type";
-import {ActionType, ProColumns} from "@ant-design/pro-components";
-import {UserItem} from "@/pages/organize-manage/user/UserTypings";
+import {AreaDto, AreaStatisticsQueryParam} from "@/pages/project/type";
+import {ActionType, PageContainer, ProColumns, ProTable} from "@ant-design/pro-components";
 import {Button, message} from "antd";
 import UserService from "@/pages/organize-manage/user/UserService";
 import DeleteButton from "@/components/DelectButton";
+import {PlusOutlined} from "@ant-design/icons";
+import UserAddPage from "@/pages/organize-manage/user/UserAddPage";
+import AreaService from "@/pages/project/AreaService";
 
 const ZoneConfigurationPage:React.FC = ()=>{
    const [areaDto, setAreaDto] = useState<AreaDto>();
+  const [list, setList] = React.useState<boolean>(true);
   const actionRef = useRef<ActionType>();
 
-  const columns: ProColumns<UserItem>[] = [
+  const columns: ProColumns<AreaDto>[] = [
     {
       title: '关键字',
       dataIndex: 'keyword',
@@ -31,14 +34,14 @@ const ZoneConfigurationPage:React.FC = ()=>{
       dataIndex: 'name',
       valueType: 'textarea',
       search: false,
-      width: 100,
+
     },
     {
       title: '状态',
       dataIndex: 'organizeName',
       valueType: 'textarea',
       search: false,
-      width: 100,
+
     },
     {
       title: '操作',
@@ -49,21 +52,18 @@ const ZoneConfigurationPage:React.FC = ()=>{
         <Button type="link" onClick={() => {}} key="edit" style={{ padding: 0 }}>
           编辑
         </Button>,
+        <Button key='export' type='text'>
+           导出
+        </Button>,
         <Button
           type="link"
           onClick={async () => {
-            try {
-              await UserService.resetPassWord(record.id!);
-              message.success('操作成功');
-              await actionRef.current?.reload();
-            } catch (error) {
-              message.error('操作失败');
-            }
+
           }}
-          key="reset"
+          key="submit"
           style={{ padding: 0 }}
         >
-          密码重置
+          提交
         </Button>,
 
         <DeleteButton
@@ -77,7 +77,24 @@ const ZoneConfigurationPage:React.FC = ()=>{
     },
   ];
    return <>
-
+     <PageContainer pageHeaderRender={false}>
+       <ProTable<AreaDto, AreaStatisticsQueryParam>
+         actionRef={actionRef}
+         pagination={{ pageSize: 10 }}
+         headerTitle={
+           <Button onClick={() => {}} type="primary" style={{ marginRight: 8 }}>
+             <PlusOutlined /> 新建
+           </Button>
+         }
+         rowKey="id"
+         search={{ labelWidth: 120 }}
+         columns={columns}
+         request={async (params) => {
+           const areas = await AreaService.getAreaStatistics(params);
+           return { data: areas, success: true, total: areas.length };
+         }}
+       />
+     </PageContainer>
    </>
 }
 
