@@ -8,7 +8,11 @@ const Service={
   }),
   queryCurrent: ()=> request<UserInfo>(`/${SystemConst.API_BASE}/users/me`, {
     method: 'GET',
-  })
+  }),
+  changePassword:(password:string)=>request(`/${SystemConst.API_BASE}/account/change-password`,{
+      method: 'GET',
+      password,
+    }),
 }
 
 export default Service;
