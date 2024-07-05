@@ -18,5 +18,6 @@ type UserBase = {
   id: number;
   name: string;
   account: string;
+  organizeName: string;
   signature: Uint8Array
 };

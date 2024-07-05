@@ -1,16 +1,16 @@
 import { AvatarDropdown, AvatarName, Question } from '@/components';
 import { getMenus } from '@/models/menu';
-import Service from '@/pages/user/login/service';
 import Token from '@/utils/token';
 import { RequestConfig, RequestOptions } from '@@/plugin-request/request';
 import { LinkOutlined } from '@ant-design/icons';
 import type { Settings as LayoutSettings } from '@ant-design/pro-components';
 import { SettingDrawer } from '@ant-design/pro-components';
-import { Link, RunTimeLayoutConfig, history } from '@umijs/max';
+import {Link, RunTimeLayoutConfig, history,} from '@umijs/max';
 import { Image, message } from 'antd';
 import 'cesium/Build/Cesium/Widgets/widgets.css';
 import defaultSettings from '../config/defaultSettings';
 import userDefaultAvatar from './assets/images/user_default_avatar.png';
+import Service from "@/pages/user/login/service";
 
 const isDev = process.env.NODE_ENV === 'development';
 const loginPath = '/user/login';
