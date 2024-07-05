@@ -1,11 +1,13 @@
 import PermissionButton from "@/components/PermissionButton";
 import React from "react";
+import {useIntl} from "@@/plugin-locale";
 
 interface  DeleteButtonProps{
   onDelete: (id:any) =>void;
 }
 
 const DeleteButton:React.FC<DeleteButtonProps> = (props) => {
+  const intl = useIntl();
 
   return   <PermissionButton
 
@@ -15,13 +17,12 @@ const DeleteButton:React.FC<DeleteButtonProps> = (props) => {
     type="link"
     isPermission={true}
     popConfirm={{
-      title: "是否删除?",
+      title: `${intl.formatMessage({id:'confirmDelete'})}?`,
       onConfirm: props.onDelete,
     }}
-
     style={{padding: 0}}
   >
-    删除
+    {intl.formatMessage({id: "delete"})}
   </PermissionButton>;
 }
 export  default  DeleteButton;

@@ -1,12 +1,9 @@
 import DeleteButton from '@/components/DelectButton';
-import OrganizeSelectDialog from '@/pages/organize-manage/organize/OrganizeSelectDialog';
 
 import UserAddPage from '@/pages/organize-manage/user/UserAddPage';
 import UserService from '@/pages/organize-manage/user/UserService';
-import {
-  UserItem,
-  UsersQueryParam,
-} from '@/pages/organize-manage/user/UserTypings';
+import { UserItem, UsersQueryParam } from '@/pages/organize-manage/user/UserTypings';
+import { useIntl } from '@@/plugin-locale';
 import { PlusOutlined } from '@ant-design/icons';
 import { ActionType, PageContainer, ProColumns, ProTable } from '@ant-design/pro-components';
 import { Button, message } from 'antd';
@@ -16,6 +13,7 @@ const UserListPage: React.FC = () => {
   const [current, setCurrent] = useState<UserItem | undefined>();
   const [isAddPage, setIsAddPage] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
+  const intl = useIntl();
 
   const openAddPage = (record?: UserItem) => {
     setCurrent(record);
@@ -29,57 +27,57 @@ const UserListPage: React.FC = () => {
 
   const columns: ProColumns<UserItem>[] = [
     {
-      title: '账号 | 姓名',
+      title: `${intl.formatMessage({ id: 'account' })} | ${intl.formatMessage({ id: 'name' })}`,
       dataIndex: 'keyword',
       valueType: 'textarea',
       hideInTable: true,
     },
 
     {
-      title: '账号',
+      title: intl.formatMessage({ id: 'account' }),
       dataIndex: 'account',
       valueType: 'textarea',
       search: false,
       width: 150,
     },
     {
-      title: '姓名',
+      title: intl.formatMessage({ id: 'name' }),
       dataIndex: 'name',
       valueType: 'textarea',
       search: false,
       width: 100,
     },
     {
-      title: '部门',
+      title: intl.formatMessage({ id: 'department' }),
       dataIndex: 'organizeName',
       valueType: 'textarea',
       search: false,
       width: 100,
     },
     {
-      title: '操作',
+      title: intl.formatMessage({ id: 'operate' }),
       valueType: 'option',
       fixed: 'right',
       width: 300,
       render: (_, record) => [
         <Button type="link" onClick={() => openAddPage(record)} key="edit" style={{ padding: 0 }}>
-          编辑
+          {intl.formatMessage({ id: 'edit' })}
         </Button>,
         <Button
           type="link"
           onClick={async () => {
             try {
               await UserService.resetPassWord(record.id!);
-              message.success('操作成功');
+              message.success(intl.formatMessage({ id: 'successOpera' }));
               await actionRef.current?.reload();
             } catch (error) {
-              message.error('操作失败');
+              message.error(intl.formatMessage({ id: 'failedOpera' }));
             }
           }}
           key="reset"
           style={{ padding: 0 }}
         >
-          密码重置
+          {intl.formatMessage({ id: 'resetPassword' })}
         </Button>,
 
         <DeleteButton
@@ -100,7 +98,7 @@ const UserListPage: React.FC = () => {
         pagination={{ pageSize: 10 }}
         headerTitle={
           <Button onClick={() => openAddPage()} type="primary" style={{ marginRight: 8 }}>
-            <PlusOutlined /> 新建
+            <PlusOutlined /> {intl.formatMessage({ id: 'add' })}
           </Button>
         }
         rowKey="id"
@@ -114,7 +112,7 @@ const UserListPage: React.FC = () => {
       {isAddPage && (
         <UserAddPage
           close={closeAddPage}
-          model={!current ? 'add' : 'edit'}
+          model={!current ? intl.formatMessage({ id: 'add' }) : intl.formatMessage({ id: 'edit' })}
           data={current}
           open={isAddPage}
           reload={() => actionRef.current?.reload()}

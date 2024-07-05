@@ -7,6 +7,7 @@ import {
   organizeToTreeDataType,
 } from '@/pages/organize-manage/organize/OrganizeTypings';
 import { UsersQueryParam } from '@/pages/organize-manage/user/UserTypings';
+import { useIntl } from '@@/plugin-locale';
 import { PlusOutlined } from '@ant-design/icons';
 import { ActionType, PageContainer, ProColumns, ProTable } from '@ant-design/pro-components';
 import { Button, TreeDataNode } from 'antd';
@@ -19,6 +20,8 @@ const OrganizeListPage: React.FC = () => {
     userTreeData: [] as TreeDataNode[],
     allOrganize: [] as OrganizeItem[],
   });
+
+  const intl = useIntl();
 
   const actionRef = useRef<ActionType>();
 
@@ -60,38 +63,38 @@ const OrganizeListPage: React.FC = () => {
   const columns: ProColumns<OrganizeItem>[] = useMemo(
     () => [
       {
-        title: '名称',
+        title: intl.formatMessage({ id: 'name' }),
         dataIndex: 'name',
         valueType: 'textarea',
         search: false,
       },
       {
-        title: '类型',
+        title: intl.formatMessage({ id: 'type' }),
         dataIndex: 'type',
         valueType: 'textarea',
         search: false,
         render: (_, record) => getOrganizeTypeLabel(record.type),
       },
       {
-        title: '负责人',
+        title: intl.formatMessage({ id: 'masterName' }),
         dataIndex: 'masterName',
         valueType: 'textarea',
         search: false,
       },
       {
-        title: '排序',
+        title: intl.formatMessage({ id: 'sort' }),
         dataIndex: 'orderNumber',
         valueType: 'textarea',
         search: false,
       },
       {
-        title: '操作',
+        title: intl.formatMessage({ id: 'operate' }),
         valueType: 'option',
         width: 200,
         fixed: 'right',
         render: (_, record) => [
           <Button type="link" onClick={() => openAddPage(record)} key="edit" style={{ padding: 0 }}>
-            编辑
+            {intl.formatMessage({ id: 'edit' })}
           </Button>,
           <DeleteButton
             key="delete"
@@ -114,7 +117,7 @@ const OrganizeListPage: React.FC = () => {
         pagination={false}
         headerTitle={
           <Button onClick={() => openAddPage()} type="primary" style={{ marginRight: 8 }}>
-            <PlusOutlined /> 新建
+            <PlusOutlined /> {intl.formatMessage({ id: 'add' })}
           </Button>
         }
         search={{ labelWidth: 120 }}
@@ -132,7 +135,9 @@ const OrganizeListPage: React.FC = () => {
       {state.isAddPage && (
         <OrganizeAddPage
           close={closeAddPage}
-          model={!state.current ? 'add' : 'edit'}
+          model={
+            !state.current ? intl.formatMessage({ id: 'add' }) : intl.formatMessage({ id: 'edit' })
+          }
           data={state.current}
           open={state.isAddPage}
           reload={() => actionRef.current?.reload()}

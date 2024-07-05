@@ -12,10 +12,10 @@ interface TreeSelectProps {
   title: string;
   initSelectedIds: number[];
   onSubmit: (selectedIds: number[]) => Promise<void>;
-  fetchFunction: object;
+  fetchFunction: { id: number; name: string; title: string }[];
 }
 
-const useGetData = (fetchFunction: object) => {
+const useGetData = (fetchFunction: { id: number; name: string; title: string }[]) => {
   const [data, setData] = useState<{ id: number; name: string; title: string }[]>([]);
   const [loading, setLoading] = useState(true);
 

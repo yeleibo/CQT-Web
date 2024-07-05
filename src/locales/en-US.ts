@@ -5,9 +5,9 @@ import pages from './en-US/pages';
 import pwa from './en-US/pwa';
 import settingDrawer from './en-US/settingDrawer';
 import settings from './en-US/settings';
+import tranMile from "@/locales/en-US/tranMile";
 
 export default {
-  'login': 'Login',
   'navBar.lang': 'Languages',
   'layout.user.link.help': 'Help',
   'layout.user.link.privacy': 'Privacy',
@@ -22,4 +22,5 @@ export default {
   ...pwa,
   ...component,
   ...pages,
+  ...tranMile
 };

@@ -1,6 +1,7 @@
 import OrganizeTreeSelect from '@/pages/organize-manage/organize/OrganizeTreeSelect';
 import UserService from '@/pages/organize-manage/user/UserService';
 import { UserItem } from '@/pages/organize-manage/user/UserTypings';
+import { useIntl } from '@@/plugin-locale';
 import { ModalForm, ProFormText } from '@ant-design/pro-components';
 import { Col, Form, Row, message } from 'antd';
 import { useEffect, useState } from 'react';
@@ -10,13 +11,14 @@ interface Props {
   close: () => void;
   reload: () => void;
   data?: UserItem;
-  model: 'add' | 'edit';
+  model: string;
 }
 
 const UserAddPage = (props: Props) => {
   const { data, open, close } = props;
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
+  const intl = useIntl();
 
   useEffect(() => {
     if (open) {
@@ -37,12 +39,12 @@ const UserAddPage = (props: Props) => {
       setLoading(true);
 
       let res;
-      if (props.model === 'add') {
+      if (props.model === intl.formatMessage({ id: 'add' })) {
         res = await UserService.add(extraFormData);
-        message.success('添加成功');
+        message.success(intl.formatMessage({ id: 'addSuccessful' }));
       } else {
         res = await UserService.edit(extraFormData);
-        message.success('修改成功');
+        message.success(intl.formatMessage({ id: 'modifySuccessful' }));
       }
 
       form.resetFields();
@@ -54,7 +56,7 @@ const UserAddPage = (props: Props) => {
         setTimeout(() => window.close(), 300);
       }
     } catch (ex) {
-      message.error('操作失败'); // 提供错误反馈
+      message.error(intl.formatMessage({ id: 'failedOpera' })); // 提供错误反馈
     } finally {
       setLoading(false); // 统一处理加载状态
     }
@@ -65,7 +67,11 @@ const UserAddPage = (props: Props) => {
       loading={loading}
       layout="vertical"
       form={form}
-      title={props.model === 'add' ? '新增用户' : '编辑用户'}
+      title={
+        props.model === intl.formatMessage({ id: 'add' })
+          ? intl.formatMessage({ id: 'newUser' })
+          : intl.formatMessage({ id: 'modifyUser' })
+      }
       open={open}
       onOpenChange={(open) => {
         form.resetFields();
@@ -81,10 +87,10 @@ const UserAddPage = (props: Props) => {
             rules={[
               {
                 required: true,
-                message: '账号为必填项',
+                message: intl.formatMessage({ id: 'accountRequired' }),
               },
             ]}
-            label="账号"
+            label={intl.formatMessage({ id: 'account' })}
             name="account"
             labelCol={{ span: 6 }} // 设置标签占据的栅格数
             wrapperCol={{ span: 18 }} // 设置输入控件占据的栅格数
@@ -96,10 +102,10 @@ const UserAddPage = (props: Props) => {
             rules={[
               {
                 required: true,
-                message: '姓名为必填项',
+                message: intl.formatMessage({ id: 'nameRequired' }),
               },
             ]}
-            label="姓名"
+            label={intl.formatMessage({ id: 'name' })}
             name="name"
             labelCol={{ span: 6 }} // 设置标签占据的栅格数
             wrapperCol={{ span: 18 }} // 设置输入控件占据的栅格数
@@ -110,7 +116,7 @@ const UserAddPage = (props: Props) => {
       <Row>
         <Col span={12}>
           <ProFormText
-            label="手机号"
+            label={intl.formatMessage({ id: 'phoneNumber' })}
             name="phoneNumber"
             labelCol={{ span: 6 }} // 设置标签占据的栅格数
             wrapperCol={{ span: 18 }} // 设置输入控件占据的栅格数
@@ -120,8 +126,8 @@ const UserAddPage = (props: Props) => {
         <Col span={12}>
           <Form.Item
             name="organizeId"
-            rules={[{ required: true, message: '部门为必填项' }]}
-            label="部门"
+            rules={[{ required: true, message: intl.formatMessage({ id: 'departmentRequired' }) }]}
+            label={intl.formatMessage({ id: 'department' })}
             labelCol={{ span: 6 }} // 设置标签占据的栅格数
             wrapperCol={{ span: 18 }} // 设置输入控件占据的栅格数
           >

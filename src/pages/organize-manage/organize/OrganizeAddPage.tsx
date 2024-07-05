@@ -2,6 +2,7 @@ import { OrganizeTypeSelect } from '@/pages/organize-manage/organize/OrganizeSel
 import OrganizeService from '@/pages/organize-manage/organize/OrganizeService';
 import OrganizeTreeSelect from '@/pages/organize-manage/organize/OrganizeTreeSelect';
 import { OrganizeItem } from '@/pages/organize-manage/organize/OrganizeTypings';
+import { useIntl } from '@@/plugin-locale';
 import { ModalForm, ProFormText } from '@ant-design/pro-components';
 import { Col, Form, Row, message } from 'antd';
 import { useEffect, useState } from 'react';
@@ -11,13 +12,14 @@ interface Props {
   close: () => void;
   reload: () => void;
   data?: OrganizeItem;
-  model: 'add' | 'edit';
+  model: string;
 }
 
 const OrganizeAddPage = (props: Props) => {
   const { data, open, close } = props;
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
+  const intl = useIntl();
 
   useEffect(() => {
     if (open) {
@@ -36,12 +38,12 @@ const OrganizeAddPage = (props: Props) => {
       setLoading(true);
       console.log(extraFormData);
       try {
-        if (props.model === 'add') {
+        if (props.model === intl.formatMessage({ id: 'add' })) {
           const res: any = await OrganizeService.add(extraFormData).catch(() => {
             setLoading(false);
           });
           setLoading(false);
-          message.success('添加成功');
+          message.success(intl.formatMessage({ id: 'addSuccessful' }));
           if (props.reload) {
             props.reload();
           }
@@ -55,7 +57,7 @@ const OrganizeAddPage = (props: Props) => {
           const res = await OrganizeService.edit(props.data!.id, extraFormData);
           setLoading(false);
           form.resetFields();
-          message.success('修改成功');
+          message.success(intl.formatMessage({ id: 'modifySuccessful' }));
           if (props.reload) {
             props.reload();
           }
@@ -76,7 +78,11 @@ const OrganizeAddPage = (props: Props) => {
       loading={loading}
       layout="vertical"
       form={form}
-      title={props.model === 'add' ? '新增部门' : '编辑部门'}
+      title={
+        props.model === intl.formatMessage({ id: 'add' })
+          ? intl.formatMessage({ id: 'newDepartment' })
+          : intl.formatMessage({ id: 'modifyDepartment' })
+      }
       open={open}
       onOpenChange={(open) => {
         form.resetFields();
@@ -91,19 +97,19 @@ const OrganizeAddPage = (props: Props) => {
           <Form.Item
             name="parentOrganizeId"
             rules={[
-              { required: true, message: '上级组织为必填项' },
+              { required: true, message: intl.formatMessage({ id: 'parentDepartmentRequired' }) },
               {
                 validator: (rule, value) => {
                   if (value === props.data?.id) {
-                    return Promise.reject(new Error('上级组织不能是当前组织'));
+                    return Promise.reject(new Error(intl.formatMessage({ id: 'departmentError' })));
                   }
                   return Promise.resolve();
                 },
               },
             ]}
-            label="上级组织"
-            labelCol={{ span: 6 }} // 设置标签占据的栅格数
-            wrapperCol={{ span: 18 }} // 设置输入控件占据的栅格数
+            label={intl.formatMessage({ id: 'parentDepartment' })}
+            labelCol={{ span: 8 }} // 设置标签占据的栅格数
+            wrapperCol={{ span: 16 }} // 设置输入控件占据的栅格数
           >
             <OrganizeTreeSelect></OrganizeTreeSelect>
           </Form.Item>
@@ -111,11 +117,13 @@ const OrganizeAddPage = (props: Props) => {
 
         <Col span={12}>
           <Form.Item
-            label="组织类型"
+            label={intl.formatMessage({ id: 'departmentType' })}
             name="type"
-            rules={[{ required: true, message: '组织类型为必填项' }]}
-            labelCol={{ span: 6 }} // 设置标签占据的栅格数
-            wrapperCol={{ span: 18 }} // 设置输入控件占据的栅格数
+            rules={[
+              { required: true, message: intl.formatMessage({ id: 'departmentTypeRequired' }) },
+            ]}
+            labelCol={{ span: 8 }} // 设置标签占据的栅格数
+            wrapperCol={{ span: 16 }} // 设置输入控件占据的栅格数
           >
             <OrganizeTypeSelect type={props.data?.type}></OrganizeTypeSelect>
           </Form.Item>
@@ -125,29 +133,31 @@ const OrganizeAddPage = (props: Props) => {
       <Row>
         <Col span={12}>
           <ProFormText
-            label="名称"
+            label={intl.formatMessage({ id: 'departmentName' })}
             name="name"
-            rules={[{ required: true, message: '部门为必填项' }]}
-            labelCol={{ span: 6 }} // 设置标签占据的栅格数
-            wrapperCol={{ span: 18 }} // 设置输入控件占据的栅格数
+            rules={[
+              { required: true, message: intl.formatMessage({ id: 'departmentNameRequired' }) },
+            ]}
+            labelCol={{ span: 8 }} // 设置标签占据的栅格数
+            wrapperCol={{ span: 16 }} // 设置输入控件占据的栅格数
           />
         </Col>
 
         <Col span={12}>
           <ProFormText
-            label="负责人"
+            label={intl.formatMessage({ id: 'masterName' })}
             name="masterName"
-            labelCol={{ span: 6 }} // 设置标签占据的栅格数
-            wrapperCol={{ span: 18 }} // 设置输入控件占据的栅格数
+            labelCol={{ span: 8 }} // 设置标签占据的栅格数
+            wrapperCol={{ span: 16 }} // 设置输入控件占据的栅格数
           />
         </Col>
       </Row>
       <Col span={12}>
         <ProFormText
-          label="序号"
+          label={intl.formatMessage({ id: 'sort' })}
           name="orderNumber"
-          labelCol={{ span: 6 }} // 设置标签占据的栅格数
-          wrapperCol={{ span: 18 }} // 设置输入控件占据的栅格数
+          labelCol={{ span: 8 }} // 设置标签占据的栅格数
+          wrapperCol={{ span: 16 }} // 设置输入控件占据的栅格数
         />
       </Col>
     </ModalForm>

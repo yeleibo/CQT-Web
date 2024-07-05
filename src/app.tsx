@@ -12,6 +12,7 @@ import 'cesium/Build/Cesium/Widgets/widgets.css';
 import defaultSettings from '../config/defaultSettings';
 import userDefaultAvatar from './assets/images/user_default_avatar.png';
 import { SelectLang  } from '@umijs/max';
+import {useIntl} from "@@/plugin-locale";
 
 const isDev = process.env.NODE_ENV === 'development';
 const loginPath = '/user/login';
@@ -53,6 +54,8 @@ export async function getInitialState(): Promise<{
 
 // ProLayout 支持的api https://procomponents.ant.design/components/layout
 export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) => {
+
+
   return {
     // rootContainer:(container:any)=>React.createElement(ConfigProvider, null, container),
     //用户旁边的操作设置
