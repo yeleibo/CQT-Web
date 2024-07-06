@@ -7,6 +7,7 @@ import routes from './routes';
 const { REACT_APP_ENV = 'dev' } = process.env;
 
 export default defineConfig({
+  clickToComponent: {},
   /**
    * 配置多标签页
    */
