@@ -52,6 +52,7 @@
     "@formily/antd-v5": "^1.2.1",
     "@formily/core": "^2.3.1",
     "@formily/react": "^2.3.1",
+    "@jiaminghi/data-view-react": "^1.2.5",
     "@umijs/route-utils": "^2.2.2",
     "antd": "^5.18.3",
     "antd-style": "^3.6.1",
