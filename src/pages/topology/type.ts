@@ -1,3 +1,5 @@
+import { CellValue } from '@/components/ExcelButton/ExportButton';
+import { toStringOfDay } from '@/components/Extension/DateTime';
 import { UploadFile } from 'antd';
 
 export type ChaoqianBoxDto = {
@@ -9,6 +11,7 @@ export type ChaoqianBoxDto = {
   opticalPowerSplittingPercentage?: number | null;
   address: string;
   name: string;
+  oltCode?: string;
   type: string;
   files?: string | null;
   yoloResult?: string | null;
@@ -76,4 +79,25 @@ export type ChaoqianCableDetailDto = {
 export type ChaoqianTopologyDto = {
   boxes: ChaoqianBoxDto[];
   cables: ChaoqianCableDetailDto[];
+};
+
+export type ChaoqianTopologyParam = {
+  areaId?: number;
+  boxId?: number;
+  customerId?: number;
+};
+
+export const chaoqianBoxDtoHeaders: { [key: string]: CellValue<ChaoqianBoxDto> } = {
+  name: (item) => item.name,
+  code: (item) => item.code,
+  type: (item) => item.type.toString(),
+  address: (item) => item.address,
+  longitude: (item) => item.longitude?.toString() ?? '',
+  latitude: (item) => item.latitude?.toString() ?? '',
+  modifyTime: (item) => (item.modifyTime ? toStringOfDay(item.modifyTime) : ''),
+  OLTCode: (item) => item.oltCode ?? '',
+  BoxPorts: (item) => {
+    const ports: string[] = item.chaoqianBoxPorts.map((e) => JSON.stringify(e));
+    return ports.join('\n');
+  },
 };

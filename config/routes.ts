@@ -33,12 +33,12 @@ export default [
     routes: [
       {
         path: '/project/area',
-        name: 'Zone Configuration',
+        title: 'zoneConfiguration',
         component: '@/pages/project/ZoneConfigurationPage',
       },
       {
         path: '/project/boxStatistics',
-        name: 'BoxStatistics',
+        title: 'boxStatistics',
         component: '@/pages/project/BoxStatisticsPage',
       },
     ],

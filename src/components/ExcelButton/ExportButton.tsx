@@ -1,7 +1,7 @@
-import React from "react";
-import * as XLSX from "xlsx";
-import {Button} from "antd";
-import {ExportOutlined } from "@ant-design/icons";
+import { ExportOutlined } from '@ant-design/icons';
+import { Button } from 'antd';
+import type { ButtonType } from 'antd/es/button/buttonHelpers';
+import * as XLSX from 'xlsx';
 
 export type CellValue<T> = (row: T) => any;
 
@@ -10,9 +10,16 @@ interface ExportButtonProps<T> {
   headers: { [key: string]: CellValue<T> }; // key 是 excel 表头，value 是获取属性的方法
   fetchData: () => Promise<{ [sheetName: string]: T[] }>; // 定义获取数据的函数，数据包含多个表格
   buttonName: string;
+  type?: ButtonType;
 }
 
-const ExportButton = <T,>({ fetchData, fileName, headers, buttonName, }: ExportButtonProps<T>) => {
+const ExportButton = <T,>({
+  fetchData,
+  fileName,
+  headers,
+  buttonName,
+  type = 'primary',
+}: ExportButtonProps<T>) => {
   const generateExcel = (data: { [sheetName: string]: T[] }) => {
     const wb = XLSX.utils.book_new();
 
@@ -25,7 +32,7 @@ const ExportButton = <T,>({ fetchData, fileName, headers, buttonName, }: ExportB
 
         // 添加表头
         const headerRow = Object.keys(headers);
-        XLSX.utils.sheet_add_aoa(sheet, [headerRow.map(header => header)]);
+        XLSX.utils.sheet_add_aoa(sheet, [headerRow.map((header) => header)]);
 
         // 添加数据行
         sheetData.forEach((row) => {
@@ -52,8 +59,13 @@ const ExportButton = <T,>({ fetchData, fileName, headers, buttonName, }: ExportB
   };
 
   return (
-    <Button type="primary" onClick={handleButtonClick} style={{marginRight: 8}}>
-      <ExportOutlined />
+    <Button
+      type={type}
+      onClick={handleButtonClick}
+      style={{ marginRight: type !== 'link' ? 8 : 0 }}
+      color="blue"
+    >
+      {type !== 'link' && <ExportOutlined />}
       {buttonName}
     </Button>
   );
