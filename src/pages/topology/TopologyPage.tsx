@@ -1,4 +1,4 @@
-import { CurlyBrackets3Painter } from '@/pages/topology/CurlyBrackets';
+import { CurlyBrackets3Painter, LineCanvasWithText } from '@/pages/topology/CurlyBrackets';
 import React from 'react';
 
 const TopologyPage: React.FC = () => {
@@ -12,10 +12,11 @@ const TopologyPage: React.FC = () => {
     padding: '20px 0',
     justifyContent: 'space-between',
     alignItems: 'center',
+    position: 'relative',
   };
 
   const outerContainerStyle: React.CSSProperties = {
-    width: '225px',
+    width: '225px', // 增加宽度以容纳 LineCanvasWithText 组件
     height: '400px',
     position: 'relative',
     display: 'flex',
@@ -64,6 +65,7 @@ const TopologyPage: React.FC = () => {
     borderRadius: '50%',
     backgroundColor: 'red',
   };
+
   return (
     <div>
       <CurlyBrackets3Painter></CurlyBrackets3Painter>
@@ -98,6 +100,9 @@ const TopologyPage: React.FC = () => {
           </div>
         </div>
         <div style={topRightCircleStyle}></div>
+        <div style={{ position: 'absolute', left: 'calc(100%)', top: '15px' }}>
+          <LineCanvasWithText></LineCanvasWithText>
+        </div>
       </div>
     </div>
   );
