@@ -1,27 +1,28 @@
-import React, {useEffect} from "react";
-import {PageContainer} from "@ant-design/pro-components";
-import {Button, Form,Input} from "antd";
-import {CodeCreateDto} from "@/pages/create-code/codeType";
-import CodeService from "@/pages/create-code/CodeService";
+import CodeService from '@/pages/create-code/CodeService';
+import { CodeCreateDto } from '@/pages/create-code/codeType';
+import { useIntl } from '@@/plugin-locale';
+import { ExportOutlined } from '@ant-design/icons';
+import { PageContainer } from '@ant-design/pro-components';
+import { Button, Form, Input } from 'antd';
+import React, { useEffect } from 'react';
 import * as XLSX from 'xlsx';
 
 interface Props {
-  codes: CodeCreateDto[]
+  codes: CodeCreateDto[];
 }
 
 const CommonCodeCreate: React.FC<Props> = (props) => {
   const [form] = Form.useForm();
-
+  const intl = useIntl();
 
   useEffect(() => {
     form.setFieldsValue(
       props.codes.reduce((acc, code, index) => {
         acc[`amount_${index}`] = code.amount;
         return acc;
-      }, {} as any)
+      }, {} as any),
     );
   }, [form, props.codes]);
-
 
   const handle = async () => {
     const values = form.getFieldsValue();
@@ -30,7 +31,7 @@ const CommonCodeCreate: React.FC<Props> = (props) => {
       amount: values[`amount_${index}`],
     }));
 
-    let result = await CodeService.createCodes({dto:updatedCodes});
+    let result = await CodeService.createCodes({ dto: updatedCodes });
 
     const workbook = XLSX.utils.book_new();
 
@@ -51,7 +52,8 @@ const CommonCodeCreate: React.FC<Props> = (props) => {
         title: 'Create Code',
         extra: [
           <Button key="export" type="primary" onClick={handle}>
-            Export
+            <ExportOutlined />
+            {intl.formatMessage({ id: 'export' })}
           </Button>,
         ],
       }}
@@ -84,5 +86,4 @@ const CommonCodeCreate: React.FC<Props> = (props) => {
   );
 };
 
-
-export default CommonCodeCreate
+export default CommonCodeCreate;
