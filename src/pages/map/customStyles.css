@@ -1,12 +1,12 @@
-/*!* 隐藏底部的版权信息 *!*/
-/*.cesium-viewer-bottom {*/
-/*    display: none;*/
-/*}*/
+/* 隐藏底部的版权信息 */
+.cesium-viewer-bottom {
+    display: none;
+}
 
-/*!* 隐藏右上角的信用信息 *!*/
-/*.cesium-viewer-cesiumWidgetContainer .cesium-widget-credits {*/
-/*    display: none;*/
-/*}*/
+/* 隐藏右上角的信用信息 */
+.cesium-viewer-cesiumWidgetContainer .cesium-widget-credits {
+    display: none;
+}
 
 /*!* 隐藏其他不需要的文字元素 *!*/
 /*.cesium-widget-geocoderContainer,*/

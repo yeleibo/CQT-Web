@@ -1,247 +1,148 @@
-import React from "react";
-import ReactEcharts from "echarts-for-react";
-import { BorderBox11,FullScreenContainer } from '@jiaminghi/data-view-react'
+import { EngineeringStaticsByOrganize, ResourceStaticModel } from '@/pages/home/DataModel';
+import BarChart from '@/pages/home/HomeFooter';
+import CableCarousel from '@/pages/home/HomeRight';
+// @ts-ignore
+import { Decoration5, Decoration8, FullScreenContainer } from '@jiaminghi/data-view-react';
+import React, { useEffect, useState } from 'react';
+import PieChart from './HomeLeft';
+import './home.css';
+import HomeCenter from '@/pages/home/HomeCenter';
+import Search from 'antd/es/input/Search';
+const Home: React.FC = () => {
+  enum CableState {
+    Normal = 'Normal',
+    Warning = 'Warning',
+    Critical = 'Critical',
+  }
 
-const MyChart = ({ option }) => (
-  <ReactEcharts
-    option={option}
-  />
-);
-
-const PieChart = ({ title }) => {
-  const pieChartOptions = {
-    title: {
-      text: title,
-      left: 'center',
-      top: 20,
-      textStyle: {
-        fontSize: 16,
-      },
-    },
-    tooltip: {
-      trigger: 'item',
-    },
-    legend: {
-      orient: 'vertical',
-      right: '20',
-      top: 'center',
-    },
-    series: [
+  interface CableData {
+    state: CableState;
+    cableName: string;
+  }
+  const resourceData: ResourceStaticModel = {
+    name: '光纤资源管理 ',
+    totalAmount: 5148.06,
+    unitName: '千米 ',
+    item: [
       {
-        name: 'Access From',
-        type: 'pie',
-        radius: '50%',
-        center: ['35%', '50%'],
-        data: [
-          { value: 1048, name: 'Search Engine' },
-          { value: 735, name: 'Direct' },
-          { value: 580, name: 'Email' },
-          { value: 484, name: 'Union Ads' },
-          { value: 300, name: 'Video Ads' },
-        ],
-        emphasis: {
-          itemStyle: {
-            shadowBlur: 10,
-            shadowOffsetX: 0,
-            shadowColor: 'rgba(0, 0, 0, 0.5)',
-          },
-        },
+        name: '钟管分公司',
+        amount: 820.36,
+        percent: 15,
+      },
+      {
+        name: '武康分公司',
+        amount: 2081.15,
+        percent: 40,
+      },
+      {
+        name: '乾元分公司',
+        amount: 1044.74,
+        percent: 20,
+      },
+      {
+        name: '新市分公司',
+        amount: 1198.41,
+        percent: 23,
+      },
+      {
+        name: '其他',
+        amount: 3,
+        percent: 2,
       },
     ],
   };
-
-  return (
-    <BorderBox11 style={{ width: '600px', height: '400px', marginBottom: '20px' }}>
-      <ReactEcharts option={pieChartOptions} style={{ height: '100%', width: '100%' }} />
-    </BorderBox11>
-  );
-};
-
-const Home: React.FC = () => {
-
-  const centerPosition = ['30%', '50%']; // 调整图表位置
-  // 扇形数据
-  const getPieOption = (title: string, data: any[]) => {
-    return {
-      title: {
-        text: title,
-        left: 'center',
-        top: '4%',
-        textStyle: {
-          color: '#ffffff',
-          fontSize: 16,
-        },
-      },
-      tooltip: {
-        trigger: 'item',
-      },
-      // 对应文字
-      legend: {
-        orient: 'vertical',
-        right: '20',
-        top: 'middle',
-        textStyle: {
-          color: '#ffffff',
-        },
-      },
-      series: [
-        {
-          type: 'pie',
-          radius: ['30%', '60%'],
-          center: centerPosition, // 调整图表位置
-          avoidLabelOverlap: false,
-          label: {
-            show: false,
-            position: 'center',
-          },
-          labelLine: {
-            show: false,
-          },
-          data: data.map((item, index) => ({
-            ...item,
-            itemStyle: {
-              color: [
-                'rgba(0, 94, 255, 0.8)',
-                'rgba(36, 254, 180, 0.8)',
-                'rgba(35, 83, 155, 0.8)',
-                'rgba(60, 157, 228, 0.8)',
-                'rgba(255, 255, 0, 0.8)',
-              ][index],
-            },
-          })),
-        },
-      ],
-      graphic: [
-        {
-          type: 'text',
-          left: '22%', // 确保文本位置与图表中心对齐
-          top: '48%', //   // 确保文本位置与图表中心对齐
-          style: {
-            text: '5136.05千米',
-            textAlign: 'center',
-            fill: '#ffffff',
-            fontSize: 18,
-            fontWeight: 'bold',
-          },
-        },
-      ],
-      backgroundColor: 'transparent',
-    };
-  };
-
-  const data = [
-    { value: 23, name: '钟管分公司' },
-    { value: 40, name: '武康分公司' },
-    { value: 15, name: '乾元分公司' },
-    { value: 20, name: '新市分公司' },
-    { value: 2, name: '其它' },
+  const data: CableData[] = [
+    { state: CableState.Normal, cableName: 'YBGC-莫干山镇燎原村安置二期管道地...' },
+    { state: CableState.Warning, cableName: 'YBGC-新市镇新联路建设涉及广电线路...' },
+    { state: CableState.Critical, cableName: 'YBGC-新市镇河东路明德机械制造南门...' },
+    { state: CableState.Normal, cableName: 'FCGC-莫干山镇安置房项目广电接入工程' },
+    { state: CableState.Warning, cableName: 'YBGC-阜溪街道英溪北路（环城北路至...' },
+    { state: CableState.Critical, cableName: 'YBGC-新市镇谢家园路建设涉及广电线...' },
+    { state: CableState.Normal, cableName: 'JKGC-康乾街道新琪村监控工程' },
+    { state: CableState.Warning, cableName: 'YBGC-阜溪街道纬六路广电地埋管道工程' },
+    {
+      state: CableState.Critical,
+      cableName: 'YBGC-武康街道灵山街（岭头路-莫干山镇安置房项目广电接入工程',
+    },
+    { state: CableState.Critical, cableName: 'YBGC-武康街道灵山街（岭头路-联合123141ddddd241' },
+    {
+      state: CableState.Critical,
+      cableName: 'YBGC-武康街道灵山街（岭头路-莫干山镇安置房项目广电接入工程',
+    },
+    { state: CableState.Critical, cableName: 'YBGC-武康街道灵山街（岭头路-联合12314dddd1241' },
+    { state: CableState.Critical, cableName: 'YBGC-武康街道灵山街（岭头路-联合12314dddd1241' },
+    {
+      state: CableState.Critical,
+      cableName: 'YBGC-武康街道灵山街（岭头路-莫干山镇安置房项目广电接入工程',
+    },
+    { state: CableState.Critical, cableName: 'YBGC-武康街道灵山街（岭头路-联合12314asdasdasd241' },
+  ];
+  const barChartData: EngineeringStaticsByOrganize[] = [
+    { organizeName: '武康分公司', totalAmount: 209, finishedAmount: 199 },
+    { organizeName: '千元分公司', totalAmount: 44, finishedAmount: 43 },
+    { organizeName: '新市分公司', totalAmount: 137, finishedAmount: 133 },
+    { organizeName: '中观分公司', totalAmount: 85, finishedAmount: 83 },
+    { organizeName: '工程规划部', totalAmount: 13, finishedAmount: 12 },
+    { organizeName: '项目运维部', totalAmount: 13, finishedAmount: 12 },
   ];
 
+  // const [currentTime, setCurrentTime] = useState(new Date().toLocaleString());
+  //
+  // useEffect(() => {
+  //   const timer = setInterval(() => {
+  //     setCurrentTime(new Date().toLocaleString());
+  //   }, 1000);
+  //   return () => clearInterval(timer);
+  // }, []);
+
   return (
-      <div style={{
-        display: 'flex', flexDirection: 'column', alignItems: 'center',
-        backgroundImage: "url('/home_bg.png')",
-        backgroundSize: '100% 100%',
-      }}>
-        <div style={{flex: 1, backgroundColor: 'transparent', color: '#ffffff', padding: '10px', width: '50%'}}>
-          <BorderBox11 style={{width: '500px', height: '400px', marginBottom: '20px'}}>
-            <ReactEcharts option={getPieOption('1', data)} style={{height: '100%', width: '100%'}}/>
-          </BorderBox11>
+    <>
+      <div className="container">
+        <div className="header">
+          <div className="title">
+            <div style={{ fontSize: '48px', color: 'white' }}>TranMile</div>
+          </div>
+          <div className="headerContent">
+            <div className="headerBorder1">
+              <Decoration8 style={{ height: '30px', width: '300px' }} />
+            </div>
+            <div className="headerBorder2">
+              <Decoration5 dur={3} style={{ height: '40px' }} />
+            </div>
+            <div className="headerBorder3">
+              <Decoration8 reverse={true} style={{ height: '30px', width: '300px' }} />
+            </div>
+          </div>
         </div>
-        <div style={{flex: 1, backgroundColor: 'transparent', color: '#ffffff', padding: '10px', width: '50%'}}>
-          <BorderBox11 style={{width: '500px', height: '400px', marginBottom: '20px'}}>
-            <ReactEcharts option={getPieOption('1', data)} style={{height: '100%', width: '100%'}}/>
-          </BorderBox11>
+        <div className="leftSidebar">
+          <div className="box">
+            <PieChart data={resourceData}></PieChart>
+          </div>
+          <div className="box">
+            <PieChart data={resourceData}></PieChart>
+          </div>
+          <div className="box">
+            <PieChart data={resourceData}></PieChart>
+          </div>
         </div>
-        <div style={{flex: 1, backgroundColor: 'transparent', color: '#ffffff', padding: '10px', width: '50%'}}>
-          <BorderBox11 style={{width: '500px', height: '400px', marginBottom: '20px'}}>
-            <ReactEcharts option={getPieOption('1', data)} style={{height: '100%', width: '100%'}}/>
-          </BorderBox11>
+        <div className="main" style={{ height: '100%', width: '100%' }}>
+          {/*<div className="time">{currentTime}</div>*/}
+          <HomeCenter></HomeCenter>
+        </div>
+        <div className="rightSidebar">
+          <div className="box">
+            <CableCarousel data={data} />
+          </div>
+          <div className="box">
+            <CableCarousel data={data} />
+          </div>
+        </div>
+        <div className="footer">
+          <BarChart data={barChartData}></BarChart>
         </div>
       </div>
+    </>
   );
 };
 
 export default Home;
-
-
-// const getBarOption = () => ({
-//   title: {
-//     text: '柱状图示例',
-//     left: 'center',
-//     top: '10%',
-//     textStyle: {
-//       color: '#ffffff',
-//       fontSize: 16,
-//     },
-//   },
-//   tooltip: {
-//     trigger: 'axis',
-//     axisPointer: {
-//       type: 'none',
-//     },
-//   },
-//   xAxis: {
-//     type: 'category',
-//     data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat' ],
-//     axisLine: {
-//       show: false,
-//     },
-//     axisTick: {
-//       show: false,
-//     },
-//     axisLabel: {
-//       color: '#ffffff',
-//     },
-//   },
-//   yAxis: {
-//     type: 'value',
-//     axisLine: {
-//       show: false,
-//     },
-//     axisTick: {
-//       show: false,
-//     },
-//     axisLabel: {
-//       color: '#ffffff',
-//     },
-//     splitLine: {
-//       show: false,
-//     },
-//   },
-//   series: [
-//     {
-//       data: [120, 200, 150, 80, 70, 110, 130],
-//       type: 'bar',
-//       labelLine: {
-//         show: false,
-//       }
-//     },
-//   ],
-//   backgroundColor: 'transparent',
-// });
-{/*backgroundColor:'#000000',width:'80%'*/
-}
-{/*<div style={{height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end'}}>*/}
-{/*  <div style={{height: '30%'}}>*/}
-{/*    <MyChart option={getBarOption()}/>*/}
-{/*  </div>*/}
-{/*</div>*/}
-{/*<div style={{display: 'flex', flexDirection: 'column', gap: '10px'}}>*/}
-{/*  <div style={{flex: 1, backgroundColor: 'transparent', color: '#ffffff', padding: '10px'}}>*/}
-{/*    <h3>列表 1</h3>*/}
-{/*    <ul>*/}
-{/*      <li>项 1</li>*/}
-{/*      <li>项 2</li>*/}
-{/*      <li>项 3</li>*/}
-{/*    </ul>*/}
-{/*  </div>*/}
-{/*  <div style={{flex: 1, backgroundColor: 'transparent', color: '#ffffff', padding: '10px'}}>*/}
-{/*    <h3>列表 2</h3>*/}
-{/*    <ul>*/}
-{/*      <li>项 1</li>*/}
-{/*      <li>项 2</li>*/}
-{/*      <li>项 3</li>*/}
-{/*    </ul>*/}
-{/*  </div>*/}
-{/*</div>*/}
