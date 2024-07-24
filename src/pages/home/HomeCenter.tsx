@@ -1,10 +1,10 @@
-import React, { useRef, useState, useEffect, useMemo, useCallback } from 'react';
-import { CameraFlyTo, CesiumComponentRef, Viewer } from 'resium';
 import { Cartesian3, Viewer as CesiumViewer, UrlTemplateImageryProvider } from 'cesium';
+import React, { useEffect, useRef, useState, useCallback, useMemo } from 'react';
+import { CesiumComponentRef, Viewer } from 'resium';
 import { MapImageryProvider } from '@/pages/map/ImageryProvider';
 import { Button, Modal, Radio } from 'antd';
 
-const Maps: React.FC = () => {
+const HomeCenter: React.FC = () => {
   const imageryProvider = useMemo(() => new MapImageryProvider(), []);
 
   const [selectedLayerType, setSelectedLayerType] = useState('GoogleStandard');
@@ -36,6 +36,7 @@ const Maps: React.FC = () => {
     const updateViewerLayers = () => {
       if (viewerRef.current && viewerRef.current.cesiumElement) {
         const viewer = viewerRef.current.cesiumElement;
+        viewer.camera.setView({ destination: Cartesian3.fromDegrees(115.58, 28.85, 12000) });
         updateLayers(viewer, selectedLayer);
       } else {
         // Retry if cesiumElement is not yet available
@@ -58,9 +59,10 @@ const Maps: React.FC = () => {
   };
 
   return (
-    <div style={{ height: '100vh', width: '100%' }}>
+    <div style={{ position: 'relative', height: '100%', overflow: 'hidden' }}>
       <Viewer
         full
+        className="cesium-container"
         ref={viewerRef}
         infoBox={false}
         timeline={false}
@@ -72,10 +74,6 @@ const Maps: React.FC = () => {
         navigationHelpButton={false}
         geocoder={false}
       >
-        <CameraFlyTo
-          destination={Cartesian3.fromDegrees(115.58, 28.85, 12000)}
-          duration={3} // 飞行时间
-        />
         <div
           style={{
             position: 'absolute',
@@ -104,4 +102,4 @@ const Maps: React.FC = () => {
   );
 };
 
-export default Maps;
+export default HomeCenter;

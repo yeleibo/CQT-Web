@@ -7,6 +7,11 @@ export default [
     routes: [{ name: '登录', path: '/user/login', component: './user/login' }],
   },
   {
+    path: '/home',
+    name: '首页',
+    routes: [{ name: '首页', path: '/home/index', component: '@/pages/home/index' }],
+  },
+  {
     path: '/create-code',
     name: 'createCode',
     routes: [
@@ -86,6 +91,6 @@ export default [
       },
     ],
   },
-  { path: '/', redirect: '/create-code/boxCode' },
+  { path: '/', redirect: '/home/index' },
   { path: '*', layout: false, component: './404' },
 ];
