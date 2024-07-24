@@ -1,0 +1,87 @@
+.outer-container {
+  width: 225px;
+  height: 400px;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  &.show-line::after {
+    content: '';
+    position: absolute;
+    bottom: -140px; // 从底部开始向下延伸150px
+    left: 50%;
+    transform: translateX(-50%);
+    width: 2px; // 垂线宽度
+    height: 150px; // 垂线长度
+    background-color: black; // 垂线颜色
+  }
+}
+
+.dotted-style {
+  border: 2px dashed #00E676;
+  border-radius: 20px;
+  width: 200px;
+  height: 375px;
+  display: flex;
+  flex-direction: column;
+  padding: 20px 0;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+}
+
+.top-right-circle-style {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background-color: #00E676;
+  position: absolute;
+  top: 50px;
+  right: 0;
+}
+
+.list-style {
+  margin-top: 20px;
+  height: 150px;
+  width: 180px;
+  margin-bottom: -30px;
+  overflow-y: auto;
+}
+
+.port-outer-container {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  background-color: transparent;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .port-circle-style {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background-color: #47bd92;
+    margin: auto;
+  }
+}
+
+.box-container-style {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  background-color: #E0E0E0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .image-style {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background-color: red;
+  }
+}
+
+
