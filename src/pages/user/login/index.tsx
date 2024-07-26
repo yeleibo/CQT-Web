@@ -79,8 +79,8 @@ const Login: React.FC = () => {
   };
   const handleSubmit = async (values: LoginParam) => {
       //用户明和密码缓存
-      if(values.username!==null){
-        localStorage.setItem("username",values.username!);
+      if(values.account!==null){
+        localStorage.setItem("account",values.account);
       }
       if(values.password!==null){
         localStorage.setItem("password",values.password);
@@ -140,8 +140,8 @@ const Login: React.FC = () => {
           {type === 'account' && (
             <>
               <ProFormText
-                name="username"
-                initialValue={ localStorage.getItem("username")}
+                name="account"
+                initialValue={ localStorage.getItem("account")}
                 fieldProps={{
                   size: 'large',
                   style: {

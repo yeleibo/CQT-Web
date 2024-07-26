@@ -1,7 +1,6 @@
 class SystemConst {
-  static API_BASE = 'api/window';
+  static API_BASE = 'api';
 
-  static SYSTEM_NAME = 'Jetlinks';
 
   static AMAP_KEY = 'amap_key';
 

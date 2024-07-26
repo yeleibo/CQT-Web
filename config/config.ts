@@ -10,8 +10,8 @@ export default defineConfig({
   /**
    * 配置多标签页
    */
-  keepalive: [/\/.*\//],
-  tabsLayout: { hasDropdown: true },
+  // keepalive: [/\/.*\//],
+  // tabsLayout: { hasDropdown: true },
 
   /**
    * @name 开启 hash 模式

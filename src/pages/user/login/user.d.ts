@@ -1,7 +1,6 @@
 type LoginParam = {
-  username: string;
   password: string;
-  account?:string;
+  account:string;
 };
 
 
