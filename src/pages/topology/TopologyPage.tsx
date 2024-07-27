@@ -84,7 +84,6 @@ const TopologyPage: React.FC<TopologyProp> = (props) => {
         getChildrenBox(childrenBox);
       }
     }
-
     let input1 = checkedBox.chaoqianBoxPorts.find(
       (element) => element.oppositePortId !== undefined && element.type === BoxPortType.input,
     );
@@ -520,13 +519,18 @@ const TopologyPage: React.FC<TopologyProp> = (props) => {
 
   return (
     <div style={topologyStyle}>
-      <CurlyBrackets3Painter chaoqianBoxPortDto={[]}></CurlyBrackets3Painter>
+      <div className="fatBoxContainer">
+        <div className="fatBox"></div>
+        <div className="onu">
+          <CurlyBrackets3Painter chaoqianBoxPortDto={[]}></CurlyBrackets3Painter>
+        </div>
+      </div>
       <div className={`outer-container ${true ? 'show-line' : ''}`}>
         <div style={dottedStyle}>
           <div style={boxContainerStyle}>
             <div style={imageStyle}></div>
           </div>
-          <div style={{ height: '10px' }}></div>
+          z<div style={{ height: '10px' }}></div>
           <div
             style={{
               fontSize: '20px',

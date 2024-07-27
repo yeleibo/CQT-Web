@@ -84,4 +84,32 @@
   }
 }
 
+.fatBoxContainer {
+  width: 550px;
+  height: 320px;
+  //border: 2px solid black;  // 添加黑色边框
+  position: relative;
+
+  .fatBox {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    border: 2px solid black;  // 添加黑色边框
+    background-color: transparent;
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .onu {
+    width: 500px;
+    height: 200px;
+    position: absolute;
+    top: 110px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}
+
 

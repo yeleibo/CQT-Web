@@ -12,7 +12,6 @@ import { PlusOutlined } from '@ant-design/icons';
 import { ActionType, PageContainer, ProColumns, ProTable } from '@ant-design/pro-components';
 import { Button, TreeDataNode } from 'antd';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import ReactEcharts from 'echarts-for-react';
 
 const OrganizeListPage: React.FC = () => {
   const [state, setState] = useState({
@@ -45,7 +44,6 @@ const OrganizeListPage: React.FC = () => {
     }
     return { data: [], success: true, total: 0 };
   };
-
 
   useEffect(() => {
     fetchData();
@@ -112,38 +110,44 @@ const OrganizeListPage: React.FC = () => {
   );
 
   return (
-    <><PageContainer pageHeaderRender={false}>
-      <ProTable<OrganizeItem, UsersQueryParam>
-        actionRef={actionRef}
-        // 隐藏分页器
-        pagination={false}
-        headerTitle={
-          <Button onClick={() => openAddPage()} type="primary" style={{ marginRight: 8 }}>
-            <PlusOutlined /> {intl.formatMessage({ id: 'add' })}
-          </Button>
-        }
-        search={{ labelWidth: 120 }}
-        columns={columns}
-        indentSize={50}
-        scroll={{ x: 1500 }}
-        rowKey="key"
-        expandable={{
-          expandIcon: () => null,
-          defaultExpandAllRows: true,
-          expandedRowKeys: getAllKeys(state.userTreeData),
-        }}
-        request={fetchData} />
-      {state.isAddPage && (
-        <OrganizeAddPage
-          close={closeAddPage}
-          model={
-            !state.current ? intl.formatMessage({ id: 'add' }) : intl.formatMessage({ id: 'edit' })
+    <>
+      <PageContainer pageHeaderRender={false}>
+        <ProTable<OrganizeItem, UsersQueryParam>
+          actionRef={actionRef}
+          // 隐藏分页器
+          pagination={false}
+          headerTitle={
+            <Button onClick={() => openAddPage()} type="primary" style={{ marginRight: 8 }}>
+              <PlusOutlined /> {intl.formatMessage({ id: 'add' })}
+            </Button>
           }
-          data={state.current}
-          open={state.isAddPage}
-          reload={() => actionRef.current?.reload()} />
-      )}
-    </PageContainer></>
+          search={{ labelWidth: 120 }}
+          columns={columns}
+          indentSize={50}
+          scroll={{ x: 1500 }}
+          rowKey="key"
+          expandable={{
+            expandIcon: () => null,
+            defaultExpandAllRows: true,
+            expandedRowKeys: getAllKeys(state.userTreeData),
+          }}
+          request={fetchData}
+        />
+        {state.isAddPage && (
+          <OrganizeAddPage
+            close={closeAddPage}
+            model={
+              !state.current
+                ? intl.formatMessage({ id: 'add' })
+                : intl.formatMessage({ id: 'edit' })
+            }
+            data={state.current}
+            open={state.isAddPage}
+            reload={() => actionRef.current?.reload()}
+          />
+        )}
+      </PageContainer>
+    </>
   );
 };
 

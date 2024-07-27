@@ -12,6 +12,17 @@ export default [
     routes: [{ name: '首页', path: '/home/index', component: '@/pages/home/index' }],
   },
   {
+    path: '/isp',
+    name: '客户设置',
+    routes: [
+      {
+        path: '/isp/ispList',
+        title: 'operatorManagement',
+        component: '@/pages/isp/ISPListPage',
+      },
+    ],
+  },
+  {
     path: '/create-code',
     name: 'createCode',
     routes: [
