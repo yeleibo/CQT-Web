@@ -32,7 +32,7 @@ const TopologyPage: React.FC<TopologyProp> = (props) => {
   const [isHaveOLT, setIsHaveOLT] = useState<boolean>(false);
   const [chaoqianBoxPortDto, setChaoqianBoxPortDto] = useState<ChaoqianBoxPortDto>();
   const [portStatusColor, setPortStatusColor] = useState<string>('black');
-  const [borderColor, setBorderColor] = useState<string>('transparent');
+  const [isPoint, setPoint] = useState<boolean>(false);
 
   //递归寻找盒子的上下级
   const checkBox = (checkedBox: ChaoqianBoxDto) => {
@@ -84,7 +84,6 @@ const TopologyPage: React.FC<TopologyProp> = (props) => {
         getChildrenBox(childrenBox);
       }
     }
-
     let input1 = checkedBox.chaoqianBoxPorts.find(
       (element) => element.oppositePortId !== undefined && element.type === BoxPortType.input,
     );
@@ -204,7 +203,7 @@ const TopologyPage: React.FC<TopologyProp> = (props) => {
       (element) => element.type === 'SubBox' || element.type === 'EndBox',
     );
     let hubBoxes = allBox.filter((element) => element.type === 'HubBox');
-    let oltBoxes = allBox.filter((element) => element.type === 'OLT');
+    allBox.filter((element) => element.type === 'OLT');
     hideCard();
     hideOnu();
 
@@ -447,15 +446,6 @@ const TopologyPage: React.FC<TopologyProp> = (props) => {
     right: '0',
   };
 
-  //包含端口的框
-  const listStyle: React.CSSProperties = {
-    marginTop: '20px',
-    height: '150px',
-    width: '180px',
-    marginBottom: '-30px',
-    overflowY: 'auto',
-  };
-
   // @ts-ignore
   const PortOuterContainer = ({ borderColor, children }) => {
     // 使用传入的变量来设置样式
@@ -520,13 +510,18 @@ const TopologyPage: React.FC<TopologyProp> = (props) => {
 
   return (
     <div style={topologyStyle}>
-      <CurlyBrackets3Painter chaoqianBoxPortDto={[]}></CurlyBrackets3Painter>
+      <div className="fatBoxContainer">
+        <div className="fatBox"></div>
+        <div className="onu">
+          <CurlyBrackets3Painter chaoqianBoxPortDto={[]}></CurlyBrackets3Painter>
+        </div>
+      </div>
       <div className={`outer-container ${true ? 'show-line' : ''}`}>
         <div style={dottedStyle}>
           <div style={boxContainerStyle}>
             <div style={imageStyle}></div>
           </div>
-          <div style={{ height: '10px' }}></div>
+          z<div style={{ height: '10px' }}></div>
           <div
             style={{
               fontSize: '20px',
@@ -538,18 +533,21 @@ const TopologyPage: React.FC<TopologyProp> = (props) => {
           >
             OLT
           </div>
-          <div style={listStyle}>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '11px' }}>
-              {[...Array(8)].map((_, index) => (
-                <PortOuterContainer key={index} borderColor={borderColor}>
+          <div className="list-style">
+            <div className="port-array">
+              {[...Array(10)].map((_, index) => (
+                <div
+                  key={index}
+                  className={`port-outer-container ${isPoint ? 'point' : 'unPoint'}`}
+                >
                   <div
                     key={index}
-                    style={portCircleStyle}
+                    className="port-circle-style"
                     onClick={() => {
-                      setBorderColor('green');
+                      setPoint(!isPoint);
                     }}
                   ></div>
-                </PortOuterContainer>
+                </div>
               ))}
             </div>
           </div>
@@ -563,6 +561,22 @@ const TopologyPage: React.FC<TopologyProp> = (props) => {
           <LineCanvasWithText></LineCanvasWithText>
         </div>
       </div>
+
+      <svg width="400" height="100" viewBox="-400 -20 400 120">
+        <path
+          d="M0,-10 C0,110 -375,4 -375,90"
+          stroke="black"
+          fill="transparent"
+          strokeWidth="1.5"
+        />
+        <text x="-187.5" y="40" fontFamily="Arial" fontSize="16" textAnchor="middle">
+          Above
+        </text>
+        <text x="-187.5" y="80" fontFamily="Arial" fontSize="16" textAnchor="middle">
+          Below
+        </text>
+      </svg>
+
       {showCard && (
         <div style={cardStyle}>
           <Card size={'default'} bordered={false} />

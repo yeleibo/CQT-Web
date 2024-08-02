@@ -96,17 +96,6 @@ const OrganizeAddPage = (props: Props) => {
         <Col span={12}>
           <Form.Item
             name="parentOrganizeId"
-            rules={[
-              { required: true, message: intl.formatMessage({ id: 'parentDepartmentRequired' }) },
-              {
-                validator: (rule, value) => {
-                  if (value === props.data?.id) {
-                    return Promise.reject(new Error(intl.formatMessage({ id: 'departmentError' })));
-                  }
-                  return Promise.resolve();
-                },
-              },
-            ]}
             label={intl.formatMessage({ id: 'parentDepartment' })}
             labelCol={{ span: 8 }} // 设置标签占据的栅格数
             wrapperCol={{ span: 16 }} // 设置输入控件占据的栅格数

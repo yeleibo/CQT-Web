@@ -47,6 +47,15 @@
   width: 180px;
   margin-bottom: -30px;
   overflow-y: auto;
+
+  .port-array{
+    display: flex;
+    flex-wrap: wrap;
+    row-gap: 3px;
+    column-gap: 10px;
+  }
+
+
 }
 
 .port-outer-container {
@@ -58,6 +67,14 @@
   justify-content: center;
   align-items: center;
 
+  &.port-outer-container.point{
+    border:1px solid #47bd92;
+  }
+
+  &.port-outer-container.unPoint{
+    border:1px solid transparent;
+  }
+
   .port-circle-style {
     width: 25px;
     height: 25px;
@@ -65,6 +82,14 @@
     background-color: #47bd92;
     margin: auto;
   }
+
+  //.port-circle-style.linkColor{
+  //  background-color: #47bd92;
+  //}
+  //
+  //.port-circle-style.unLinkColor{
+  //  background-color: #E0E0E0;
+  //}
 }
 
 .box-container-style {
@@ -81,6 +106,41 @@
     height: 70px;
     border-radius: 50%;
     background-color: red;
+  }
+}
+
+.fatBoxContainer {
+  width: 550px;
+  height: 320px;
+  //border: 2px solid black;  // 添加黑色边框
+  position: relative;
+
+  .fatBox {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    background-color: transparent;
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .fatBox.blackBorder {
+    border: 2px solid black;
+  }
+
+  .fatBox.greenBorder {
+    border: 2px solid #00E676;
+  }
+
+  .onu {
+    width: 500px;
+    height: 200px;
+    position: absolute;
+    top: 110px;
+    left: 50%;
+    transform: translateX(-50%);
   }
 }
 

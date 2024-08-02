@@ -42,6 +42,17 @@ export const getMenus = function (initialState: any): MenuDataItem[] {
 
   let menus: MenuDataItem[] = [
     {
+      path: '/isp',
+      name: intl.formatMessage({ id: 'customer' }),
+      icon: 'icon-xiangmu',
+      children: [
+        {
+          path: '/isp/ispList',
+          name: intl.formatMessage({ id: 'operatorManagement' }),
+        },
+      ],
+    },
+    {
       path: '/create-code',
       name: intl.formatMessage({ id: 'createCode' }),
       icon: 'icon-xiangmu',
@@ -57,6 +68,10 @@ export const getMenus = function (initialState: any): MenuDataItem[] {
         {
           path: '/create-code/dropCode',
           name: 'DropCableCodes',
+        },
+        {
+          path: '/create-code/codeOrder',
+          name: 'CodeOrder',
         },
       ],
     },

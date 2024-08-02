@@ -19,6 +19,17 @@ export default [
     ],
   },
   {
+    path: '/isp',
+    name: '客户设置',
+    routes: [
+      {
+        path: '/isp/ispList',
+        title: 'operatorManagement',
+        component: '@/pages/isp/ISPListPage',
+      },
+    ],
+  },
+  {
     path: '/create-code',
     name: 'createCode',
     routes: [
@@ -36,6 +47,11 @@ export default [
         path: '/create-code/dropCode',
         name: 'DropCableCodes',
         component: '@/pages/create-code/DropCablePage',
+      },
+      {
+        path: '/create-code/codeOrder',
+        name: 'CodeOrder',
+        component: '@/pages/create-code/CodeOrderListPage',
       },
     ],
   },

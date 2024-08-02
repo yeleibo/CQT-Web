@@ -114,4 +114,45 @@ const LineCanvasWithText: React.FC = () => {
   return <canvas ref={canvasRef} width={300} height={300} />;
 };
 
-export { CurlyBrackets3Painter, LineCanvasWithText };
+const CurlyBracePainter: React.FC = () => {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    // Set up the drawing styles
+    ctx.strokeStyle = 'black';
+    ctx.lineWidth = 1.5;
+    ctx.font = 'bold 16px Arial';
+    ctx.textAlign = 'center';
+
+    // Clear the canvas
+    ctx.clearRect(0, 0, -375, canvas.height);
+
+    // Draw the curly brace path
+    ctx.beginPath();
+    ctx.moveTo(0, -10);
+    ctx.bezierCurveTo(0, 110, -375, 4, -375, 90);
+    ctx.stroke();
+
+    // Draw the text above the curve
+    ctx.fillText('Above', -375 / 2, 20);
+
+    // Draw the text below the curve
+    ctx.fillText('Below', -375 / 2, 60);
+  }, [-375, 'Above', 'Below']);
+
+  return (
+    <canvas
+      ref={canvasRef}
+      width={500} // Adjust the width as needed
+      height={100} // Adjust the height as needed
+      style={{ border: '1px solid black' }}
+    />
+  );
+};
+
+export { CurlyBracePainter, CurlyBrackets3Painter, LineCanvasWithText };
