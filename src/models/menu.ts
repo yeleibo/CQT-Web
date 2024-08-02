@@ -69,6 +69,10 @@ export const getMenus = function (initialState: any): MenuDataItem[] {
           path: '/create-code/dropCode',
           name: 'DropCableCodes',
         },
+        {
+          path: '/create-code/codeOrder',
+          name: 'CodeOrder',
+        },
       ],
     },
     {

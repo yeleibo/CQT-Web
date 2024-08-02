@@ -97,4 +97,13 @@ export default {
   pagePermission: 'Izin Halaman',
   buttonPermission: 'Izin Tombol',
   dataPermission: 'Izin Data',
+  yes: 'Ya',
+  no: 'TIDAK',
+  isp: 'Isp',
+  ispRequired: 'ISP diperlukan',
+  saleOrderNumber: 'Nomor Pesanan penjualan',
+  salesperson: 'Pramuniaga',
+  customerContact: 'kontak pelanggan',
+  configuration: 'Konfigurasi',
+  isRandom: 'Acak',
 };

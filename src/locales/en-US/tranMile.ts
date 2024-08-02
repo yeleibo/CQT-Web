@@ -97,4 +97,13 @@ export default {
   pagePermission: 'Page Permission',
   buttonPermission: 'Button Permission',
   dataPermission: 'Data Permission',
+  yes: 'Yes',
+  no: 'No',
+  isp: 'ISP',
+  ispRequired: 'ISP is required',
+  saleOrderNumber: 'Sale Order Number',
+  salesperson: 'Salesperson',
+  customerContact: 'CustomerContact',
+  configuration: 'Configuration',
+  isRandom: 'IsRandom',
 };

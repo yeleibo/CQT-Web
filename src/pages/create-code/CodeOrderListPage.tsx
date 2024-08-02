@@ -1,19 +1,20 @@
 import DeleteButton from '@/components/DelectButton';
-import ISPDetailPage from '@/pages/isp/ISPDetailPage';
+import CodeOrderDetailPage from '@/pages/create-code/CodeOrderDetailPage';
+import { CodeOrder, CodeOrderParam } from '@/pages/create-code/codeType';
 import ISPService from '@/pages/isp/ISPService';
-import { ISP, ISPParams } from '@/pages/isp/type';
 import { useIntl } from '@@/plugin-locale';
 import { PlusOutlined } from '@ant-design/icons';
 import { ActionType, PageContainer, type ProColumns, ProTable } from '@ant-design/pro-components';
 import { Button } from 'antd';
 import React, { useRef, useState } from 'react';
 
-const ISPListPage: React.FC = () => {
-  const [current, setCurrent] = useState<ISP>();
+const CodeOrderListPage: React.FC = () => {
+  const [current, setCurrent] = useState<CodeOrder>();
   const [open, setOpen] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
   const intl = useIntl();
-  const columns: ProColumns<ISP>[] = [
+
+  const columns: ProColumns<CodeOrder>[] = [
     {
       title: intl.formatMessage({ id: 'keyword' }),
       dataIndex: 'keyword',
@@ -24,52 +25,6 @@ const ISPListPage: React.FC = () => {
       title: intl.formatMessage({ id: 'customerName' }),
       dataIndex: 'name',
       valueType: 'textarea',
-      search: false,
-    },
-
-    {
-      title: intl.formatMessage({ id: 'address' }),
-      dataIndex: 'address',
-      valueType: 'textarea',
-      search: false,
-    },
-    {
-      title: intl.formatMessage({ id: 'contactPersonName' }),
-      dataIndex: 'contactPersonName',
-      valueType: 'text',
-      search: false,
-    },
-    {
-      title: intl.formatMessage({ id: 'contactPersonPhoneNumber' }),
-      dataIndex: 'contactPersonPhoneNumber',
-      valueType: 'textarea',
-      search: false,
-    },
-    {
-      title: intl.formatMessage({ id: 'email' }),
-      dataIndex: 'email',
-      valueType: 'text',
-      search: false,
-    },
-
-    {
-      title: intl.formatMessage({ id: 'server' }),
-      valueType: 'text',
-      search: false,
-      dataIndex: 'server',
-    },
-    {
-      title: intl.formatMessage({ id: 'group' }),
-      dataIndex: 'group',
-      valueType: 'text',
-      width: 100,
-      search: false,
-    },
-    {
-      title: intl.formatMessage({ id: 'remark' }),
-      dataIndex: 'remark',
-      width: 200,
-      valueType: 'text',
       search: false,
     },
     {
@@ -99,20 +54,9 @@ const ISPListPage: React.FC = () => {
       ],
     },
   ];
-
-  // const fetchHouseData = async (): Promise<{ [sheetName: string]: InventoryHouseListDto[] }> => {
-  //   let params: InventoryHouseQueryParam = {
-  //     pageSize: 999999999,
-  //   };
-  //   let data = await InventoryHouseService.list(params);
-  //
-  //   return { 仓库数据: data };
-  // };
-
-  // 自定义表格头部标题，包含多个按钮
   return (
     <PageContainer pageHeaderRender={false}>
-      <ProTable<ISP, ISPParams>
+      <ProTable<CodeOrder, CodeOrderParam>
         actionRef={actionRef}
         pagination={false}
         headerTitle={
@@ -139,27 +83,33 @@ const ISPListPage: React.FC = () => {
         search={{
           labelWidth: 120,
         }}
-        request={async (params) => {
-          return await ISPService.list(params);
-        }}
+        dataSource={[]}
+        // request={async (params) => {
+        //   let r = await ISPService.list(params);
+        //   return {
+        //     success: true,
+        //     total: r.length,
+        //     data: r,
+        //   };
+        // }}
         columns={columns}
       />
       {open && (
-        <ISPDetailPage
+        <CodeOrderDetailPage
           close={() => {
             setOpen(false);
             setCurrent(undefined);
           }}
           model={!current ? intl.formatMessage({ id: 'add' }) : intl.formatMessage({ id: 'edit' })}
-          ispData={current}
+          codeOrderData={current}
           open={open}
           reload={() => {
             actionRef.current?.reload();
           }}
-        ></ISPDetailPage>
+        ></CodeOrderDetailPage>
       )}
     </PageContainer>
   );
 };
 
-export default ISPListPage;
+export default CodeOrderListPage;

@@ -97,4 +97,13 @@ export default {
   pagePermission: '页面权限',
   buttonPermission: '按钮权限',
   dataPermission: '数据权限',
+  yes: '是',
+  no: '否',
+  isp: '运营商',
+  ispRequired: '运营商为必填项',
+  saleOrderNumber: '订单号',
+  salesperson: '业务员',
+  customerContact: '客户联系方式',
+  configuration: '配置方案',
+  isRandom: '是否随机生成',
 };
