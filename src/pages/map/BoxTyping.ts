@@ -1,11 +1,6 @@
-export type latLng = {
-  latitude: number;
-  longitude: number;
-};
-export type LatLon = {
-  lat: number;
-  lon: number;
-};
+import { LatLng } from '@/pages/project/type';
+
+//gis服务的
 interface DeviceImage {
   imageId: number;
   url: string;
@@ -21,8 +16,8 @@ export type Device = {
   id: number;
   name: string;
   type: string;
-  points: LatLon[];
-  pointsAll?: LatLon[];
+  points: LatLng[];
+  pointsAll?: LatLng[];
   attributes: unknown;
   images: DeviceImage[];
   projectId?: number;
@@ -72,9 +67,52 @@ export function deviceFromJson(json: any): Device {
 export type DeviceQueryParam = {
   keyword?: string;
   excludeLayers: number[];
-  latLng: latLng;
-  listPoint: latLng[];
+  latLng: LatLng;
+  listPoint: LatLng[];
   zoomLevel?: number;
   device?: Device;
   planId?: number;
+};
+
+export enum DataType {
+  Point = 1,
+  Polyline = 2,
+  Box = 3,
+}
+
+//线
+export class BoxConnectingLine {
+  constructor(
+    public id: number,
+    public name: string,
+    public type: DataType,
+    public latLng: LatLng[],
+    public mark?: string,
+  ) {}
+}
+
+//盒子
+export enum BoxType {
+  HBox = 'HBox',
+  FatBox = 'FatBox',
+  EndBox = 'EndBox',
+  SubBox = 'SubBox',
+}
+
+export class Box {
+  constructor(
+    public id: number,
+    public name: string,
+    public type: DataType,
+    public boxType: BoxType,
+    public latLng: LatLng,
+    public mark?: string,
+  ) {}
+}
+
+export const boxImages = {
+  [BoxType.HBox]: require('@/assets/map/box1.png'),
+  [BoxType.FatBox]: require('@/assets/map/box2.png'),
+  [BoxType.EndBox]: require('@/assets/map/box3.png'),
+  [BoxType.SubBox]: require('@/assets/map/box2.png'),
 };

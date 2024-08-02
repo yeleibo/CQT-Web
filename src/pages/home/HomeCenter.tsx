@@ -1,49 +1,54 @@
-import { Cartesian3, Viewer as CesiumViewer, UrlTemplateImageryProvider } from 'cesium';
-import React, { useEffect, useRef, useState, useCallback, useMemo } from 'react';
-import { CesiumComponentRef, Viewer } from 'resium';
-import { MapImageryProvider } from '@/pages/map/ImageryProvider';
+import { BaseMapLayers, MapLayer } from '@/pages/map/MapLayersTyping';
 import { Button, Modal, Radio } from 'antd';
+import * as cesium from 'cesium';
+import { Cartesian3, Viewer as CesiumViewer, SceneMode, UrlTemplateImageryProvider } from 'cesium';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { CesiumComponentRef, Viewer } from 'resium';
 
 const HomeCenter: React.FC = () => {
-  const imageryProvider = useMemo(() => new MapImageryProvider(), []);
-
   const [selectedLayerType, setSelectedLayerType] = useState('GoogleStandard');
-  const [selectedLayer, setSelectedLayer] = useState<UrlTemplateImageryProvider>(
-    imageryProvider.GoogleStandardProvider(),
-  );
+  const [selectedLayer, setSelectedLayer] = useState<MapLayer>(BaseMapLayers.at(0)!);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const viewerRef = useRef<CesiumComponentRef<CesiumViewer>>(null);
+
+  const handleSelect = (layer: any) => {
+    setSelectedLayer(layer.target.value);
+  };
 
   const updateLayers = useCallback((viewer: CesiumViewer, layer: UrlTemplateImageryProvider) => {
     viewer.imageryLayers.removeAll();
     viewer.imageryLayers.addImageryProvider(layer);
   }, []);
 
-  const handleLayerChange = useCallback(
-    (e: any) => {
-      const selectedValue = e.target.value;
-      setSelectedLayerType(selectedValue);
-      if (selectedValue === 'GoogleStandard') {
-        setSelectedLayer(imageryProvider.GoogleStandardProvider());
-      } else if (selectedValue === 'GoogleSatellite') {
-        setSelectedLayer(imageryProvider.GoogleSatelliteProvider());
-      }
-    },
-    [imageryProvider],
-  );
+  //改变底图
+  const changeBaseMapLayer = useCallback((layer: MapLayer) => {
+    if (viewerRef.current && viewerRef.current.cesiumElement) {
+      viewerRef.current.cesiumElement.imageryLayers.removeAll();
+      viewerRef.current.cesiumElement.imageryLayers.addImageryProvider(layer.imageryProvider);
+    }
+  }, []);
 
   useEffect(() => {
     const updateViewerLayers = () => {
       if (viewerRef.current && viewerRef.current.cesiumElement) {
         const viewer = viewerRef.current.cesiumElement;
+        //2D
+        viewer.scene.mode = SceneMode.SCENE2D;
+        //地图平移
+        viewer.scene.screenSpaceCameraController.enableTranslate = true;
+        viewer.scene.screenSpaceCameraController.enableLook = false;
+        //抗锯齿
+        viewer.scene.postProcessStages.fxaa.enabled = true;
+        // viewer.scene.msaaSamples = 2;
+        //3D场景默认视图-亚洲
+        cesium.Camera.DEFAULT_VIEW_RECTANGLE = cesium.Rectangle.fromDegrees(90, -20, 110, 90);
+        //相机视角
         viewer.camera.setView({ destination: Cartesian3.fromDegrees(115.58, 28.85, 12000) });
-        updateLayers(viewer, selectedLayer);
+        changeBaseMapLayer(selectedLayer);
       } else {
-        // Retry if cesiumElement is not yet available
         setTimeout(updateViewerLayers, 100);
       }
     };
-
     updateViewerLayers(); // Initial update
 
     return () => {
@@ -93,9 +98,12 @@ const HomeCenter: React.FC = () => {
         onOk={() => handleModalVisibility(false)}
         onCancel={() => handleModalVisibility(false)}
       >
-        <Radio.Group onChange={handleLayerChange} value={selectedLayerType}>
-          <Radio value="GoogleStandard">Google Standard</Radio>
-          <Radio value="GoogleSatellite">Google Satellite</Radio>
+        <Radio.Group onChange={handleSelect} value={selectedLayer}>
+          {BaseMapLayers.map((option) => (
+            <Radio key={option.code} value={option}>
+              {option.name}
+            </Radio>
+          ))}
         </Radio.Group>
       </Modal>
     </div>

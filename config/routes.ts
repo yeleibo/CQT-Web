@@ -9,7 +9,14 @@ export default [
   {
     path: '/home',
     name: '首页',
-    routes: [{ name: '首页', path: '/home/index', component: '@/pages/home/index' }],
+    layout: 'top',
+    routes: [
+      {
+        name: '首页',
+        path: '/home/index',
+        component: '@/pages/home/index',
+      },
+    ],
   },
   {
     path: '/create-code',
@@ -66,6 +73,11 @@ export default [
     routes: [
       { path: '/map', redirect: '/map/page' },
       { path: '/map/page', name: '资源地图', component: '@/pages/map/maps' },
+      {
+        path: '/map/area-draw',
+        name: '区域管理',
+        component: '@/pages/map/area-draw/AreaDrawPage',
+      },
     ],
   },
   {

@@ -1,15 +1,12 @@
+import { useIntl } from '@@/plugin-locale';
 import type { MenuDataItem } from '@ant-design/pro-layout/es/typing';
 import { useModel } from '@umijs/max';
-import {useIntl} from "@@/plugin-locale";
-
-
 
 const useInitialState = () => {
   return useModel('@@initialState');
 };
 
 export default useInitialState;
-
 
 // type XDMenuDataItem = MenuDataItem & {
 //   permissionCodes?: string[];
@@ -38,38 +35,36 @@ export default useInitialState;
 // };
 
 // @ts-ignore
-export const getMenus = function (initialState: any ): MenuDataItem[] {
+export const getMenus = function (initialState: any): MenuDataItem[] {
   let currentUser = initialState.currentUser;
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const intl = useIntl();
 
-
-
   let menus: MenuDataItem[] = [
     {
-      path:'/create-code',
-      name:intl.formatMessage({ id: 'createCode' }),
-      icon:'icon-xiangmu',
-      children:[
+      path: '/create-code',
+      name: intl.formatMessage({ id: 'createCode' }),
+      icon: 'icon-xiangmu',
+      children: [
         {
           path: '/create-code/boxCode',
-          name: 'BoxCodes'
+          name: 'BoxCodes',
         },
         {
           path: '/create-code/cascadeCode',
-          name: 'CascadeCableCodes'
+          name: 'CascadeCableCodes',
         },
         {
           path: '/create-code/dropCode',
-          name: 'DropCableCodes'
-        }
-      ]
+          name: 'DropCableCodes',
+        },
+      ],
     },
     {
-      path:'/project',
-      name:intl.formatMessage({ id: 'project' }),
-      icon:'icon-xiangmu',
-      children:[
+      path: '/project',
+      name: intl.formatMessage({ id: 'project' }),
+      icon: 'icon-xiangmu',
+      children: [
         {
           path: '/project/area',
           name: intl.formatMessage({ id: 'zoneConfiguration' }),
@@ -77,8 +72,8 @@ export const getMenus = function (initialState: any ): MenuDataItem[] {
         {
           path: '/project/boxStatistics',
           name: intl.formatMessage({ id: 'boxStatistics' }),
-        }
-      ]
+        },
+      ],
     },
     {
       path: '/map',
@@ -87,6 +82,7 @@ export const getMenus = function (initialState: any ): MenuDataItem[] {
       children: [
         { path: '/map', redirect: '/map/page' },
         { path: '/map/page', name: '地图' },
+        { path: '/map/area-draw', name: '区域管理' },
       ],
     },
     {
