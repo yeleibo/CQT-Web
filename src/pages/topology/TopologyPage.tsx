@@ -17,6 +17,23 @@ interface TopologyProp {
   isOnu: boolean;
 }
 
+type test = {
+  allBox: ChaoqianBoxDto[];
+  fatBoxCable: ChaoqianBoxDto[];
+  hubBoxCable: ChaoqianBoxDto[];
+  subBoxCable: ChaoqianBoxDto[];
+  parentBoxes: ChaoqianBoxDto[];
+  childrenBoxes: ChaoqianBoxDto[];
+  oltBoxes: ChaoqianBoxDto[];
+  boxInfo?: ChaoqianBoxDto;
+  onu?: ChaoqianBoxDto;
+  showCard: boolean;
+  showOnu: boolean;
+  isHaveOLT: boolean;
+  chaoqianBoxPortDto?: ChaoqianBoxPortDto;
+  portStatusColor: string;
+};
+
 const TopologyPage: React.FC<TopologyProp> = (props) => {
   const [allBox, setAllBox] = useState<ChaoqianBoxDto[]>([]);
   const [fatBoxCable, setFatBoxCable] = useState<ChaoqianBoxDto[]>([]);
