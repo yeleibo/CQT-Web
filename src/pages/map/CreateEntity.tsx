@@ -1,6 +1,6 @@
 import { Box, BoxConnectingLine, boxImages } from '@/pages/map/BoxTyping';
 import { LatLng } from '@/pages/project/type';
-import { CallbackProperty, Cartesian3, Color, Entity } from 'cesium';
+import { Cartesian2, Cartesian3, Color, Entity } from 'cesium';
 
 //创建点
 export const createPointEntity = (position: Cartesian3, info?: Box): Entity => {
@@ -31,12 +31,13 @@ export const createPolylineEntity = (latLngArray: LatLng[], info?: BoxConnecting
     id: info?.id.toString(),
     name: info?.name,
     polyline: {
-      positions: new CallbackProperty(() => {
-        return Cartesian3.fromDegreesArray(positionsArray);
-      }, false),
-      width: 5,
+      positions: Cartesian3.fromDegreesArray(positionsArray),
+      // positions: new CallbackProperty(() => {
+      //   return Cartesian3.fromDegreesArray(positionsArray);
+      // }, false),
+      width: 3,
       material: Color.GREEN,
-      zIndex: 1,
+      // clampToGround: true, // 将polyline钉在地面上
     },
     properties: {
       type: info?.type,
@@ -46,7 +47,7 @@ export const createPolylineEntity = (latLngArray: LatLng[], info?: BoxConnecting
 
 ///创建广告牌
 export const createImageEntity = (position: Cartesian3, info?: Box): Entity => {
-  const image = info ? boxImages[info.boxType] : '';
+  const image = info ? boxImages[info.boxType] : require('@/assets/map/box4.png');
   return new Entity({
     id: info?.id.toString(),
     name: info?.name,
@@ -55,10 +56,30 @@ export const createImageEntity = (position: Cartesian3, info?: Box): Entity => {
       image: image,
       height: 25,
       width: 25,
+      // disableDepthTestDistance: Number.POSITIVE_INFINITY, // Ensure billboard is always on top
     },
     properties: {
       type: info?.type,
       boxType: info?.boxType,
+    },
+  });
+};
+
+//定位
+export const createLocalEntity = (position: Cartesian3): Entity => {
+  return new Entity({
+    id: 'local',
+    name: 'local',
+    position,
+    billboard: {
+      image: require('@/assets/map/local.png'),
+      height: 35,
+      width: 35,
+      pixelOffset: new Cartesian2(0, -15),
+      disableDepthTestDistance: Number.POSITIVE_INFINITY, // Ensure billboard is always on top
+    },
+    properties: {
+      type: 'other',
     },
   });
 };

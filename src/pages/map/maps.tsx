@@ -1,6 +1,10 @@
 import BoxInfo from '@/pages/map/BoxInfo';
 import { Box, BoxConnectingLine, BoxType, DataType } from '@/pages/map/BoxTyping';
-import { createImageEntity, createPolylineEntity } from '@/pages/map/CreateEntity';
+import {
+  createImageEntity,
+  createLocalEntity,
+  createPolylineEntity,
+} from '@/pages/map/CreateEntity';
 import MapDrawer, { useBaseMapLayer, useOtherMapLayers } from '@/pages/map/MapDrawer';
 import { initViewer } from '@/pages/map/MapInit';
 import { BaseMapLayers } from '@/pages/map/MapLayersTyping';
@@ -54,7 +58,6 @@ const Maps: React.FC = () => {
       },
     ]),
   ];
-
   //盒子
   const boxData = [
     new Box(
@@ -104,9 +107,6 @@ const Maps: React.FC = () => {
   useEffect(() => {
     initViewer('csm-viewer-container', baseMapLayer, (viewer) => {
       viewerRef.current = viewer;
-    });
-    if (viewerRef.current) {
-      viewerRef.current.entities.suspendEvents();
       boxConnectingLine.forEach((e) => {
         viewerRef.current?.entities.add(createPolylineEntity(e.latLng!, e));
       });
@@ -123,8 +123,7 @@ const Maps: React.FC = () => {
           ),
         );
       });
-      viewerRef.current.entities.resumeEvents();
-    }
+    });
     return () => {
       if (viewerRef.current) {
         viewerRef.current.destroy();
@@ -138,19 +137,8 @@ const Maps: React.FC = () => {
     const viewer = viewerRef.current;
     if (viewer) {
       const handler = new ScreenSpaceEventHandler(viewer.scene.canvas);
-
       handler.setInputAction((event: any) => {
-        // //屏幕坐标 转换为 笛卡尔空间直角坐标
-        // let clickPosition = viewer.scene.camera.pickEllipsoid(event.position);
-        // // 笛卡尔空间直角坐标 转换为 地理坐标（弧度制）
-        // let radiansPos = Cesium.Cartographic.fromCartesian(clickPosition!);
-        // //地理坐标（弧度制） 转换为 地理坐标（经纬度）
-        // let newPoint = {
-        //   latitude: Cesium.Math.toDegrees(radiansPos.latitude),
-        //   longitude: Cesium.Math.toDegrees(radiansPos.longitude),
-        // };
-        // //点实体
-        // const pointEntity = createPointEntity(clickPosition!);
+        viewerRef.current?.entities.removeById('local');
         let pick = viewer.scene.pick(event.position);
         if (Cesium.defined(pick)) {
           if (pick.id.properties.type.getValue() === 2) {
@@ -183,9 +171,15 @@ const Maps: React.FC = () => {
   //视角飞到指定区域
   const flyToLocation = (latLng?: LatLng) => {
     const viewer = viewerRef.current;
+
     let target;
     if (viewer) {
       if (latLng) {
+        const localEntity = createLocalEntity(
+          Cesium.Cartesian3.fromDegrees(latLng.longitude, latLng.latitude, 0),
+        );
+        viewerRef.current?.entities.removeById('local');
+        viewerRef.current?.entities.add(localEntity);
         target = Cartesian3.fromDegrees(latLng.longitude, latLng.latitude, 1200);
       } else {
         target = Cartesian3.fromDegrees(115.58, 28.85, 12000);
@@ -202,7 +196,7 @@ const Maps: React.FC = () => {
         <div
           id="csm-viewer-container"
           ref={viewerContainerRef}
-          style={{ width: '100%', height: '100%' }}
+          style={{ width: '100%', height: '100vh' }}
         >
           <div style={{ position: 'absolute', left: '20px', top: '10px', zIndex: 1000 }}>
             <Button
