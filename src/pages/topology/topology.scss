@@ -1,147 +1,176 @@
-.outer-container {
-  width: 225px;
-  height: 400px;
+.topologyStyle {
   position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  height: 100vh;
 
-  &.show-line::after {
-    content: '';
+  .cardStyle {
     position: absolute;
-    bottom: -140px; // 从底部开始向下延伸150px
-    left: 50%;
+    width: 80%;
+    bottom: 0;
+    left: 30px;
+    right: 30px;
+    boxShadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     transform: translateX(-50%);
-    width: 2px; // 垂线宽度
-    height: 150px; // 垂线长度
-    background-color: black; // 垂线颜色
+    borderRadius: 10px;
   }
-}
 
-.dotted-style {
-  border: 2px dashed #00E676;
-  border-radius: 20px;
-  width: 200px;
-  height: 375px;
-  display: flex;
-  flex-direction: column;
-  padding: 20px 0;
-  justify-content: space-between;
-  align-items: center;
-  position: relative;
-}
-
-.top-right-circle-style {
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  background-color: #00E676;
-  position: absolute;
-  top: 50px;
-  right: 0;
-}
-
-.list-style {
-  margin-top: 20px;
-  height: 150px;
-  width: 180px;
-  margin-bottom: -30px;
-  overflow-y: auto;
-
-  .port-array{
+  .outer-container {
+    width: 225px;
+    height: 400px;
+    position: relative;
     display: flex;
-    flex-wrap: wrap;
-    row-gap: 3px;
-    column-gap: 10px;
+    justify-content: center;
+    align-items: center;
+
+    &.show-line::after {
+      content: '';
+      position: absolute;
+      bottom: -140px; // 从底部开始向下延伸150px
+      left: 50%;
+      transform: translateX(-50%);
+      width: 2px; // 垂线宽度
+      height: 150px; // 垂线长度
+      background-color: black; // 垂线颜色
+    }
+
+    .top-right-circle-style {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background-color: #00E676;
+      position: absolute;
+      top: 50px;
+      right: 0;
+    }
+
+    .dotted-style {
+      border: 2px dashed #00E676;
+      border-radius: 20px;
+      width: 200px;
+      height: 375px;
+      display: flex;
+      flex-direction: column;
+      padding: 20px 0;
+      justify-content: space-between;
+      align-items: center;
+      position: relative;
+
+      .box-container-style {
+        width: 90px;
+        height: 90px;
+        border-radius: 50%;
+        background-color: #E0E0E0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        .image-style {
+          width: 70px;
+          height: 70px;
+          border-radius: 50%;
+          background-color: red;
+        }
+      }
+
+      .list-style {
+        margin-top: 20px;
+        height: 150px;
+        width: 180px;
+        margin-bottom: -30px;
+        overflow-y: auto;
+
+        .port-array{
+          display: flex;
+          flex-wrap: wrap;
+          row-gap: 3px;
+          column-gap: 10px;
+
+          .port-outer-container {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background-color: transparent;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            &.port-outer-container.point{
+              border:1px solid #47bd92;
+            }
+
+            &.port-outer-container.unPoint{
+              border:1px solid transparent;
+            }
+
+            .port-circle-style {
+              width: 25px;
+              height: 25px;
+              border-radius: 50%;
+              background-color: #47bd92;
+              margin: auto;
+            }
+
+            //.port-circle-style.linkColor{
+            //  background-color: #47bd92;
+            //}
+            //
+            //.port-circle-style.unLinkColor{
+            //  background-color: #E0E0E0;
+            //}
+          }
+        }
+      }
+    }
   }
 
+  .fatBoxContainer {
+    width: 550px;
+    height: 320px;
+    //border: 2px solid black;  // 添加黑色边框
+    position: relative;
 
+    .fatBox {
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      background-color: transparent;
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .fatBox.blackBorder {
+      border: 2px solid black;
+    }
+
+    .fatBox.greenBorder {
+      border: 2px solid #00E676;
+    }
+
+    .onu {
+      width: 500px;
+      height: 200px;
+      position: absolute;
+      top: 110px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+  }
 }
 
-.port-outer-container {
-  width: 35px;
-  height: 35px;
-  border-radius: 50%;
-  background-color: transparent;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 
-  &.port-outer-container.point{
-    border:1px solid #47bd92;
-  }
 
-  &.port-outer-container.unPoint{
-    border:1px solid transparent;
-  }
 
-  .port-circle-style {
-    width: 25px;
-    height: 25px;
-    border-radius: 50%;
-    background-color: #47bd92;
-    margin: auto;
-  }
 
-  //.port-circle-style.linkColor{
-  //  background-color: #47bd92;
-  //}
-  //
-  //.port-circle-style.unLinkColor{
-  //  background-color: #E0E0E0;
-  //}
-}
 
-.box-container-style {
-  width: 90px;
-  height: 90px;
-  border-radius: 50%;
-  background-color: #E0E0E0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 
-  .image-style {
-    width: 70px;
-    height: 70px;
-    border-radius: 50%;
-    background-color: red;
-  }
-}
 
-.fatBoxContainer {
-  width: 550px;
-  height: 320px;
-  //border: 2px solid black;  // 添加黑色边框
-  position: relative;
 
-  .fatBox {
-    width: 90px;
-    height: 90px;
-    border-radius: 50%;
-    background-color: transparent;
-    position: absolute;
-    top: 10px;
-    left: 50%;
-    transform: translateX(-50%);
-  }
 
-  .fatBox.blackBorder {
-    border: 2px solid black;
-  }
 
-  .fatBox.greenBorder {
-    border: 2px solid #00E676;
-  }
 
-  .onu {
-    width: 500px;
-    height: 200px;
-    position: absolute;
-    top: 110px;
-    left: 50%;
-    transform: translateX(-50%);
-  }
-}
+
+
+
 
 
