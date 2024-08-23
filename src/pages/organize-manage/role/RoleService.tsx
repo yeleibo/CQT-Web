@@ -5,7 +5,7 @@ import qs from 'qs';
 
 const RoleService = {
   all: (params: RolesQueryParam) =>
-    request(`/${SystemConst.API_BASE}/role`, {
+    request(`/${SystemConst.API_BASE}/roles`, {
       method: 'GET',
       params,
       paramsSerializer: function (params) {
@@ -13,31 +13,31 @@ const RoleService = {
       },
     }),
   add: (data: Role) =>
-    request(`/${SystemConst.API_BASE}/role`, {
+    request(`/${SystemConst.API_BASE}/roles`, {
       method: 'POST',
       data,
     }),
   edit: (data: Role) =>
-    request(`/${SystemConst.API_BASE}/role`, {
+    request(`/${SystemConst.API_BASE}/roles`, {
       method: 'PUT',
       data,
     }),
   editUsers: (id: number, data: number[]) =>
-    request(`/${SystemConst.API_BASE}/role/${id}/users`, {
+    request(`/${SystemConst.API_BASE}/roles/${id}/users`, {
       method: 'PUT',
       data,
     }),
   editPermissions: (id: number, data: number[]) =>
-    request(`/${SystemConst.API_BASE}/role/${id}/permissions`, {
+    request(`/${SystemConst.API_BASE}/roles/${id}/permissions`, {
       method: 'PUT',
       data,
     }),
   delete: (id: number) =>
-    request(`/${SystemConst.API_BASE}/role/${id}`, {
+    request(`/${SystemConst.API_BASE}/roles/${id}`, {
       method: 'DELETE',
     }),
   allPermissions: () =>
-    request<Permission[]>(`/${SystemConst.API_BASE}/permission`, {
+    request<Permission[]>(`/${SystemConst.API_BASE}/permissions`, {
       method: 'GET',
     }),
 };

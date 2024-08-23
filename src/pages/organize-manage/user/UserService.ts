@@ -9,7 +9,7 @@ import qs from 'qs';
 
 const UserService = {
   all: (params?: UsersQueryParam) =>
-    request<UserItem[]>(`/${SystemConst.API_BASE}/user`, {
+    request<UserItem[]>(`/${SystemConst.API_BASE}/users`, {
       method: 'GET',
       params,
       paramsSerializer: function (params) {
@@ -21,17 +21,17 @@ const UserService = {
   //     method: 'GET',
   //   }),
   add: (data: UserItem) =>
-    request(`/${SystemConst.API_BASE}/user`, {
+    request(`/${SystemConst.API_BASE}/users`, {
       method: 'POST',
       data,
     }),
   edit: (data: UserItem) =>
-    request(`/${SystemConst.API_BASE}/user`, {
+    request(`/${SystemConst.API_BASE}/users`, {
       method: 'PUT',
       data,
     }),
   delete: (id: number) =>
-    request(`/${SystemConst.API_BASE}/user/${id}`, {
+    request(`/${SystemConst.API_BASE}/users/${id}`, {
       method: 'DELETE',
     }),
   resetPassWord: (id: number) =>

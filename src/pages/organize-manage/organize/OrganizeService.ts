@@ -5,25 +5,25 @@ import { request } from '@umijs/max';
 const OrganizeService = {
   //所有部门
   all: () =>
-    request<OrganizeItem[]>(`/${SystemConst.API_BASE}/organize`, {
+    request<OrganizeItem[]>(`/${SystemConst.API_BASE}/organizes`, {
       method: 'GET',
     }),
   add: (data: OrganizeItem) =>
-    request(`/${SystemConst.API_BASE}/organize`, {
+    request(`/${SystemConst.API_BASE}/organizes`, {
       method: 'POST',
       data,
     }),
   edit: (id: number, data: OrganizeItem) =>
-    request(`/${SystemConst.API_BASE}/organize/${id}`, {
+    request(`/${SystemConst.API_BASE}/organizes/${id}`, {
       method: 'PUT',
       data,
     }),
   delete: (id: number) =>
-    request(`/${SystemConst.API_BASE}/organize/${id}`, {
+    request(`/${SystemConst.API_BASE}/organizes/${id}`, {
       method: 'DELETE',
     }),
   tree: () =>
-    request<OrganizeItem[]>(`/${SystemConst.API_BASE}/organize`, {
+    request<OrganizeItem[]>(`/${SystemConst.API_BASE}/organizes`, {
       method: 'GET',
     }).then((organizes: any[]) => {
       return OrganizeTreeData(organizes);
