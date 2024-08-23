@@ -1,20 +1,20 @@
-import ISPService from '@/pages/isp/ISPService';
-import { ISP } from '@/pages/isp/type';
+import TenantService from '@/pages/tenant/TenantService';
+import { Tenant } from '@/pages/tenant/type';
 import { useIntl } from '@@/plugin-locale';
 import { ModalForm, ProFormText, ProFormTextArea } from '@ant-design/pro-components';
 import { Col, Form, Row, message } from 'antd';
 import { useEffect, useState } from 'react';
 
-interface ISPProp {
+interface TenantProp {
   open: boolean;
   close: () => void;
   reload: () => void;
-  ispData?: ISP;
+  tenantData?: Tenant;
   model: string;
 }
 
-const ISPDetailPage = (props: ISPProp) => {
-  const { ispData, open, close } = props;
+const TenantDetailPage = (props: TenantProp) => {
+  const { tenantData, open, close } = props;
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const intl = useIntl();
@@ -22,7 +22,7 @@ const ISPDetailPage = (props: ISPProp) => {
   useEffect(() => {
     if (open) {
       // 初始化
-      form.setFieldsValue(ispData);
+      form.setFieldsValue(tenantData);
     }
   }, [open]);
 
@@ -32,11 +32,11 @@ const ISPDetailPage = (props: ISPProp) => {
       if (formData.id === '') {
         delete formData.id;
       }
-      const extraFormData = { ...props.ispData, ...formData };
+      const extraFormData = { ...props.tenantData, ...formData };
       setLoading(true);
       try {
         if (props.model === intl.formatMessage({ id: 'add' })) {
-          const res: any = await ISPService.add(extraFormData).catch(() => {
+          const res: any = await TenantService.add(extraFormData).catch(() => {
             setLoading(false);
           });
           setLoading(false);
@@ -52,7 +52,7 @@ const ISPDetailPage = (props: ISPProp) => {
             setTimeout(() => window.close(), 300);
           }
         } else {
-          const res = await ISPService.update(extraFormData);
+          const res = await TenantService.update(extraFormData);
           setLoading(false);
           form.resetFields();
           message.success(intl.formatMessage({ id: 'modifySuccessful' }));
@@ -178,4 +178,4 @@ const ISPDetailPage = (props: ISPProp) => {
   );
 };
 
-export default ISPDetailPage;
+export default TenantDetailPage;

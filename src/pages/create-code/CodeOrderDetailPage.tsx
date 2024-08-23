@@ -1,7 +1,5 @@
 import CodeService from '@/pages/create-code/CodeService';
 import { CodeDetailDto, CodeOrder } from '@/pages/create-code/codeType';
-import ISPService from '@/pages/isp/ISPService';
-import { ISP, ISPParams } from '@/pages/isp/type';
 import { useIntl } from '@@/plugin-locale';
 import {
   ModalForm,
@@ -11,6 +9,8 @@ import {
 } from '@ant-design/pro-components';
 import { Form, message } from 'antd';
 import React, { useEffect, useState } from 'react';
+import {Tenant, TenantParams} from "@/pages/tenant/type";
+import TenantService from "@/pages/tenant/TenantService";
 
 interface CodeOrderProps {
   open: boolean;
@@ -151,11 +151,11 @@ const CodeOrderDetailPage: React.FC<CodeOrderProps> = (props) => {
           wrapperCol={{ span: 17 }}
           mode="single"
           request={async () => {
-            let params: ISPParams = {
+            let params: TenantParams = {
               pageSize: 10000000,
             };
-            const response = await ISPService.list(params);
-            let allIsp: ISP[] = response['data'];
+            const response = await TenantService.list(params);
+            let allIsp: Tenant[] = response['data'];
             return allIsp.map((isp) => ({
               label: isp.name,
               value: isp.id,

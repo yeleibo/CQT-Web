@@ -1,19 +1,19 @@
 import DeleteButton from '@/components/DelectButton';
-import ISPDetailPage from '@/pages/isp/ISPDetailPage';
-import ISPService from '@/pages/isp/ISPService';
-import { ISP, ISPParams } from '@/pages/isp/type';
+import TenantDetailPage from '@/pages/tenant/TenantDetailPage';
+import TenantService from '@/pages/tenant/TenantService';
+import { Tenant, TenantParams } from '@/pages/tenant/type';
 import { useIntl } from '@@/plugin-locale';
 import { PlusOutlined } from '@ant-design/icons';
 import { ActionType, PageContainer, type ProColumns, ProTable } from '@ant-design/pro-components';
 import { Button } from 'antd';
 import React, { useRef, useState } from 'react';
 
-const ISPListPage: React.FC = () => {
-  const [current, setCurrent] = useState<ISP>();
+const TenantListPage: React.FC = () => {
+  const [current, setCurrent] = useState<Tenant>();
   const [open, setOpen] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
   const intl = useIntl();
-  const columns: ProColumns<ISP>[] = [
+  const columns: ProColumns<Tenant>[] = [
     {
       title: intl.formatMessage({ id: 'keyword' }),
       dataIndex: 'keyword',
@@ -92,7 +92,7 @@ const ISPListPage: React.FC = () => {
         <DeleteButton
           key="delete"
           onDelete={async () => {
-            await ISPService.delete(record.id);
+            await TenantService.delete(record.id);
             actionRef.current?.reload();
           }}
         ></DeleteButton>,
@@ -112,7 +112,7 @@ const ISPListPage: React.FC = () => {
   // 自定义表格头部标题，包含多个按钮
   return (
     <PageContainer pageHeaderRender={false}>
-      <ProTable<ISP, ISPParams>
+      <ProTable<Tenant, TenantParams>
         actionRef={actionRef}
         pagination={false}
         headerTitle={
@@ -140,26 +140,26 @@ const ISPListPage: React.FC = () => {
           labelWidth: 120,
         }}
         request={async (params) => {
-          return await ISPService.list(params);
+          return await TenantService.list(params);
         }}
         columns={columns}
       />
       {open && (
-        <ISPDetailPage
+        <TenantDetailPage
           close={() => {
             setOpen(false);
             setCurrent(undefined);
           }}
           model={!current ? intl.formatMessage({ id: 'add' }) : intl.formatMessage({ id: 'edit' })}
-          ispData={current}
+          tenantData={current}
           open={open}
           reload={() => {
             actionRef.current?.reload();
           }}
-        ></ISPDetailPage>
+        ></TenantDetailPage>
       )}
     </PageContainer>
   );
 };
 
-export default ISPListPage;
+export default TenantListPage;

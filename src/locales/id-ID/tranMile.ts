@@ -100,7 +100,7 @@ export default {
   yes: 'Ya',
   no: 'TIDAK',
   isp: 'Isp',
-  ispRequired: 'ISP diperlukan',
+  ispRequired: 'Tenant diperlukan',
   saleOrderNumber: 'Nomor Pesanan penjualan',
   salesperson: 'Pramuniaga',
   customerContact: 'kontak pelanggan',

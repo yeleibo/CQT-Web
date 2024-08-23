@@ -1,7 +1,6 @@
 import DeleteButton from '@/components/DelectButton';
 import CodeOrderDetailPage from '@/pages/create-code/CodeOrderDetailPage';
 import { CodeOrder, CodeOrderParam } from '@/pages/create-code/codeType';
-import ISPService from '@/pages/isp/ISPService';
 import { useIntl } from '@@/plugin-locale';
 import { PlusOutlined } from '@ant-design/icons';
 import { ActionType, PageContainer, type ProColumns, ProTable } from '@ant-design/pro-components';
@@ -47,8 +46,7 @@ const CodeOrderListPage: React.FC = () => {
         <DeleteButton
           key="delete"
           onDelete={async () => {
-            await ISPService.delete(record.id);
-            actionRef.current?.reload();
+
           }}
         ></DeleteButton>,
       ],
@@ -85,7 +83,7 @@ const CodeOrderListPage: React.FC = () => {
         }}
         dataSource={[]}
         // request={async (params) => {
-        //   let r = await ISPService.list(params);
+        //   let r = await TenantService.list(params);
         //   return {
         //     success: true,
         //     total: r.length,

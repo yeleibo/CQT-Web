@@ -1,6 +1,6 @@
 import { PageParams } from '@/models/page';
 
-export type ISP = {
+export type Tenant = {
   id: number;
   name: string;
   /**
@@ -33,6 +33,6 @@ export type ISP = {
   remark?: string;
 };
 
-export type ISPParams = PageParams & {
+export type TenantParams = PageParams & {
   keyword?: string;
 };

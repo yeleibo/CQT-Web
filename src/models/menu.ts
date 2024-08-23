@@ -42,12 +42,12 @@ export const getMenus = function (initialState: any): MenuDataItem[] {
 
   let menus: MenuDataItem[] = [
     {
-      path: '/isp',
+      path: '/tenant',
       name: intl.formatMessage({ id: 'customer' }),
       icon: 'icon-xiangmu',
       children: [
         {
-          path: '/isp/ispList',
+          path: '/tenant/tenantList',
           name: intl.formatMessage({ id: 'operatorManagement' }),
         },
       ],

@@ -19,13 +19,13 @@ export default [
     ],
   },
   {
-    path: '/isp',
+    path: '/tenant',
     name: '客户设置',
     routes: [
       {
-        path: '/isp/ispList',
+        path: '/tenant/tenantList',
         title: 'operatorManagement',
-        component: '@/pages/isp/ISPListPage',
+        component: '@/pages/tenant/TenantListPage',
       },
     ],
   },
