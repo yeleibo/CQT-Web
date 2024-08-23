@@ -7,7 +7,6 @@ import { useEffect, useState } from 'react';
 interface Props {
   open: boolean;
   close: () => void;
-
   data?: Box;
   model: string;
 }
