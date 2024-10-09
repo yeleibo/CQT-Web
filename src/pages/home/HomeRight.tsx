@@ -77,10 +77,12 @@ const CableCarousel: React.FC<CarouselProps> = ({ data, interval = 3000 }) => {
           justifyContent: 'space-between',
         }}
       >
-        <div className="headerBorder1" style={{ fontSize: '26px' }}>
+        <div className="headerBorder1" style={{ fontSize: '26px', color: 'rgba(255,255,255,0.8)' }}>
           近期告警信息
         </div>
-        <div className="headerBorder3">更多</div>
+        <div className="headerBorder3" style={{ fontSize: '18px', color: 'rgba(255,255,255,0.8)' }}>
+          更多
+        </div>
       </div>
       <Decoration4 reverse={true} style={{ width: '100%', height: '5px' }} />
       <div
@@ -122,7 +124,8 @@ const CableCarousel: React.FC<CarouselProps> = ({ data, interval = 3000 }) => {
                 whiteSpace: 'nowrap',
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
-                maxWidth: '400px',
+                maxWidth: '600px',
+                color: 'rgba(255,255,255,0.8)',
               }}
             >
               {item.cableName}

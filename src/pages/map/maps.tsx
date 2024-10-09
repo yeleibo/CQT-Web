@@ -1,8 +1,9 @@
-import BoxInfo from '@/pages/map/BoxInfo';
-import { Box, BoxConnectingLine, BoxType, DataType } from '@/pages/map/BoxTyping';
+import BoxInfo from '@/pages/map/BoxDetail';
+import { Box, BoxConnectingLine, BoxType, DataType, ModelType } from '@/pages/map/BoxTyping';
 import {
   createImageEntity,
   createLocalEntity,
+  createModelEntity,
   createPolylineEntity,
 } from '@/pages/map/CreateEntity';
 import MapDrawer, { useBaseMapLayer, useOtherMapLayers } from '@/pages/map/MapDrawer';
@@ -107,22 +108,51 @@ const Maps: React.FC = () => {
   useEffect(() => {
     initViewer('csm-viewer-container', baseMapLayer, (viewer) => {
       viewerRef.current = viewer;
+      // boxConnectingLine.forEach((e) => {
+      //   viewerRef.current?.entities.add(createPolylineEntity(e.latLng!, e));
+      // });
+      // boxData.forEach((e) => {
+      //   viewerRef.current?.entities.add(
+      //     createImageEntity(
+      //       Cesium.Cartesian3.fromDegrees(
+      //         e.latLng.longitude,
+      //         e.latLng.latitude,
+      //         0,
+      //         Cesium.Ellipsoid.WGS84,
+      //       ),
+      //       e,
+      //     ),
+      //   );
+      // });
+      //加载数据
+      let lineDataSource = new Cesium.CustomDataSource('boxConnectingLine');
       boxConnectingLine.forEach((e) => {
-        viewerRef.current?.entities.add(createPolylineEntity(e.latLng!, e));
+        lineDataSource.entities.add(createPolylineEntity(e.latLng, e));
       });
+      let boxDataSource = new Cesium.CustomDataSource('box');
       boxData.forEach((e) => {
-        viewerRef.current?.entities.add(
-          createImageEntity(
-            Cesium.Cartesian3.fromDegrees(
-              e.latLng.longitude,
-              e.latLng.latitude,
-              0,
-              Cesium.Ellipsoid.WGS84,
-            ),
-            e,
-          ),
-        );
+        boxDataSource.entities.add(createImageEntity(e.latLng, e));
       });
+      let modelDataSource = new Cesium.CustomDataSource('model');
+      modelDataSource.entities.add(
+        createModelEntity(
+          { latitude: 28.855654706737884, longitude: 115.57507307895555 },
+          {
+            id: 1498151,
+            name: '楼宇',
+            type: ModelType.building,
+            latLng: { latitude: 28.855654706737884, longitude: 115.57507307895555 },
+          },
+        ),
+      );
+      viewer.dataSources.add(boxDataSource);
+      viewer.dataSources.add(lineDataSource);
+      viewer.dataSources.add(modelDataSource);
+
+      // 启用广告牌聚合
+      // lineDataSource.clustering.enabled = true;
+      // lineDataSource.clustering.pixelRange = 15;
+      // lineDataSource.clustering.minimumClusterSize = 20;
     });
     return () => {
       if (viewerRef.current) {
@@ -196,7 +226,7 @@ const Maps: React.FC = () => {
         <div
           id="csm-viewer-container"
           ref={viewerContainerRef}
-          style={{ width: '100%', height: '100vh' }}
+          style={{ width: '100%', height: '100%' }}
         >
           <div style={{ position: 'absolute', left: '20px', top: '10px', zIndex: 1000 }}>
             <Button

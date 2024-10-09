@@ -46,7 +46,7 @@ const HomeCenter: React.FC = () => {
         viewer.camera.setView({ destination: Cartesian3.fromDegrees(115.58, 28.85, 12000) });
         changeBaseMapLayer(selectedLayer);
       } else {
-        setTimeout(updateViewerLayers, 100);
+        setTimeout(updateViewerLayers, 1000);
       }
     };
     updateViewerLayers(); // Initial update

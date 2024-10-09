@@ -116,3 +116,22 @@ export const boxImages = {
   [BoxType.EndBox]: require('@/assets/map/box3.png'),
   [BoxType.SubBox]: require('@/assets/map/box2.png'),
 };
+
+export enum ModelType {
+  //楼栋
+  building = 1,
+}
+
+export const modelImages = {
+  [ModelType.building]: require('../../../public/models/OfficePlan.gltf'),
+};
+
+export class Model {
+  constructor(
+    public id: number,
+    public name: string,
+    public type: ModelType,
+    public latLng: LatLng,
+    public mark?: string,
+  ) {}
+}

@@ -43,7 +43,7 @@ const PieChart = (props: Props) => {
       itemGap: 30,
       itemWidth: 20,
       textStyle: {
-        color: '#ffffff',
+        color: 'rgba(255,255,255,0.8)',
         fontSize: 16,
       },
     },
@@ -57,7 +57,7 @@ const PieChart = (props: Props) => {
         label: {
           formatter: '{d}%',
           position: 'inside',
-          color: 'white',
+          color: 'rgba(255,255,255,0.8)',
           fontSize: 18,
           fontWeight: 'bold',
         },
@@ -84,12 +84,13 @@ const PieChart = (props: Props) => {
     graphic: [
       {
         type: 'text',
-        left: '23%', // 确保文本位置与图表中心对齐
+        left: '24%', // 确保文本位置与图表中心对齐
         top: '55%', //   // 确保文本位置与图表中心对齐
         style: {
           text: data.totalAmount + data.unitName,
           textAlign: 'center',
-          fill: '#ffffff',
+          fill: 'rgba(255,255,255,0.8)',
+          color: 'rgba(255,255,255,0.8)',
           fontSize: 20,
           fontWeight: 'bold',
         },
@@ -100,17 +101,7 @@ const PieChart = (props: Props) => {
   };
 
   return (
-    <BorderBox11
-      title={data.name}
-      style={{
-        height: '100%',
-        width: '100%',
-        // backgroundColor: 'yellowgreen',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-      }}
-    >
+    <BorderBox11 title={data.name}>
       <div
         style={{
           // backgroundColor: 'crimson',

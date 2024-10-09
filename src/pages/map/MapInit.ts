@@ -20,7 +20,7 @@ export const initViewer = (
     timeline: false, //是否显示时间轴
     navigationHelpButton: false, //是否显示右上角的帮助按钮
     scene3DOnly: false, //如果设置为true，则所有几何图形以3D模式绘制以节约GPU资源
-    sceneMode: Cesium.SceneMode.SCENE2D, //初始场景模式
+    sceneMode: Cesium.SceneMode.SCENE3D, //初始场景模式
     fullscreenElement: document.body, //全屏时渲染的HTML元素,
   });
 

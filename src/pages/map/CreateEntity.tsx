@@ -1,7 +1,7 @@
-import { Box, BoxConnectingLine, boxImages } from '@/pages/map/BoxTyping';
+import { Box, BoxConnectingLine, boxImages, Model, modelImages } from '@/pages/map/BoxTyping';
 import { LatLng } from '@/pages/project/type';
+import * as Cesium from 'cesium';
 import { Cartesian2, Cartesian3, Color, Entity } from 'cesium';
-
 //创建点
 export const createPointEntity = (position: Cartesian3, info?: Box): Entity => {
   return new Entity({
@@ -35,6 +35,7 @@ export const createPolylineEntity = (latLngArray: LatLng[], info?: BoxConnecting
       // positions: new CallbackProperty(() => {
       //   return Cartesian3.fromDegreesArray(positionsArray);
       // }, false),
+      distanceDisplayCondition: new Cesium.DistanceDisplayCondition(0, 25000),
       width: 3,
       material: Color.GREEN,
       // clampToGround: true, // 将polyline钉在地面上
@@ -46,21 +47,42 @@ export const createPolylineEntity = (latLngArray: LatLng[], info?: BoxConnecting
 };
 
 ///创建广告牌
-export const createImageEntity = (position: Cartesian3, info?: Box): Entity => {
-  const image = info ? boxImages[info.boxType] : require('@/assets/map/box4.png');
+export const createImageEntity = (position: LatLng, info?: Box): Entity => {
+  const image = info ? boxImages[info.boxType] : require('@/assets/map/null.png');
   return new Entity({
     id: info?.id.toString(),
     name: info?.name,
-    position,
+    position: Cartesian3.fromDegrees(position.longitude, position.latitude),
     billboard: {
       image: image,
       height: 25,
       width: 25,
+      distanceDisplayCondition: new Cesium.DistanceDisplayCondition(0, 25000),
       // disableDepthTestDistance: Number.POSITIVE_INFINITY, // Ensure billboard is always on top
     },
     properties: {
       type: info?.type,
       boxType: info?.boxType,
+    },
+  });
+};
+
+///模型
+export const createModelEntity = (position: LatLng, info?: Model): Entity => {
+  const uri = info ? modelImages[info.type] : require('@/assets/map/null.png');
+  return new Entity({
+    id: info?.id.toString(),
+    name: info?.name,
+    position: Cartesian3.fromDegrees(position.longitude, position.latitude),
+    model: {
+      uri: uri,
+      minimumPixelSize: 50,
+      maximumScale: 100,
+      show: true,
+      distanceDisplayCondition: new Cesium.DistanceDisplayCondition(0, 25000),
+    },
+    properties: {
+      type: info?.type,
     },
   });
 };

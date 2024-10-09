@@ -1,13 +1,12 @@
 import { EngineeringStaticsByOrganize, ResourceStaticModel } from '@/pages/home/DataModel';
+// @ts-ignore
+import HomeCenter from '@/pages/home/HomeCenter';
 import BarChart from '@/pages/home/HomeFooter';
 import CableCarousel from '@/pages/home/HomeRight';
-// @ts-ignore
-import { Decoration5, Decoration8, FullScreenContainer } from '@jiaminghi/data-view-react';
-import React, { useEffect, useState } from 'react';
+import { Decoration5, Decoration8 } from '@jiaminghi/data-view-react';
+import React, { useState } from 'react';
 import PieChart from './HomeLeft';
 import './home.css';
-import HomeCenter from '@/pages/home/HomeCenter';
-import Search from 'antd/es/input/Search';
 const Home: React.FC = () => {
   enum CableState {
     Normal = 'Normal',
@@ -86,7 +85,7 @@ const Home: React.FC = () => {
     { organizeName: '项目运维部', totalAmount: 13, finishedAmount: 12 },
   ];
 
-  // const [currentTime, setCurrentTime] = useState(new Date().toLocaleString());
+  const [currentTime, setCurrentTime] = useState(new Date().toLocaleString());
   //
   // useEffect(() => {
   //   const timer = setInterval(() => {
@@ -97,49 +96,57 @@ const Home: React.FC = () => {
 
   return (
     <>
-      <div className="container">
-        <div className="header">
-          <div className="title">
-            <div style={{ fontSize: '48px', color: 'white' }}>TranMile</div>
-          </div>
-          <div className="headerContent">
-            <div className="headerBorder1">
-              <Decoration8 style={{ height: '30px', width: '300px' }} />
+      <div className="main-body">
+        {/*<FullScreenContainer>*/}
+        <div className="main-container">
+          <div className="main-header">
+            <div className="title">
+              <div style={{ fontSize: '48px', color: 'rgba(255,255,255,0.8)' }}>TranMile</div>
             </div>
-            <div className="headerBorder2">
-              <Decoration5 dur={3} style={{ height: '40px' }} />
+            <div className="headerContent">
+              <div className="headerBorder1">
+                <Decoration8 style={{ height: '30px', width: '300px' }} />
+              </div>
+              <div className="headerBorder2">
+                <Decoration5 dur={3} style={{ height: '40px' }} />
+              </div>
+              <div className="headerBorder3">
+                <Decoration8 reverse={true} style={{ height: '30px', width: '300px' }} />
+              </div>
             </div>
-            <div className="headerBorder3">
-              <Decoration8 reverse={true} style={{ height: '30px', width: '300px' }} />
+          </div>
+          <div className="dataOnlyCenter">
+            <div className="dataLeft">
+              <div>
+                <PieChart data={resourceData}></PieChart>
+              </div>
+              <div>
+                <PieChart data={resourceData}></PieChart>
+              </div>
+              <div>
+                <PieChart data={resourceData}></PieChart>
+              </div>
+            </div>
+
+            <div className="dataCenter">
+              <div className="map-show">
+                <HomeCenter></HomeCenter>
+              </div>
+              <div className="gc-show">
+                <BarChart data={barChartData}></BarChart>
+              </div>
+            </div>
+            <div className="dataRight">
+              <div>
+                <CableCarousel data={data} />
+              </div>
+              <div>
+                <CableCarousel data={data} />
+              </div>
             </div>
           </div>
         </div>
-        <div className="leftSidebar">
-          <div className="box">
-            <PieChart data={resourceData}></PieChart>
-          </div>
-          <div className="box">
-            <PieChart data={resourceData}></PieChart>
-          </div>
-          <div className="box">
-            <PieChart data={resourceData}></PieChart>
-          </div>
-        </div>
-        <div className="main" style={{ height: '100%', width: '100%' }}>
-          {/*<div className="time">{currentTime}</div>*/}
-          <HomeCenter></HomeCenter>
-        </div>
-        <div className="rightSidebar">
-          <div className="box">
-            <CableCarousel data={data} />
-          </div>
-          <div className="box">
-            <CableCarousel data={data} />
-          </div>
-        </div>
-        <div className="footer">
-          <BarChart data={barChartData}></BarChart>
-        </div>
+        {/*</FullScreenContainer>*/}
       </div>
     </>
   );
