@@ -37,25 +37,25 @@ export type MapInfoModel = {
   fiberLines: [];
 };
 
-export type OpticalCableMonitoringWaringModel = {
-  cableName: string;
-  fiberCoreId?: number;
-  fiberCoreName: string;
-  state: OpticalCableMonitoringWaringState;
-  createTime?: Date;
-  clearedTime?: Date;
-  faultPoint?: LatLng;
-  faultPath: LatLng[][];
-  faultInfo?: string;
-  cableId?: string;
-  startStationId?: string;
-  distanceFromStartStation?: number;
-  endStationId?: string;
-  distanceFromEndStation?: number;
-  levelName: string;
-  type?: string;
-  id?: string;
-};
+// export type OpticalCableMonitoringWaringModel = {
+//   cableName: string;
+//   fiberCoreId?: number;
+//   fiberCoreName: string;
+//   state: OpticalCableMonitoringWaringState;
+//   createTime?: Date;
+//   clearedTime?: Date;
+//   faultPoint?: LatLng;
+//   faultPath: LatLng[][];
+//   faultInfo?: string;
+//   cableId?: string;
+//   startStationId?: string;
+//   distanceFromStartStation?: number;
+//   endStationId?: string;
+//   distanceFromEndStation?: number;
+//   levelName: string;
+//   type?: string;
+//   id?: string;
+// };
 
 interface LatLng {
   latitude: number;

@@ -1,18 +1,16 @@
 import { AvatarDropdown, AvatarName, Question } from '@/components';
 import { getMenus } from '@/models/menu';
+import Service from '@/pages/user/login/service';
 import Token from '@/utils/token';
 import { RequestConfig, RequestOptions } from '@@/plugin-request/request';
 import { LinkOutlined } from '@ant-design/icons';
 import type { Settings as LayoutSettings } from '@ant-design/pro-components';
 import { SettingDrawer } from '@ant-design/pro-components';
-import { Link, RunTimeLayoutConfig, history, } from '@umijs/max';
+import { Link, RunTimeLayoutConfig, SelectLang, history } from '@umijs/max';
 import { Image, message } from 'antd';
 import 'cesium/Build/Cesium/Widgets/widgets.css';
 import defaultSettings from '../config/defaultSettings';
 import userDefaultAvatar from './assets/images/user_default_avatar.png';
-import Service from "@/pages/user/login/service";
-import { SelectLang } from '@umijs/max';
-import { useIntl } from "@@/plugin-locale";
 
 const isDev = process.env.NODE_ENV === 'development';
 const loginPath = '/user/login';
@@ -54,8 +52,6 @@ export async function getInitialState(): Promise<{
 
 // ProLayout 支持的api https://procomponents.ant.design/components/layout
 export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) => {
-
-
   return {
     // rootContainer:(container:any)=>React.createElement(ConfigProvider, null, container),
     //用户旁边的操作设置
@@ -87,11 +83,11 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
     },
     links: isDev
       ? [
-        <Link key="openapi" to="/umi/plugin/openapi" target="_blank">
-          <LinkOutlined />
-          <span>OpenAPI 文档</span>
-        </Link>,
-      ]
+          <Link key="openapi" to="/umi/plugin/openapi" target="_blank">
+            <LinkOutlined />
+            <span>OpenAPI 文档</span>
+          </Link>,
+        ]
       : [],
     menuHeaderRender: undefined,
     // 自定义 403 页面
@@ -157,7 +153,13 @@ export const request: RequestConfig = {
   requestInterceptors: [
     (config: RequestOptions) => {
       const token = Token.get();
-      if (!config?.url?.includes('login')) {
+      if (
+        !(
+          config?.url?.includes('login') ||
+          config?.url?.includes('alarms') ||
+          config?.url?.includes('80')
+        )
+      ) {
         // 比如请求头添加token
         if (token) {
           config.headers = {

@@ -104,7 +104,6 @@ const PieChart = (props: Props) => {
     <BorderBox11 title={data.name}>
       <div
         style={{
-          // backgroundColor: 'crimson',
           height: '100%',
           width: '100%',
           padding: '15px',

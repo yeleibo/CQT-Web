@@ -94,7 +94,7 @@ export const createLocalEntity = (position: Cartesian3): Entity => {
     name: 'local',
     position,
     billboard: {
-      image: require('@/assets/map/local.png'),
+      image: require('@/assets/map/fault.png'),
       height: 35,
       width: 35,
       pixelOffset: new Cartesian2(0, -15),

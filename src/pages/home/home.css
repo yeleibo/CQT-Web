@@ -1,18 +1,14 @@
 /* styles.css */
 
 .main-body {
-  width: 100%;
-  height: 100%;
-}
-
-.main-container {
-  position: fixed;
-  width: 100%;
-  height: 100%;
-  background-image: url('/home_bg.png');
-  background-size: cover;
   display: flex;
   flex-direction: column;
+  background-image: url('/home_bg.png');
+  background-size: cover; /* 确保背景图片覆盖整个区域 */
+  background-position: center; /* 背景图片居中显示 */
+  background-repeat: no-repeat; /* 防止背景图片重复 */
+  /*width: 100%;*/
+  height: 100vh;
 }
 
 .main-header {
@@ -21,26 +17,18 @@
   background-color: transparent;
 }
 
-.dataOnlyCenter {
+.main-container {
   display: flex;
   width: 100%;
   height: 100%;
+  justify-content: space-between;
 }
 
 .dataLeft, .dataRight {
-  width: 25%;
-  height: 95%;
+  width: 20%;
   display: flex;
   flex-direction: column;
-  justify-content: space-around; /* 等分剩余空间 */
-  padding: 20px;
-}
-
-.dataLeft > div, .dataRight > div {
-  flex: 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  justify-content: space-between;
   padding: 20px;
 }
 
@@ -65,126 +53,21 @@
   padding: 10px;
 }
 
-
-
-
-
 .title {
   display: flex;
   justify-content: center;
   align-items: center;
+  margin-top: 10px;
+  font-size: 24px;
+  color: rgba(255,255,255,0.8);
 }
 
 .headerContent {
   display: flex;
   justify-content: space-between;
-}
-
-.time {
-  display: flex;
-  justify-content: center;
-  color: white;
-  font-size: 20px;
-}
-
-
-.headerBorder1 {
-  flex: 1;
-  display: flex;
-  justify-content: flex-start;
-}
-
-.headerBorder2 {
-  flex: 1;
-  display: flex;
-  justify-content: center;
-}
-
-.headerBorder3 {
-  flex: 1;
-  display: flex;
-  justify-content: flex-end;
-}
-
-.box {
-  width: 100%;
-  height: 37%;
-  display: flex;
-  flex-grow: 0;
-  flex-direction: column;
-}
-
-.main {
-  grid-area: main;
+  margin-top: 22px;
+  margin-inline: 10px;
   padding: 10px;
-  flex: 2;
+  background: linear-gradient(to right, #2b52c9, #1b3582);
 }
 
-.rightSidebar {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-}
-
-.footer {
-  grid-area: footer;
-  padding: 10px;
-  flex: 1;
-}
-
-
-.carouselContainer {
-  flex: 1;
-  overflow-y: auto;
-}
-
-.carouselItem {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px;
-  margin-bottom: 5px;
-  border-radius: 4px;
-}
-
-/*
-HomeCenter
- */
-.cesium-viewer-bottom {
-  display: none;
-}
-
-.layer-switcher {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  z-index: 1000;
-}
-
-.layer-switcher button {
-  padding: 5px 10px;
-  cursor: pointer;
-}
-
-.layer-modal {
-  background-color: #fff;
-  border: 1px solid #ccc;
-  padding: 10px;
-  margin-top: 5px;
-}
-
-.layer-modal ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.layer-modal li {
-  padding: 5px 0;
-  cursor: pointer;
-}
-
-.layer-modal li:hover {
-  background-color: #eee;
-}

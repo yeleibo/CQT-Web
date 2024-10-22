@@ -108,6 +108,11 @@ const Maps: React.FC = () => {
   useEffect(() => {
     initViewer('csm-viewer-container', baseMapLayer, (viewer) => {
       viewerRef.current = viewer;
+
+      //相机视角
+      viewer.camera.setView({
+        destination: Cartesian3.fromDegrees(115.58, 28.85, 12000),
+      });
       // boxConnectingLine.forEach((e) => {
       //   viewerRef.current?.entities.add(createPolylineEntity(e.latLng!, e));
       // });

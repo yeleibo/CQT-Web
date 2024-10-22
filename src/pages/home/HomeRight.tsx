@@ -1,7 +1,9 @@
 import { OpticalCableMonitoringWaringModel } from '@/pages/home/DataModel';
 // @ts-ignore
-import { BorderBox13, Decoration4 } from '@jiaminghi/data-view-react';
+import { BorderBox13 } from '@jiaminghi/data-view-react';
+import { Button } from 'antd';
 import React, { useEffect, useState } from 'react';
+import { history } from 'umi'; // Umi 提供的 history 对象
 import './home.css';
 
 interface Props {
@@ -26,6 +28,11 @@ interface CarouselProps {
 
 const CableCarousel: React.FC<CarouselProps> = ({ data, interval = 3000 }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [isMorePaga, setIsMorePage] = useState<boolean>(false);
+
+  const openAddPage = () => {
+    setIsMorePage(true);
+  };
 
   useEffect(() => {
     if (data.length === 0) return;
@@ -37,7 +44,7 @@ const CableCarousel: React.FC<CarouselProps> = ({ data, interval = 3000 }) => {
   }, [data.length, interval]);
 
   const getDisplayedItems = () => {
-    const end = currentIndex + 10;
+    const end = currentIndex + 1;
     if (end <= data.length) {
       return data.slice(currentIndex, end);
     } else {
@@ -48,108 +55,83 @@ const CableCarousel: React.FC<CarouselProps> = ({ data, interval = 3000 }) => {
   const getColorByState = (state: CableState) => {
     switch (state) {
       case CableState.Normal:
-        return 'blue';
+        return '#00FF7F';
       case CableState.Warning:
-        return 'yellow';
+        return '#FFD700';
       case CableState.Critical:
-        return 'red';
+        return '#FF4500';
       default:
         return 'gray';
     }
   };
 
   return (
-    <BorderBox13
-      style={{
-        padding: '20px 15px 20px 15px',
-        height: '100%',
-        display: 'flex',
-        flexDirection: 'column',
-      }}
-    >
+    <BorderBox13>
       <div
-        className="headerContent"
         style={{
-          height: '30px',
-          paddingInline: '10px',
-          alignItems: 'center',
-          display: 'flex',
-          justifyContent: 'space-between',
+          width: '100%',
         }}
       >
-        <div className="headerBorder1" style={{ fontSize: '26px', color: 'rgba(255,255,255,0.8)' }}>
-          近期告警信息
-        </div>
-        <div className="headerBorder3" style={{ fontSize: '18px', color: 'rgba(255,255,255,0.8)' }}>
-          更多
-        </div>
-      </div>
-      <Decoration4 reverse={true} style={{ width: '100%', height: '5px' }} />
-      <div
-        id="123"
-        style={{
-          textAlign: 'center',
-          overflowY: 'auto', // 启用垂直滚动
-          transition: 'transform 1s ease-in-out',
-          // overflow: 'hidden',
-          // backgroundColor: 'crimson',
-          flexGrow: 1,
-          height: '100%',
-          // transform: `translateY(-${currentIndex * 45}px)`,
-        }}
-      >
-        {getDisplayedItems().map((item, index) => (
-          <div
-            key={index}
-            style={{
-              display: 'flex',
-              justifyContent: 'flex-start',
-              fontSize: '20px',
-              paddingTop: '23px',
-              paddingInline: '10px',
+        <div className="headerContent">
+          <div style={{ fontSize: '24px', color: 'rgba(255,255,255,0.8)' }}>近期告警信息</div>
+          <Button
+            color="default"
+            type="text"
+            style={{ fontSize: '24px', color: 'rgba(255,255,255,0.8)' }}
+            onClick={() => {
+              history.push('/home/OpticalCableMonitoringWaringPage');
             }}
           >
+            更多
+          </Button>
+          {/*<div style={{ fontSize: '20px', color: 'rgba(255,255,255,0.8)' }}>更多</div>*/}
+        </div>
+        <div
+          style={{
+            textAlign: 'center',
+            overflowY: 'auto', // 启用垂直滚动
+            transition: 'transform 1s ease-in-out',
+            // height: '100%',
+          }}
+        >
+          {getDisplayedItems().map((item, index) => (
             <div
+              key={index}
               style={{
-                width: '20px',
-                height: '20px',
-                backgroundColor: getColorByState(item.state),
-                marginRight: '10px',
-                borderRadius: '50%', // 圆角
-                flexShrink: 0, // 确保图标不会缩小
-              }}
-            ></div>
-            <div
-              style={{
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                maxWidth: '600px',
-                color: 'rgba(255,255,255,0.8)',
+                display: 'flex',
+                justifyContent: 'flex-start',
+                fontSize: '20px',
+                paddingTop: '30px',
+                paddingInline: '25px',
               }}
             >
-              {item.cableName}
+              <div
+                style={{
+                  width: '20px',
+                  height: '20px',
+                  backgroundColor: getColorByState(item.state),
+                  marginRight: '10px',
+                  borderRadius: '50%', // 圆角
+                  flexShrink: 0, // 确保图标不会缩小
+                }}
+              />
+              <div
+                style={{
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  maxWidth: '600px',
+                  color: 'rgba(255,255,255,0.8)',
+                }}
+              >
+                {item.cableName}
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </BorderBox13>
   );
 };
 
 export default CableCarousel;
-
-// <div
-//   className="headerContent"
-//   style={{
-//     height: '30px',
-//     paddingInline: '10px',
-//     alignItems: 'center',
-//   }}
-// >
-//   <div className="headerBorder1" style={{fontSize: '26px'}}>
-//     近期告警信息
-//   </div>
-//   <div className="headerBorder3">更多</div>
-// </div>
-// <Decoration4 reverse={true} style={{width: '100%', height: '5px'}}/>

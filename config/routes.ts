@@ -16,6 +16,11 @@ export default [
         path: '/home/index',
         component: '@/pages/home/index',
       },
+      {
+        name: '告警信息',
+        path: '/home/OpticalCableMonitoringWaringPage',
+        component: '@/pages/home/OpticalCableMonitoring/OpticalCableMonitoringWaringPage',
+      },
     ],
   },
   {
