@@ -1,12 +1,11 @@
-import { createPointEntity, createPolylineEntity } from '@/pages/map/CreateEntity';
-import MapDrawer, { useBaseMapLayer } from '@/pages/map/MapDrawer';
-import { initViewer } from '@/pages/map/MapInit';
-import { BaseMapLayers } from '@/pages/map/MapLayersTyping';
+import MapDrawer, { useBaseMapLayer } from '@/pages/map/MapTools/MapDrawer';
+import { BaseMapLayers } from '@/pages/map/MapTools/MapLayersTyping';
+import { initViewer, PointEntity, PolylineEntity } from '@/pages/map/MapTools/MapUtils';
 import { LatLng } from '@/pages/project/type';
 import { PageContainer } from '@ant-design/pro-components';
 import { Button } from 'antd';
 import * as Cesium from 'cesium';
-import { Entity, ScreenSpaceEventHandler, ScreenSpaceEventType, Viewer } from 'cesium';
+import { Cartesian3, Entity, ScreenSpaceEventHandler, ScreenSpaceEventType, Viewer } from 'cesium';
 import React, { useEffect, useRef, useState } from 'react';
 
 const AreaDrawPage: React.FC = () => {
@@ -85,12 +84,15 @@ const AreaDrawPage: React.FC = () => {
           longitude: Cesium.Math.toDegrees(radiansPos.longitude),
         };
         //点实体
-        const pointEntity = createPointEntity(clickPosition!);
+        const pointEntity = PointEntity({ position: clickPosition!, id: 'markPoint' });
         let pick = viewer.scene.pick(event.position);
         if (Cesium.defined(pick) && latLngs.length > 2) {
           setLatLngs((prevLatLng) => {
             const updatedLatLng = [...prevLatLng, prevLatLng.at(0)!];
-            const polylineEntity = createPolylineEntity(updatedLatLng);
+            const positions = updatedLatLng.map((e) =>
+              Cartesian3.fromDegrees(e.longitude, e.latitude),
+            );
+            const polylineEntity = PolylineEntity({ positions: positions, id: 'markLine' });
             viewer.entities.add(polylineEntity);
             setUndoEntity((prevEntity) => [...prevEntity, polylineEntity]);
             return updatedLatLng;
@@ -98,12 +100,15 @@ const AreaDrawPage: React.FC = () => {
         } else {
           setLatLngs((prevLatLng) => {
             const updatedLatLng = [...prevLatLng, newPoint];
+            const positions = updatedLatLng.map((e) =>
+              Cartesian3.fromDegrees(e.longitude, e.latitude),
+            );
             if (updatedLatLng.length === 1) {
               viewer.entities.add(pointEntity);
               setUndoEntity([pointEntity]);
               setLatLngs([newPoint]);
             } else {
-              const polylineEntity = createPolylineEntity(updatedLatLng);
+              const polylineEntity = PolylineEntity({ positions: positions, id: 'markLine' });
               viewer.entities.add(polylineEntity);
               setUndoEntity((prevEntity) => [...prevEntity, polylineEntity]);
             }
@@ -151,7 +156,7 @@ const AreaDrawPage: React.FC = () => {
             </Button>
           </div>
           <MapDrawer
-            baseMapLayer={baseMapLayer}
+            baseMapLayers={baseMapLayer}
             changeBaseMapLayer={(layer) => changeBaseMapLayer(layer, viewerRef.current!)}
             onClose={() => DrawerToggle(false)}
             open={showDrawer}

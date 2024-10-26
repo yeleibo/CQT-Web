@@ -1,6 +1,6 @@
 // components/LayerDrawer.tsx
-import { boxImages, BoxType, DataType } from '@/pages/map/BoxTyping';
-import { BaseMapLayers, MapLayer } from '@/pages/map/MapLayersTyping';
+import { BoxType, DataType } from '@/pages/map/BoxTyping';
+import { BaseMapLayers, MapLayer, OtherMapLayers } from '@/pages/map/MapTools/MapLayersTyping';
 import { Col, Drawer, Image, Row } from 'antd';
 import { Viewer } from 'cesium';
 import React, { useCallback, useState } from 'react';
@@ -56,31 +56,31 @@ export const useOtherMapLayers = () => {
 interface LayerDrawerProps {
   open: boolean;
   onClose: () => void;
-  baseMapLayer: MapLayer;
+  baseMapLayers: MapLayer;
   changeBaseMapLayer: (layer: MapLayer) => void;
-  showBoxType?: BoxType[];
-  selectedBoxType?: (boxType: BoxType) => void;
+  extraLayers?: MapLayer[];
+  selectedExtraLayers?: (layer: MapLayer) => void;
 }
 
 const MapDrawer: React.FC<LayerDrawerProps> = ({
   open,
   onClose,
-  baseMapLayer,
+  baseMapLayers,
   changeBaseMapLayer,
-  showBoxType,
-  selectedBoxType,
+  extraLayers,
+  selectedExtraLayers,
 }) => (
   <Drawer title="图层" onClose={onClose} open={open} width={500}>
     <p>地图类型</p>
     <Row gutter={16} style={{ justifyContent: 'space-around', padding: '10px' }}>
-      {BaseMapLayers.map((option) => (
+      {BaseMapLayers.filter((e) => e.type !== 'google').map((option) => (
         <Col key={option.code}>
           <div
             onClick={() => changeBaseMapLayer(option)}
             style={{
               width: '70px',
               height: '70px',
-              border: baseMapLayer.code === option.code ? '2px solid blue' : '1px solid #f0f0f0',
+              border: baseMapLayers.code === option.code ? '2px solid blue' : '1px solid #f0f0f0',
               cursor: 'pointer',
             }}
           >
@@ -89,7 +89,7 @@ const MapDrawer: React.FC<LayerDrawerProps> = ({
           <div
             style={{
               marginTop: '10px',
-              color: baseMapLayer.code === option.code ? 'blue' : 'black',
+              color: baseMapLayers.code === option.code ? 'blue' : 'black',
               textAlign: 'center',
             }}
           >
@@ -98,33 +98,33 @@ const MapDrawer: React.FC<LayerDrawerProps> = ({
         </Col>
       ))}
     </Row>
-    {showBoxType && (
+    {extraLayers && (
       <>
         <p>资源类型</p>
         <Row gutter={16} style={{ justifyContent: 'space-around', padding: '10px' }}>
-          {Object.values(BoxType).map((e) => (
-            <Col key={e}>
+          {OtherMapLayers.map((option) => (
+            <Col key={option.code}>
               <div
-                onClick={() => {
-                  selectedBoxType?.(e);
-                }}
+                onClick={() => selectedExtraLayers?.(option)}
                 style={{
                   width: '70px',
                   height: '70px',
-                  border: showBoxType.includes(e) ? '2px solid blue' : '1px solid #f0f0f0',
+                  border: extraLayers.map((e) => e.code).includes(option.code)
+                    ? '2px solid blue'
+                    : '1px solid #f0f0f0',
                   cursor: 'pointer',
                 }}
               >
-                <Image alt={e} src={boxImages[e]} preview={false} draggable={false} />
+                <Image alt={option.name} src={option.imgSrc} preview={false} draggable={false} />
               </div>
               <div
                 style={{
                   marginTop: '10px',
-                  color: showBoxType.includes(e) ? 'blue' : 'black',
+                  color: baseMapLayers.code === option.code ? 'blue' : 'black',
                   textAlign: 'center',
                 }}
               >
-                {e}
+                {option.name}
               </div>
             </Col>
           ))}

@@ -3,13 +3,14 @@ import {
   OpticalCableMonitoringWaringStateToString,
   OpticalCableMonitoringWarning,
 } from '@/pages/home/OpticalCableMonitoring/typings';
+import { CesiumMapDialog, faultyCableMaterial } from '@/pages/map/MapTools/CesiumMaterial';
+import { BaseMapLayers } from '@/pages/map/MapTools/MapLayersTyping';
 import {
-  CesiumMapDialog,
-  createRoadShuttleEffects,
   flyToLocation,
   initViewer,
-} from '@/pages/map/MapInit';
-import { TianDiTuMapLayer } from '@/pages/map/MapLayersTyping';
+  PointEffects,
+  RoadShuttleEffects,
+} from '@/pages/map/MapTools/MapUtils';
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import { Button, Col, Collapse, List, Row } from 'antd';
 import * as Cesium from 'cesium';
@@ -23,14 +24,14 @@ const OpticalCableMonitoringWaringPage: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<OpticalCableMonitoringWarning[]>();
   //标记线
-  let markLinePrimitive: Cesium.Primitive | null = null;
+  let faultLinePrimitive: Cesium.Primitive | null = null;
 
   useEffect(() => {
-    initViewer('viewer-container', TianDiTuMapLayer.at(0)!, async (viewer) => {
+    initViewer('viewer-container', BaseMapLayers.f, async (viewer) => {
       setLoading(true);
       viewerRef.current = viewer;
       // 设置相机视角
-      viewer.camera.setView({ destination: Cartesian3.fromDegrees(120.05, 30.56, 80000) });
+      flyToLocation({ viewer: viewer, position: Cartesian3.fromDegrees(120.05, 30.56, 80000) });
 
       const [opticalCableMonitoringModel, opticalWarnings] = await Promise.all([
         OpticalCableMonitoringService.getOpticalCableMonitoringModelList(),
@@ -38,25 +39,22 @@ const OpticalCableMonitoringWaringPage: React.FC = () => {
       ]);
       setData(opticalWarnings);
       setLoading(false);
-      const s = Cesium.Material.fromType('Color', {
-        color: Cesium.Color.fromCssColorString('#a0e446'),
-        depthTestEnabled: false, // 禁用深度测试
-      });
-      const line = opticalCableMonitoringModel.fiberLines.map((e) =>
+
+      const lines = opticalCableMonitoringModel.fiberLines.map((e) =>
         e.map(({ latitude, longitude }) => Cartesian3.fromDegrees(longitude, latitude, 0)),
       );
-
-      createRoadShuttleEffects(viewer, line, s);
-
-      opticalCableMonitoringModel.dataCenterPoints.forEach((point) => {
-        viewer.entities.add({
-          position: Cartesian3.fromDegrees(point.longitude, point.latitude),
-          point: {
-            pixelSize: 10,
-            color: Cesium.Color.fromCssColorString('#57b0c9'),
-          },
-        });
+      const points = opticalCableMonitoringModel.dataCenterPoints.map((e) =>
+        Cartesian3.fromDegrees(e.longitude, e.latitude, 0),
+      );
+      //正常线路材质
+      const NormalLineMaterial = Cesium.Material.fromType('Color', {
+        color: Cesium.Color.fromCssColorString('#a0e446'),
       });
+
+      //添加线效果
+      RoadShuttleEffects(viewer, lines, NormalLineMaterial);
+      //添加点效果
+      PointEffects(viewer, points, Cesium.Color.fromCssColorString('#3fbce3'));
     });
 
     return () => {
@@ -69,11 +67,24 @@ const OpticalCableMonitoringWaringPage: React.FC = () => {
 
   //故障线
   const flyToFaultCable = (viewer: Viewer, item: OpticalCableMonitoringWarning) => {
-    if (markLinePrimitive) {
-      viewer.scene.primitives.remove(markLinePrimitive);
-      markLinePrimitive = null;
+    if (faultLinePrimitive) {
+      viewer.scene.primitives.remove(faultLinePrimitive);
+      faultLinePrimitive = null;
     }
-    flyToLocation(viewerRef.current!, item.faultPoint);
+    flyToLocation({
+      viewer: viewerRef.current!,
+      position: Cartesian3.fromDegrees(item.faultPoint!.longitude, item.faultPoint!.latitude),
+      addMark: true,
+    });
+
+    const m = faultyCableMaterial();
+    const faultLine = item.faultPath
+      .filter((line) => line.length >= 2)
+      .map((e) =>
+        e.map(({ latitude, longitude }) => Cartesian3.fromDegrees(longitude, latitude, 1)),
+      );
+
+    faultLinePrimitive = RoadShuttleEffects(viewer, faultLine, m);
 
     // const instance: Cesium.Cartesian3[] = item.faultPath
     //   .filter((line) => line.length >= 2) // Filter valid paths directly
@@ -91,22 +102,10 @@ const OpticalCableMonitoringWaringPage: React.FC = () => {
     //     },
     //   });
     // }
-    const line = item.faultPath.filter((line) => line.length >= 2);
-    const m = Cesium.Material.fromType('Color', {
-      color: Cesium.Color.RED,
-    });
-    const faultLine = line.map((e) =>
-      e.map(({ latitude, longitude }) => Cartesian3.fromDegrees(longitude, latitude, 1)),
-    );
-
-    markLinePrimitive = createRoadShuttleEffects(viewer, faultLine, m);
 
     const dialog = new CesiumMapDialog({
       viewer: viewer,
-      position: Cesium.Cartesian3.fromDegrees(
-        item.faultPoint!.longitude!,
-        item.faultPoint!.latitude,
-      ),
+      position: Cartesian3.fromDegrees(item.faultPoint!.longitude, item.faultPoint!.latitude),
       title: item.cableName,
       content: item.faultInfo ?? '',
     });

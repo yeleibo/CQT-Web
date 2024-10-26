@@ -1,6 +1,6 @@
 import OpticalCableMonitoringService from '@/pages/home/OpticalCableMonitoring/services';
-import { createRoadEffects, initViewer } from '@/pages/map/MapInit';
-import { MapLayers } from '@/pages/map/MapLayersTyping';
+import { OtherMapLayers } from '@/pages/map/MapTools/MapLayersTyping';
+import { createRoadEffects, initViewer } from '@/pages/map/MapTools/MapUtils';
 import { Cartesian3, Viewer } from 'cesium';
 import React, { useEffect, useRef } from 'react';
 // @ts-ignore
@@ -10,7 +10,7 @@ const HomeCenter: React.FC = () => {
 
   //初始化
   useEffect(() => {
-    initViewer('home-viewer-container', MapLayers.at(1)!, async (viewer) => {
+    initViewer('home-viewer-container', OtherMapLayers.at(1)!, async (viewer) => {
       viewerRef.current = viewer;
       // 相机视角
       viewer.camera.setView({ destination: Cartesian3.fromDegrees(120.05, 30.56, 80000) });

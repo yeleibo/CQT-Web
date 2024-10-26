@@ -1,26 +1,13 @@
 import BoxInfo from '@/pages/map/BoxDetail';
-import { Box, BoxConnectingLine, BoxType, DataType, ModelType } from '@/pages/map/BoxTyping';
-import {
-  createImageEntity,
-  createLocalEntity,
-  createModelEntity,
-  createPolylineEntity,
-} from '@/pages/map/CreateEntity';
-import MapDrawer, { useBaseMapLayer, useOtherMapLayers } from '@/pages/map/MapDrawer';
-import { initViewer } from '@/pages/map/MapInit';
-import { BaseMapLayers } from '@/pages/map/MapLayersTyping';
-import { LatLng } from '@/pages/project/type';
+import { Box, BoxConnectingLine, BoxType, DataType } from '@/pages/map/BoxTyping';
+import MapDrawer, { useBaseMapLayer, useOtherMapLayers } from '@/pages/map/MapTools/MapDrawer';
+import { BaseMapLayers } from '@/pages/map/MapTools/MapLayersTyping';
+import { flyToLocation, initViewer } from '@/pages/map/MapTools/MapUtils';
 import { PageContainer } from '@ant-design/pro-components';
 import { Button, Collapse, List, Row } from 'antd';
 import Search from 'antd/es/input/Search';
 import * as Cesium from 'cesium';
-import {
-  BoundingSphere,
-  Cartesian3,
-  ScreenSpaceEventHandler,
-  ScreenSpaceEventType,
-  Viewer,
-} from 'cesium';
+import { Cartesian3, Ion, ScreenSpaceEventHandler, ScreenSpaceEventType, Viewer } from 'cesium';
 import React, { useEffect, useRef, useState } from 'react';
 
 const Maps: React.FC = () => {
@@ -106,13 +93,18 @@ const Maps: React.FC = () => {
 
   //初始化
   useEffect(() => {
-    initViewer('csm-viewer-container', baseMapLayer, (viewer) => {
+    initViewer('csm-viewer-container', baseMapLayer, async (viewer) => {
       viewerRef.current = viewer;
-
+      Ion.defaultAccessToken =
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI3NWE4MTA4Ny0zYjc1LTRmNWYtYjBlNS0zMGZlZDAzYmM1YjUiLCJpZCI6MjUwNjUzLCJpYXQiOjE3Mjk4MzcxODJ9.jPcB3iLwMCIWC3RFGMnO-EmIYtI0OtSXaMBYPX9eEv8';
       //相机视角
       viewer.camera.setView({
         destination: Cartesian3.fromDegrees(115.58, 28.85, 12000),
       });
+      const tileset = viewer.scene.primitives.add(
+        await Cesium.Cesium3DTileset.fromIonAssetId(96188),
+      );
+
       // boxConnectingLine.forEach((e) => {
       //   viewerRef.current?.entities.add(createPolylineEntity(e.latLng!, e));
       // });
@@ -129,30 +121,30 @@ const Maps: React.FC = () => {
       //     ),
       //   );
       // });
-      //加载数据
-      let lineDataSource = new Cesium.CustomDataSource('boxConnectingLine');
-      boxConnectingLine.forEach((e) => {
-        lineDataSource.entities.add(createPolylineEntity(e.latLng, e));
-      });
-      let boxDataSource = new Cesium.CustomDataSource('box');
-      boxData.forEach((e) => {
-        boxDataSource.entities.add(createImageEntity(e.latLng, e));
-      });
-      let modelDataSource = new Cesium.CustomDataSource('model');
-      modelDataSource.entities.add(
-        createModelEntity(
-          { latitude: 28.855654706737884, longitude: 115.57507307895555 },
-          {
-            id: 1498151,
-            name: '楼宇',
-            type: ModelType.building,
-            latLng: { latitude: 28.855654706737884, longitude: 115.57507307895555 },
-          },
-        ),
-      );
-      viewer.dataSources.add(boxDataSource);
-      viewer.dataSources.add(lineDataSource);
-      viewer.dataSources.add(modelDataSource);
+      // //加载数据
+      // let lineDataSource = new Cesium.CustomDataSource('boxConnectingLine');
+      // boxConnectingLine.forEach((e) => {
+      //   lineDataSource.entities.add(createPolylineEntity(e.latLng, e));
+      // });
+      // let boxDataSource = new Cesium.CustomDataSource('box');
+      // boxData.forEach((e) => {
+      //   boxDataSource.entities.add(createImageEntity(e.latLng, e));
+      // });
+      // let modelDataSource = new Cesium.CustomDataSource('model');
+      // modelDataSource.entities.add(
+      //   ModelEntity(
+      //     { latitude: 28.855654706737884, longitude: 115.57507307895555 },
+      //     {
+      //       id: 1498151,
+      //       name: '楼宇',
+      //       type: ModelType.building,
+      //       latLng: { latitude: 28.855654706737884, longitude: 115.57507307895555 },
+      //     },
+      //   ),
+      // );
+      // viewer.dataSources.add(boxDataSource);
+      // viewer.dataSources.add(lineDataSource);
+      // viewer.dataSources.add(modelDataSource);
 
       // 启用广告牌聚合
       // lineDataSource.clustering.enabled = true;
@@ -204,26 +196,26 @@ const Maps: React.FC = () => {
   };
 
   //视角飞到指定区域
-  const flyToLocation = (latLng?: LatLng) => {
-    const viewer = viewerRef.current;
-
-    let target;
-    if (viewer) {
-      if (latLng) {
-        const localEntity = createLocalEntity(
-          Cesium.Cartesian3.fromDegrees(latLng.longitude, latLng.latitude, 0),
-        );
-        viewerRef.current?.entities.removeById('local');
-        viewerRef.current?.entities.add(localEntity);
-        target = Cartesian3.fromDegrees(latLng.longitude, latLng.latitude, 1200);
-      } else {
-        target = Cartesian3.fromDegrees(115.58, 28.85, 12000);
-      }
-
-      const boundingSphere = new BoundingSphere(target, 5000);
-      viewer.camera.flyToBoundingSphere(boundingSphere, { duration: 1 });
-    }
-  };
+  // const flyToLocation = (latLng?: LatLng) => {
+  //   const viewer = viewerRef.current;
+  //
+  //   let target;
+  //   if (viewer) {
+  //     if (latLng) {
+  //       const localEntity = createLocalEntity(
+  //         Cesium.Cartesian3.fromDegrees(latLng.longitude, latLng.latitude, 0),
+  //       );
+  //       viewerRef.current?.entities.removeById('local');
+  //       viewerRef.current?.entities.add(localEntity);
+  //       target = Cartesian3.fromDegrees(latLng.longitude, latLng.latitude, 1200);
+  //     } else {
+  //       target = Cartesian3.fromDegrees(115.58, 28.85, 12000);
+  //     }
+  //
+  //     const boundingSphere = new BoundingSphere(target, 5000);
+  //     viewer.camera.flyToBoundingSphere(boundingSphere, { duration: 1 });
+  //   }
+  // };
 
   return (
     <>
@@ -268,7 +260,16 @@ const Maps: React.FC = () => {
                     <>
                       <div style={{ marginBottom: '10px' }}>
                         <Collapse
-                          onChange={() => flyToLocation(e.latLng)}
+                          onChange={() =>
+                            flyToLocation({
+                              viewer: viewerRef.current!,
+                              position: Cartesian3.fromDegrees(
+                                e.latLng.longitude,
+                                e.latLng.latitude,
+                              ),
+                              addMark: true,
+                            })
+                          }
                           items={[
                             {
                               key: e.id,
@@ -306,12 +307,10 @@ const Maps: React.FC = () => {
             )}
           </div>
           <MapDrawer
-            baseMapLayer={baseMapLayer}
+            baseMapLayers={baseMapLayer}
             changeBaseMapLayer={(layer) => changeBaseMapLayer(layer, viewerRef.current!)}
             onClose={() => DrawerToggle(false)}
             open={showDrawer}
-            selectedBoxType={(boxType) => selectedTypes(boxType, viewerRef.current!)}
-            showBoxType={showBoxType}
           />
           {dataModal && (
             <BoxInfo close={BoxInfoOk} model={'add'} data={checkData} open={dataModal} />

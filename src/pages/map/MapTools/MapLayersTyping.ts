@@ -36,8 +36,6 @@ export const BaseMapLayers: MapLayer[] = [
       maximumLevel: 18,
     }),
   },
-];
-export const TianDiTuMapLayer: MapLayer[] = [
   {
     name: '天地图标准',
     code: 'TianDiTuStandard',
@@ -62,22 +60,61 @@ export const TianDiTuMapLayer: MapLayer[] = [
       subdomains: ['0', '1', '2', '3', '4', '5', '6', '7'],
     }),
   },
+  {
+    name: '天地图',
+    code: 'TianDiTu',
+    type: 'tianditu',
+    imgSrc: GoogleSatellite,
+    imageryProvider: new UrlTemplateImageryProvider({
+      url:
+        'http://t{s}.tianditu.gov.cn/cva_w/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=cva&STYLE=default&TILEMATRIXSET=w&FORMAT=tiles&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&tk=' +
+        tiandituMapKey,
+      subdomains: ['0', '1', '2', '3', '4', '5', '6', '7'],
+    }),
+  },
 ];
 
-export const TianDiTuOtherMapLayer: MapLayer = {
-  name: '天地图',
-  code: 'TianDiTu',
-  type: 'tianditu',
-  imgSrc: GoogleSatellite,
-  imageryProvider: new UrlTemplateImageryProvider({
-    url:
-      'http://t{s}.tianditu.gov.cn/cva_w/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=cva&STYLE=default&TILEMATRIXSET=w&FORMAT=tiles&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&tk=' +
-      tiandituMapKey,
-    subdomains: ['0', '1', '2', '3', '4', '5', '6', '7'],
-  }),
-};
+// export const TianDiTuMapLayer: MapLayer[] = [
+//   {
+//     name: '天地图标准',
+//     code: 'TianDiTuStandard',
+//     type: 'tianditu',
+//     imgSrc: GoogleStandard,
+//     imageryProvider: new UrlTemplateImageryProvider({
+//       url:
+//         'http://t{s}.tianditu.gov.cn/vec_w/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=vec&STYLE=default&TILEMATRIXSET=w&FORMAT=tiles&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&tk=' +
+//         tiandituMapKey,
+//       subdomains: ['0', '1', '2', '3', '4', '5', '6', '7'],
+//     }),
+//   },
+//   {
+//     name: '天地图卫星',
+//     code: 'TianDiTuSatellite',
+//     type: 'tianditu',
+//     imgSrc: GoogleSatellite,
+//     imageryProvider: new UrlTemplateImageryProvider({
+//       url:
+//         'http://t{s}.tianditu.gov.cn/img_w/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=vec&STYLE=default&TILEMATRIXSET=w&FORMAT=tiles&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&tk=' +
+//         tiandituMapKey,
+//       subdomains: ['0', '1', '2', '3', '4', '5', '6', '7'],
+//     }),
+//   },
+// ];
+//
+// export const TianDiTuOtherMapLayer: MapLayer = {
+//   name: '天地图',
+//   code: 'TianDiTu',
+//   type: 'tianditu',
+//   imgSrc: GoogleSatellite,
+//   imageryProvider: new UrlTemplateImageryProvider({
+//     url:
+//       'http://t{s}.tianditu.gov.cn/cva_w/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=cva&STYLE=default&TILEMATRIXSET=w&FORMAT=tiles&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&tk=' +
+//       tiandituMapKey,
+//     subdomains: ['0', '1', '2', '3', '4', '5', '6', '7'],
+//   }),
+// };
 
-export const MapLayers: MapLayer[] = [
+export const OtherMapLayers: MapLayer[] = [
   {
     name: '资源地图',
     code: 're',
