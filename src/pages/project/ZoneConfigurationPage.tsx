@@ -68,7 +68,7 @@ const ZoneConfigurationPage: React.FC = () => {
               areaId: record.id,
             };
             let r = await chaoqianService.getChaoqianTopology(params);
-            return { [record.name]: r };
+            return { [record.name]: r.boxes };
           }}
           buttonName={intl.formatMessage({ id: 'export' })}
         ></ExportButton>,
@@ -89,7 +89,7 @@ const ZoneConfigurationPage: React.FC = () => {
 
   return (
     <>
-      <PageContainer pageHeaderRender={false}>
+      <PageContainer pageHeaderRender={false} style={{margin: '20px'}}>
         <ProTable<AreaDto, AreaStatisticsQueryParam>
           actionRef={actionRef}
           pagination={{ pageSize: 10 }}

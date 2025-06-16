@@ -49,10 +49,12 @@
   "dependencies": {
     "@ant-design/icons": "^4.8.1",
     "@ant-design/pro-components": "^2.6.48",
+    "@antv/g6": "^5.0.48",
     "@formily/antd-v5": "^1.2.2",
     "@formily/core": "^2.3.1",
     "@formily/react": "^2.3.1",
     "@jiaminghi/data-view-react": "^1.2.5",
+    "@reduxjs/toolkit": "^2.8.2",
     "@umijs/route-utils": "^2.2.2",
     "antd": "^5.19.1",
     "antd-style": "^3.6.1",

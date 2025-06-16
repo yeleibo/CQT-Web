@@ -141,6 +141,7 @@ const CurlyBracePainter: React.FC = () => {
     // Draw the text above the curve
     ctx.fillText('Above', -375 / 2, 20);
 
+    
     // Draw the text below the curve
     ctx.fillText('Below', -375 / 2, 60);
   }, [-375, 'Above', 'Below']);

@@ -111,7 +111,7 @@ const RoleListPage: React.FC = () => {
   );
 
   return (
-    <PageContainer pageHeaderRender={false}>
+    <PageContainer pageHeaderRender={false} style={{margin: '20px'}}>
       <ProTable<RoleList, RolesQueryParam>
         actionRef={actionRef}
         pagination={{ pageSize: 10 }}

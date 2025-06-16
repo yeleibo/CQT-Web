@@ -100,20 +100,12 @@ const TenantListPage: React.FC = () => {
     },
   ];
 
-  // const fetchHouseData = async (): Promise<{ [sheetName: string]: InventoryHouseListDto[] }> => {
-  //   let params: InventoryHouseQueryParam = {
-  //     pageSize: 999999999,
-  //   };
-  //   let data = await InventoryHouseService.list(params);
-  //
-  //   return { 仓库数据: data };
-  // };
-
   // 自定义表格头部标题，包含多个按钮
   return (
-    <PageContainer pageHeaderRender={false}>
-      <ProTable<Tenant, TenantParams>
+    <PageContainer pageHeaderRender={false} style={{margin: '20px'}}>
+      <ProTable<Tenant, TenantParams> 
         actionRef={actionRef}
+
         pagination={false}
         headerTitle={
           <div>
@@ -127,12 +119,6 @@ const TenantListPage: React.FC = () => {
             >
               <PlusOutlined /> {intl.formatMessage({ id: 'add' })}
             </Button>
-            {/*<ExportButton*/}
-            {/*  fetchData={fetchHouseData}*/}
-            {/*  fileName={'仓库信息'}*/}
-            {/*  buttonName={'导出仓库'}*/}
-            {/*  headers={houseHeaders}*/}
-            {/*></ExportButton>*/}
           </div>
         }
         rowKey="id"

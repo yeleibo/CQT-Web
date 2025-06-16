@@ -111,7 +111,7 @@ const OrganizeListPage: React.FC = () => {
 
   return (
     <>
-      <PageContainer pageHeaderRender={false}>
+      <PageContainer pageHeaderRender={false} style={{margin: '20px'}}>
         <ProTable<OrganizeItem, UsersQueryParam>
           actionRef={actionRef}
           // 隐藏分页器

@@ -98,12 +98,12 @@ const Maps: React.FC = () => {
       Ion.defaultAccessToken =
         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI3NWE4MTA4Ny0zYjc1LTRmNWYtYjBlNS0zMGZlZDAzYmM1YjUiLCJpZCI6MjUwNjUzLCJpYXQiOjE3Mjk4MzcxODJ9.jPcB3iLwMCIWC3RFGMnO-EmIYtI0OtSXaMBYPX9eEv8';
       //相机视角
-      viewer.camera.setView({
-        destination: Cartesian3.fromDegrees(115.58, 28.85, 12000),
-      });
-      const tileset = viewer.scene.primitives.add(
-        await Cesium.Cesium3DTileset.fromIonAssetId(96188),
-      );
+      // viewer.camera.setView({
+      //   destination: Cartesian3.fromDegrees(115.58, 28.85, 12000),
+      // });
+      // const tileset = viewer.scene.primitives.add(
+      //   await Cesium.Cesium3DTileset.fromIonAssetId(96188),
+      // );
 
       // boxConnectingLine.forEach((e) => {
       //   viewerRef.current?.entities.add(createPolylineEntity(e.latLng!, e));

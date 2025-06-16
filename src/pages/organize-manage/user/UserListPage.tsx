@@ -92,7 +92,7 @@ const UserListPage: React.FC = () => {
   ];
 
   return (
-    <PageContainer pageHeaderRender={false}>
+    <PageContainer pageHeaderRender={false} style={{margin: '20px'}}>
       <ProTable<UserItem, UsersQueryParam>
         actionRef={actionRef}
         pagination={{ pageSize: 10 }}
