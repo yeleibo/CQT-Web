@@ -1,12 +1,11 @@
 import React from 'react';
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import { useModel } from '@umijs/max';
 import { 
   BoxPortType, 
   ChaoqianBoxDto, 
   ChaoqianBoxPortDto,
   BoxPortStatus
-} from '@/store/types';
-import { groupBoxes, showOnu } from '@/store/areaDeviceDataSlice';
+} from '@/models/chaoqian';
 import { CurveListMulti } from './CurveList';
 
 
@@ -58,7 +57,7 @@ interface ONUDetailProps {
 
 // ONU端口详情组件
 const ONUDetail: React.FC<ONUDetailProps> = ({ chaoqianBoxPortDto, onus }) => {
-  const dispatch = useAppDispatch();
+  const { showOnuAction } = useModel('useAreaDeviceModel');
   
   // 处理ONU点击
   const handleOnuClick = (port: ChaoqianBoxPortDto) => {
@@ -69,7 +68,7 @@ const ONUDetail: React.FC<ONUDetailProps> = ({ chaoqianBoxPortDto, onus }) => {
     );
     
     if (onu) {
-      dispatch(showOnu(onu));
+      showOnuAction(onu);
     }
   };
   
@@ -135,8 +134,7 @@ const FatBoxDevice: React.FC<FatBoxDeviceProps> = ({
   onus,
   onTap,
 }) => {
-  const dispatch = useAppDispatch();
-  const { boxInfo } = useAppSelector(state => state.areaDeviceData);
+  const { boxInfo, groupBoxes } = useModel('useAreaDeviceModel');
   
   // 获取FatBox的输出端口
   const getOutputPorts = (box: ChaoqianBoxDto): ChaoqianBoxPortDto[] => {
@@ -151,7 +149,7 @@ const FatBoxDevice: React.FC<FatBoxDeviceProps> = ({
   
   // 处理点击事件
   const handleClick = () => {
-    dispatch(groupBoxes({ boxId: fatBox.id }));
+    groupBoxes({ boxId: fatBox.id });
     if (onTap) onTap();
   };
   

@@ -1,5 +1,5 @@
 import React from 'react';
-import { ChaoqianBoxPortDto, BoxPortStatus } from '@/store/types';
+import { ChaoqianBoxPortDto, BoxPortStatus } from '@/models/chaoqian';
 
 interface CurveListProps {
   chaoqianBoxPortDto: ChaoqianBoxPortDto[];

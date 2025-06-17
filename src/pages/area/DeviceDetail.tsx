@@ -1,8 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Card, Spin, message } from 'antd';
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { groupBoxes } from '@/store/areaDeviceDataSlice';
-import { ChaoqianTopologyDto } from '@/store/types';
+import { useModel } from '@umijs/max';
+import { ChaoqianTopologyDto } from '@/models/chaoqian';
 
 import XBoxDevice from './components/XBoxDevice';
 import HubBoxDevice from './components/HubBoxDevice';
@@ -23,12 +22,6 @@ const DeviceDetail: React.FC<DeviceDetailProps> = ({
   boxId, 
   isOnu = false 
 }) => {
-  const dispatch = useAppDispatch();
-  const [loading, setLoading] = useState(true);
-  const [topology, setTopology] = useState<ChaoqianTopologyDto | null>(null);
-  const horizontalRef = useRef<HTMLDivElement>(null);
-  const verticalRef = useRef<HTMLDivElement>(null);
-  
   const { 
     xBoxes, 
     hubBoxCable, 
@@ -36,8 +29,14 @@ const DeviceDetail: React.FC<DeviceDetailProps> = ({
     showCard,
     showOnu,
     boxInfo, 
-    onu
-  } = useAppSelector(state => state.areaDeviceData);
+    onu,
+    groupBoxes
+  } = useModel('useAreaDeviceModel');
+  
+  const [loading, setLoading] = useState(true);
+  const [topology, setTopology] = useState<ChaoqianTopologyDto | null>(null);
+  const horizontalRef = useRef<HTMLDivElement>(null);
+  const verticalRef = useRef<HTMLDivElement>(null);
 
   // 获取拓扑数据
   useEffect(() => {
@@ -49,11 +48,11 @@ const DeviceDetail: React.FC<DeviceDetailProps> = ({
         const result = createMockTopologyData();
         setTopology(result);
         // 加载数据后触发分组操作
-        dispatch(groupBoxes({ 
+        groupBoxes({ 
           boxId, // 恢复使用传入的boxId
           isOnu, 
           chaoqianTopologyDto: result 
-        }));
+        });
       } catch (error) {
         message.error('加载拓扑数据失败');
         console.error('Failed to load topology:', error);
@@ -63,7 +62,7 @@ const DeviceDetail: React.FC<DeviceDetailProps> = ({
     };
 
     loadTopology();
-  }, [boxId, isOnu, dispatch]);
+  }, [boxId, isOnu, groupBoxes]);
 
   if (loading || !topology) {
     return (
@@ -169,4 +168,4 @@ const styles = {
   }
 };
 
-export default DeviceDetail; 
+export default DeviceDetail;

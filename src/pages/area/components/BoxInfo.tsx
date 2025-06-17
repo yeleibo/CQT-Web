@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Card, Row, Col, Table, Image, Typography, Button } from 'antd';
-import { BoxPortType, ChaoqianBoxDto, ChaoqianBoxPortDto, BoxPortStatus } from '@/store/types';
-import { useAppDispatch } from '@/store/hooks';
+import { BoxPortType, ChaoqianBoxDto, ChaoqianBoxPortDto, BoxPortStatus } from '@/models/chaoqian';
+import { useModel } from '@umijs/max';
 
 import XBox from './boxes/XBox';
 import HubBox from './boxes/HubBox';
@@ -17,7 +17,7 @@ interface BoxInfoProps {
 }
 
 const BoxInfo: React.FC<BoxInfoProps> = ({ box }) => {
-  const dispatch = useAppDispatch();
+  const { hideCard } = useModel('useAreaDeviceModel');
   const [imageVisible, setImageVisible] = useState(false);
   
   // 根据盒子类型返回对应的盒子组件

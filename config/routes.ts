@@ -88,6 +88,13 @@ export default [
     ],
   },
   {
+    path: '/area',
+    name: '区域管理',
+    routes: [
+      { path: '/area/area-draw', name: '区域管理', component: '@/pages/area/DeviceDetail' },
+    ],
+  },
+  {
     path: '/map',
     name: '资源管理',
     icon: 'icon-xiangmu',

@@ -1,16 +1,7 @@
 import React from 'react';
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { 
-  BoxPortType, 
-  ChaoqianBoxDto, 
-  ChaoqianBoxPortDto 
-} from '@/store/types';
-import { 
-  groupBoxes, 
-  setPortStatusColor, 
-  setOutContainer, 
-  pointPort 
-} from '@/store/areaDeviceDataSlice';
+import { useModel } from '@umijs/max';
+import { BoxPortType, ChaoqianBoxDto, ChaoqianBoxPortDto } from '@/models/chaoqian';
+
 
 interface HubBoxDeviceProps {
   hubBox: ChaoqianBoxDto;
@@ -52,8 +43,7 @@ const HubBoxDevice: React.FC<HubBoxDeviceProps> = ({
   hubBox, 
   acWith,
 }) => {
-  const dispatch = useAppDispatch();
-  const { boxInfo } = useAppSelector(state => state.areaDeviceData);
+  const { boxInfo, groupBoxes } = useModel('useAreaDeviceModel');
   
   // 是否显示线条
   const isShowLine = () => {
@@ -76,14 +66,26 @@ const HubBoxDevice: React.FC<HubBoxDeviceProps> = ({
   
   // 处理点击事件
   const handleBoxClick = () => {
-    dispatch(groupBoxes({ boxId: hubBox.id }));
+    groupBoxes({ boxId: hubBox.id });
   };
   
   // 处理端口点击事件
   const handlePortClick = (port: ChaoqianBoxPortDto) => {
-    dispatch(pointPort({ box: hubBox, chaoqianBoxPortDto: port }));
-    dispatch(setOutContainer({ box: hubBox, chaoqianBoxPortDto: port }));
-    dispatch(setPortStatusColor(port));
+    // 处理端口点击
+    console.log('点击了端口:', port);
+  };
+  
+  // 获取端口状态颜色
+  const getPortStatusColor = (status: string) => {
+    switch (status) {
+      case 'Linked':
+        return '#4CAF50'; // 绿色
+      case 'Error':
+        return '#F44336'; // 红色
+      case 'Unlinked':
+      default:
+        return '#9E9E9E'; // 灰色
+    }
   };
   
   return (

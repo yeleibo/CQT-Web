@@ -1,101 +1,116 @@
-import React from 'react';
-import { ChaoqianBoxPortDto } from '@/store/types';
-import { useAppDispatch } from '@/store/hooks';
-import * as G6 from '@antv/g6';
+import React, { useRef, useEffect, useState } from 'react';
+import { InfoCircleOutlined } from '@ant-design/icons';
+import { Modal, message } from 'antd';
+import { ChaoqianBoxPortDto } from '@/models/chaoqian';
+import { checkBoxPortCableCode, getPortColor, PortColor } from './chaoqianStringExtension';
+import BoxPortWidget from './BoxPortWidget';
+
+
 
 interface XBoxProps {
   chaoqianBoxPorts: ChaoqianBoxPortDto[];
+  onChange?: (name: string, code: string | null) => void;
+  codeChangeFunction?: () => Promise<string | null>;
 }
 
-const XBox: React.FC<XBoxProps> = ({ chaoqianBoxPorts }) => {
-  const containerRef = React.useRef<HTMLDivElement>(null);
-  const graphRef = React.useRef<any>(null);
-
-  React.useEffect(() => {
-    if (!containerRef.current || graphRef.current) return;
-
-    // 创建G6图形实例
-    const width = 350;
-    const height = 190;
+const XBox: React.FC<XBoxProps> = ({ chaoqianBoxPorts, onChange, codeChangeFunction }) => {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
+  
+  useEffect(() => {
+    if (!containerRef.current) return;
     
-    const graph = new G6.Graph({
-      container: containerRef.current,
-      width,
-      height,
-      modes: {
-        default: ['drag-canvas', 'zoom-canvas'],
-      },
-      defaultNode: {
-        type: 'circle',
-        size: 20,
-        style: {
-          fill: '#91d5ff',
-          stroke: '#40a9ff',
-          lineWidth: 2,
-        },
-        labelCfg: {
-          style: {
-            fill: '#000',
-            fontSize: 12,
-          },
-        },
-      },
-      defaultEdge: {
-        type: 'line',
-        style: {
-          stroke: '#91d5ff',
-          lineWidth: 2,
-          endArrow: true,
-        },
-      },
-    } as any);
-
-    // 节点数据
-    const data = {
-      nodes: chaoqianBoxPorts.map((port) => ({
-        id: `port-${port.id}`,
-        x: port.x * (width / 100),
-        y: port.y * (height / 100),
-        label: port.name,
-        style: {
-          fill: port.status === 'Error' ? '#ff4d4f' : 
-                port.status === 'Linked' ? '#52c41a' : '#d9d9d9',
-        },
-        port,
-      })),
-      edges: [],
-    };
-
-    (graph as any).data(data);
-    graph.render();
-    
-    // 添加节点点击事件
-    graph.on('node:click', (evt: any) => {
-      const { item } = evt;
-      const node = item.getModel();
-      console.log('点击了端口:', node.port);
-    });
-
-    graphRef.current = graph;
-
-    return () => {
-      if (graphRef.current) {
-        graphRef.current.destroy();
-        graphRef.current = null;
+    const updateSize = () => {
+      if (containerRef.current) {
+        const width = containerRef.current.offsetWidth;
+        const height = containerRef.current.offsetHeight;
+        setContainerSize({ width, height });
       }
     };
-  }, [chaoqianBoxPorts]);
-
+    
+    updateSize();
+    window.addEventListener('resize', updateSize);
+    
+    return () => {
+      window.removeEventListener('resize', updateSize);
+    };
+  }, []);
+  
+  const handleCodeChange = (code: string | null, name: string) => {
+    if (code === null || checkBoxPortCableCode(code, "XBox", name)) {
+      onChange?.(name, code);
+    } else {
+      message.error("The cable type is incorrect");
+    }
+  };
+  
+  const showColorInfoModal = () => {
+    Modal.info({
+      title: 'Port Colors Information',
+      width: 500,
+      content: (
+        <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }}>
+          {Object.values(PortColor).map(color => (
+            <div key={color} style={{ width: 80, padding: '15px 0', textAlign: 'center' }}>
+              <div style={{ 
+                width: 30, 
+                height: 30, 
+                backgroundColor: getPortColor(color as PortColor), 
+                borderRadius: 15,
+                margin: '0 auto' 
+              }} />
+              <div>{color}</div>
+            </div>
+          ))}
+        </div>
+      ),
+    });
+  };
+  
   return (
     <div 
-      ref={containerRef} 
+      ref={containerRef}
       style={{ 
-        width: 350, 
-        height: 190, 
-        border: '1px solid #f0f0f0',
-        borderRadius: 4,
+        padding: '10px 5px',
+        background: `url('/assets/images/chaoqian/box.png')`,
+        backgroundSize: 'cover',
+        position: 'relative',
+        width: '100%',
+        height: '100%'
       }}
-    />
+    >
+      <div style={{ position: 'relative', aspectRatio: '6/2', padding: '10px 30px' }}>
+        <div style={{ position: 'absolute', right: 1, top: 0, zIndex: 1 }}>
+          <InfoCircleOutlined 
+            style={{ color: '#999' }} 
+            onClick={showColorInfoModal}
+          />
+        </div>
+        
+        <div style={{ position: 'relative', width: '100%', height: '100%' }}>
+          {chaoqianBoxPorts.map((port) => (
+            <div
+              key={port.id}
+              style={{
+                position: 'absolute',
+                left: `${port.x * 100}%`,
+                top: `${port.y * 100}%`,
+                width: `${port.width * 100}%`,
+              }}
+            >
+              <BoxPortWidget
+                codeChangeFunction={codeChangeFunction}
+                width={port.width * containerSize.width}
+                type={port.type}
+                name={port.name}
+                boxPort={port}
+                onCodeChange={(code) => handleCodeChange(code, port.name)}
+              />
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
   );
 };
 

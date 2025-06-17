@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import { Card, Row, Col, Typography, Image, Button } from 'antd';
-import { useAppDispatch } from '@/store/hooks';
-import { ChaoqianBoxDto } from '@/store/types';
+import { useModel } from '@umijs/max';
+import { ChaoqianBoxDto } from '@/models/chaoqian';
 import CloseOutlined from '@ant-design/icons/CloseOutlined';
-import { hideOnu } from '@/store/areaDeviceDataSlice';
 import { getFileUrl } from '@/services/api';
 
 
@@ -14,12 +13,12 @@ interface OnuInfoProps {
 }
 
 const OnuInfo: React.FC<OnuInfoProps> = ({ onu }) => {
-  const dispatch = useAppDispatch();
+  const { hideCard } = useModel('useAreaDeviceModel');
   const [imageVisible, setImageVisible] = useState(false);
   
   // 处理关闭
   const handleClose = () => {
-    dispatch(hideOnu());
+    hideCard();
   };
   
   return (

@@ -1,22 +1,20 @@
 import React from 'react';
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { groupBoxes } from '@/store/areaDeviceDataSlice';
-import { ChaoqianBoxDto } from '@/store/types';
+import { useModel } from '@umijs/max';
+import { ChaoqianBoxDto } from '@/models/chaoqian';
 
 interface XBoxDeviceProps {
   box: ChaoqianBoxDto;
 }
 
 const XBoxDevice: React.FC<XBoxDeviceProps> = ({ box }) => {
-  const dispatch = useAppDispatch();
-  const { boxInfo } = useAppSelector(state => state.areaDeviceData);
+  const { boxInfo, groupBoxes } = useModel('useAreaDeviceModel');
   
   // 判断是否是选中的盒子
   const isSelected = boxInfo && boxInfo.id === box.id;
   
   // 处理点击事件
   const handleClick = () => {
-    dispatch(groupBoxes({ boxId: box.id }));
+    groupBoxes({ boxId: box.id });
   };
   
   return (

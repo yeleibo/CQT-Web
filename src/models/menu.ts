@@ -106,6 +106,14 @@ export const getMenus = function (initialState: any): MenuDataItem[] {
       icon: 'icon-xiangmu',
       children: [{ path: '/topology/topo', name: '地图' }],
     },
+    {
+      path: '/area',
+      name: '区域管理',
+      icon: 'icon-xiangmu',
+      children: [
+        { path: '/area/area-draw', name: '区域管理' },
+      ],
+    }
   ];
 
   if (currentUser.user.account === 'admin') {

@@ -20,13 +20,24 @@ export interface FileInfo {
 
 // 盒子端口数据接口
 export interface ChaoqianBoxPortDto {
-  id: string;
+  id: number;
   name: string;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  boxName?: string;
+  boxCode?: string;
   type: BoxPortType;
   status: BoxPortStatus;
-  cableCode: string | null;
-  cableLength: number | null;
-  oppositePortId: string | null;
+  cableCode?: string;
+  cableLength?: number;
+  oppositePortId?: number;
+  orderNumber: number;
+  oppositePortName: string;
+  oppositeBoxName:string;
+  haveCable?: boolean;
+  cableTypeError?: boolean;
   isOuterContainerBorderVisible: boolean;
 }
 
