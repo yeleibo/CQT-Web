@@ -106,7 +106,7 @@ const ONUDetail: React.FC<ONUDetailProps> = ({ chaoqianBoxPortDto, onus }) => {
               }}
             >
               <img
-                src="/assets/images/chaoqian/fiber.png"
+                src="/assets/images/fiber.png"
                 alt="fiber"
                 width={30}
                 height={30}

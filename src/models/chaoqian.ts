@@ -1,8 +1,8 @@
 // 盒子端口类型枚举
 export enum BoxPortType {
-  input = 'input',
-  output = 'output',
-  cascade = 'cascade'
+  input = 0,
+  output = 1,
+  cascade = 2
 }
 
 // 盒子端口状态枚举
