@@ -5,7 +5,6 @@ import { ProLayoutProps } from '@ant-design/pro-components';
  */
 const Settings: ProLayoutProps & {
   pwa?: boolean;
-  logo?: string;
 } = {
   navTheme: 'light',
   // 拂晓蓝
@@ -15,9 +14,9 @@ const Settings: ProLayoutProps & {
   fixedHeader: true,
   fixSiderbar: true,
   colorWeak: false,
-  title: 'TranMile',
+  title: 'Network Management System',
   pwa: false,
-  logo: '/logo.png',
+  logo: false,
   //使用自定义图标时需要加入的
   iconfontUrl: '/icons/iconfont.js',
   //设置样式

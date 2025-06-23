@@ -53,6 +53,8 @@ export async function getInitialState(): Promise<{
 // ProLayout 支持的api https://procomponents.ant.design/components/layout
 export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) => {
   return {
+    // 动态设置 title
+    title: initialState?.applicationConfig?.appName || 'Network Management System',
     // rootContainer:(container:any)=>React.createElement(ConfigProvider, null, container),
     //用户旁边的操作设置
     actionsRender: () => (isDev ? [<Question key="doc" />, <SelectLang key="SelectLang" />] : []),
