@@ -16,25 +16,49 @@ const CommonContainer: React.FC<{
   containerColor?: string;
   statusColor?: string;
   onTap?: () => void;
-}> = ({ text, color = 'transparent', containerColor = '#d9d9d9', statusColor = '#000000', onTap }) => {
+  size?: number;
+}> = ({ text, color = 'transparent', containerColor = '#d9d9d9', statusColor = '#000000', onTap, size = 40 }) => {
   return (
     <div
       onClick={onTap}
       style={{
-        width: 30,
-        height: 30,
-        margin: 2,
+        width: size,
+        height: size,
+        margin: 5,
         cursor: 'pointer',
         position: 'relative',
-        border: `1px solid ${color}`,
-        backgroundColor: containerColor,
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderRadius: 4,
       }}
     >
-      <span style={{ color: statusColor, fontWeight: 'bold' }}>{text}</span>
+      {/* 外层边框 - 仅当color不是transparent时显示 */}
+      {color !== 'transparent' && (
+        <div style={{
+          position: 'absolute',
+          top: -2,
+          left: -2,
+          width: size + 4,
+          height: size + 4,
+          borderRadius: '50%',
+          border: `2px solid ${color}`,
+          zIndex: 1
+        }}></div>
+      )}
+      
+      {/* 内层圆形 */}
+      <div 
+        style={{
+          width: size,
+          height: size,
+          borderRadius: '50%',
+          backgroundColor: containerColor,
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          position: 'relative',
+          zIndex: 0
+        }}
+      >
+        <span style={{ color: statusColor, fontWeight: 'bold', fontSize: 14 }}>{text}</span>
+      </div>
     </div>
   );
 };
@@ -43,7 +67,12 @@ const HubBoxDevice: React.FC<HubBoxDeviceProps> = ({
   hubBox, 
   acWith,
 }) => {
-  const { boxInfo, groupBoxes } = useModel('useAreaDeviceModel');
+  const { 
+    boxInfo, 
+    groupBoxes, 
+    pointPort, 
+    showOutContainer 
+  } = useModel('useAreaDeviceModel');
   
   // 是否显示线条
   const isShowLine = () => {
@@ -71,8 +100,8 @@ const HubBoxDevice: React.FC<HubBoxDeviceProps> = ({
   
   // 处理端口点击事件
   const handlePortClick = (port: ChaoqianBoxPortDto) => {
-    // 处理端口点击
-    console.log('点击了端口:', port);
+    pointPort(hubBox, port);
+    showOutContainer(hubBox, port);
   };
   
   // 获取端口状态颜色
@@ -87,6 +116,9 @@ const HubBoxDevice: React.FC<HubBoxDeviceProps> = ({
         return '#9E9E9E'; // 灰色
     }
   };
+  
+  // 判断是否是选中的盒子
+  const isSelected = boxInfo && boxInfo.id === hubBox.id;
   
   return (
     <div style={{ display: 'flex', alignItems: 'flex-start' }}>
@@ -125,23 +157,44 @@ const HubBoxDevice: React.FC<HubBoxDeviceProps> = ({
       )}
       
       {/* Hub Box 容器 */}
-      <div style={{ width: 225, height: 400 }}>
-        <div
-          style={{
-            position: 'relative',
-            width: '100%',
-            height: '100%',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}
-        >
+      <div style={{ 
+        width: 225, 
+        height: 400,
+        position: 'relative',
+        margin: '0 10px'
+      }}>
+        {/* 左侧绿色圆圈 */}
+        <div style={{
+          position: 'absolute',
+          left: 0,
+          top: 50,
+        
+          width: 30,
+          height: 30,
+          borderRadius: '50%',
+          backgroundColor: '#47bd92',
+        
+        }}></div>
+        
+        {/* 右侧绿色圆圈 */}
+        <div style={{
+          position: 'absolute',
+          right: 0,
+          top: 50,
+      
+          width: 30,
+          height: 30,
+          borderRadius: '50%',
+          backgroundColor: '#47bd92',
+        
+        }}></div>
+        
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
           <div
-            onClick={handleBoxClick}
             style={{
               width: 200,
               height: 375,
-              border: `1.5px dashed ${boxInfo?.id === hubBox.id ? '#52c41a' : '#000'}`,
+              border: `2px dashed ${isSelected ? '#52c41a' : '#000'}`,
               borderRadius: 20,
               backgroundColor: '#fff',
               display: 'flex',
@@ -149,19 +202,21 @@ const HubBoxDevice: React.FC<HubBoxDeviceProps> = ({
               alignItems: 'center',
               justifyContent: 'space-between',
               padding: '20px 0 10px 0',
-              cursor: 'pointer',
             }}
           >
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+              {/* 中心图标和圆圈 */}
               <div
+                onClick={handleBoxClick}
                 style={{
                   width: 90,
                   height: 90,
                   borderRadius: '50%',
-                  backgroundColor: boxInfo?.id === hubBox.id ? '#52c41a' : '#f0f0f0',
+                  backgroundColor: isSelected ? '#52c41a' : '#f0f0f0',
                   display: 'flex',
                   justifyContent: 'center',
                   alignItems: 'center',
+                  cursor: 'pointer',
                 }}
               >
                 <img
@@ -173,7 +228,7 @@ const HubBoxDevice: React.FC<HubBoxDeviceProps> = ({
               
               <div
                 style={{
-                  padding: '5px 0',
+                  margin: '5px 0',
                   fontWeight: 'bold',
                   fontSize: 20,
                 }}
@@ -181,62 +236,79 @@ const HubBoxDevice: React.FC<HubBoxDeviceProps> = ({
                 Hub Box
               </div>
               
-              <div
-                style={{
-                  width: 160,
-                  height: 150,
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}
-              >
-                {/* 输出端口 */}
-                <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', maxWidth: 160 }}>
-                  {hubBoxOutputPorts.map(port => (
+              {/* 输出端口排列成2x4网格 */}
+              <div style={{ 
+                height: 100,
+                width: 160, 
+                display: 'flex', 
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}>
+                {/* 第一行4个端口 */}
+                <div style={{ display: 'flex', justifyContent: 'center' }}>
+                  {hubBoxOutputPorts.slice(0, 4).map((port, index) => (
                     <CommonContainer
                       key={port.id}
-                      text={port.name}
+                      text={(index + 1).toString()}
                       color={port.isOuterContainerBorderVisible ? '#52c41a' : 'transparent'}
-                      containerColor={port.oppositePortId ? '#47bd92' : '#d9d9d9'}
-                      statusColor={port.oppositePortId ? '#fff' : '#000'}
+                      containerColor={index === 0 ? '#47bd92' : '#d9d9d9'}
+                      statusColor={index === 0 ? '#fff' : '#000'}
                       onTap={() => handlePortClick(port)}
+                      size={35}
                     />
                   ))}
                 </div>
                 
-                {/* 底部端口行 */}
-                <div style={{ display: 'flex', marginTop: 10 }}>
-                  {/* 输入端口 */}
-                  {hubBoxInputPort && (
+                {/* 第二行4个端口 */}
+                <div style={{ display: 'flex', justifyContent: 'center' }}>
+                  {hubBoxOutputPorts.slice(4, 8).map((port, index) => (
                     <CommonContainer
-                      text={hubBoxInputPort.name}
-                      color={hubBoxInputPort.isOuterContainerBorderVisible ? '#52c41a' : 'transparent'}
-                      containerColor={hubBoxInputPort.oppositePortId ? '#f15a25' : '#d9d9d9'}
-                      statusColor={hubBoxInputPort.oppositePortId ? '#fff' : '#000'}
-                      onTap={() => handlePortClick(hubBoxInputPort)}
+                      key={port.id}
+                      text={(index + 5).toString()}
+                      color={port.isOuterContainerBorderVisible ? '#52c41a' : 'transparent'}
+                      containerColor="#d9d9d9"
+                      statusColor="#000"
+                      onTap={() => handlePortClick(port)}
+                      size={35}
                     />
-                  )}
-                  
-                  {/* 级联端口 */}
-                  {hubBoxCascadePort && (
-                    <CommonContainer
-                      text={hubBoxCascadePort.name}
-                      color={hubBoxCascadePort.isOuterContainerBorderVisible ? '#52c41a' : 'transparent'}
-                      containerColor={hubBoxCascadePort.oppositePortId ? '#9c27b0' : '#d9d9d9'}
-                      statusColor={hubBoxCascadePort.oppositePortId ? '#fff' : '#000'}
-                      onTap={() => handlePortClick(hubBoxCascadePort)}
-                    />
-                  )}
+                  ))}
                 </div>
+              </div>
+              
+              {/* 底部端口行 - 输入和级联 */}
+              <div style={{ display: 'flex', marginTop: 5, justifyContent: 'center' }}>
+                {/* 输入端口 */}
+                {hubBoxInputPort && (
+                  <CommonContainer
+                    text="in"
+                    color={hubBoxInputPort.isOuterContainerBorderVisible ? '#52c41a' : 'transparent'}
+                    containerColor="#f15a25"
+                    statusColor="#fff"
+                    onTap={() => handlePortClick(hubBoxInputPort)}
+                    size={35}
+                  />
+                )}
+                
+                {/* 级联端口 */}
+                {hubBoxCascadePort && (
+                  <CommonContainer
+                    text="co"
+                    color={hubBoxCascadePort.isOuterContainerBorderVisible ? '#52c41a' : 'transparent'}
+                    containerColor="#9c27b0"
+                    statusColor="#fff"
+                    onTap={() => handlePortClick(hubBoxCascadePort)}
+                    size={35}
+                  />
+                )}
               </div>
             </div>
             
-            <div style={{ display: 'flex', flexDirection: 'column' }}>
-              <div style={{ fontWeight: 'bold', margin: '2px 0' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+              <div style={{ fontWeight: 'bold', marginBottom: 5 }}>
                 设备名称: {hubBox.name}
               </div>
-              <div style={{ fontWeight: 'bold', margin: '2px 0' }}>
+              <div style={{ fontWeight: 'bold' }}>
                 编码: {hubBox.code}
               </div>
             </div>
@@ -247,4 +319,4 @@ const HubBoxDevice: React.FC<HubBoxDeviceProps> = ({
   );
 };
 
-export default HubBoxDevice; 
+export default HubBoxDevice;

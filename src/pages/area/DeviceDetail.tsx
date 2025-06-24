@@ -9,7 +9,7 @@ import FatBoxDevice from './components/FatBoxDevice';
 import BoxInfo from './components/BoxInfo';
 import OnuInfo from './components/OnuInfo';
 import { fetchChaoqianTopology } from '@/services/api';
-import { createMockTopologyData } from '@/mock/topologyMockData';
+import TopologyService from '@/services/topology/service';
 
 interface DeviceDetailProps {
   areaId: number;
@@ -19,7 +19,7 @@ interface DeviceDetailProps {
 
 const DeviceDetail: React.FC<DeviceDetailProps> = ({ 
   areaId, 
-  boxId, 
+  boxId=614420845408329, 
   isOnu = false 
 }) => {
   const { 
@@ -43,16 +43,9 @@ const DeviceDetail: React.FC<DeviceDetailProps> = ({
     const loadTopology = async () => {
       try {
         setLoading(true);
-        // 使用模拟API调用，该API内部使用模拟数据
-        // const result = await fetchChaoqianTopology(isOnu ? { customerId: boxId } : { boxId });
-        const result = createMockTopologyData();
+        const result = await TopologyService.getTopology(boxId);
         setTopology(result);
-        // 加载数据后触发分组操作
-        groupBoxes({ 
-          boxId, // 恢复使用传入的boxId
-          isOnu, 
-          chaoqianTopologyDto: result 
-        });
+    
       } catch (error) {
         message.error('加载拓扑数据失败');
         console.error('Failed to load topology:', error);
@@ -60,9 +53,15 @@ const DeviceDetail: React.FC<DeviceDetailProps> = ({
         setLoading(false);
       }
     };
-
     loadTopology();
-  }, [boxId, isOnu, groupBoxes]);
+  }, [boxId, isOnu]);  // 添加 showCard 作为依赖项
+
+  useEffect(() => {
+    if (topology) {
+      // 首次设置topology数据到model中
+      groupBoxes({ boxId, isOnu, chaoqianTopologyDto: topology });
+    }
+  }, [topology]);
 
   if (loading || !topology) {
     return (
@@ -88,7 +87,9 @@ const DeviceDetail: React.FC<DeviceDetailProps> = ({
           <div
             ref={verticalRef}
             style={{ 
-              width: 2500,
+              width: '100%',
+              minWidth: 1200,
+              maxWidth: 2500,
               height: '100%',
               position: 'relative'
             }}
@@ -112,7 +113,6 @@ const DeviceDetail: React.FC<DeviceDetailProps> = ({
                   />
                 ))}
               </div>
-              
               {/* FatBox设备 */}
               <div style={{ paddingLeft: 80, display: 'flex', justifyContent: 'flex-start' }}>
                 {fatBoxCable.map((fatBox, index) => (
@@ -151,11 +151,15 @@ const styles = {
   deviceDetail: {
     display: 'flex',
     flexDirection: 'column' as const,
-    height: '100%'
+    height: '100%',
+    width: '100%',
+    overflow: 'hidden'
   },
   deviceDetailContainer: {
     flex: 1,
-    position: 'relative' as const
+    position: 'relative' as const,
+    width: '100%',
+    height: '100%'
   },
   bottomCard: {
     position: 'absolute' as const,
