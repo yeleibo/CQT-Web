@@ -1,4 +1,5 @@
-import { ChaoqianTopologyDto, BoxType, BoxPortType, BoxPortStatus } from '@/store/types';
+import { BoxPortStatus, BoxPortType, ChaoqianTopologyDto } from '@/models/chaoqian';
+import { BoxType } from '@/pages/map/BoxTyping';
 
 // 创建模拟数据
 export const createMockTopologyData = (): ChaoqianTopologyDto => {
@@ -32,7 +33,7 @@ export const createMockTopologyData = (): ChaoqianTopologyDto => {
       }
     ]
   };
-  
+
   // 创建一个HubBox
   const hubBox = {
     id: 2,
@@ -91,7 +92,7 @@ export const createMockTopologyData = (): ChaoqianTopologyDto => {
       {
         id: 7,
         name: '4',
-        status: BoxPortStatus.Unlink,
+        status: BoxPortStatus.Unlinked,
         type: BoxPortType.output,
         oppositePortId: null,
         cableCode: '',
@@ -105,7 +106,7 @@ export const createMockTopologyData = (): ChaoqianTopologyDto => {
       {
         id: 8,
         name: 'C',
-        status: BoxPortStatus.Unlink,
+        status: BoxPortStatus.Unlinked,
         type: BoxPortType.cascade,
         oppositePortId: null,
         cableCode: '',
@@ -118,7 +119,7 @@ export const createMockTopologyData = (): ChaoqianTopologyDto => {
       }
     ]
   };
-  
+
   // 创建一个FatBox
   const fatBox1 = {
     id: 3,
@@ -177,7 +178,7 @@ export const createMockTopologyData = (): ChaoqianTopologyDto => {
       {
         id: 11,
         name: '3',
-        status: BoxPortStatus.Unlink,
+        status: BoxPortStatus.Unlinked,
         type: BoxPortType.output,
         oppositePortId: null,
         cableCode: '',
@@ -190,7 +191,7 @@ export const createMockTopologyData = (): ChaoqianTopologyDto => {
       }
     ]
   };
-  
+
   // 创建一个FatBox
   const fatBox2 = {
     id: 4,
@@ -235,7 +236,7 @@ export const createMockTopologyData = (): ChaoqianTopologyDto => {
       {
         id: 15,
         name: '2',
-        status: BoxPortStatus.Unlink,
+        status: BoxPortStatus.Unlinked,
         type: BoxPortType.output,
         oppositePortId: null,
         cableCode: '',
@@ -248,7 +249,7 @@ export const createMockTopologyData = (): ChaoqianTopologyDto => {
       }
     ]
   };
-  
+
   // 创建ONU
   const onu1 = {
     id: 5,
@@ -278,7 +279,7 @@ export const createMockTopologyData = (): ChaoqianTopologyDto => {
       }
     ]
   };
-  
+
   // 创建ONU
   const onu2 = {
     id: 6,
@@ -308,7 +309,7 @@ export const createMockTopologyData = (): ChaoqianTopologyDto => {
       }
     ]
   };
-  
+
   // 创建ONU
   const onu3 = {
     id: 7,
@@ -338,8 +339,8 @@ export const createMockTopologyData = (): ChaoqianTopologyDto => {
       }
     ]
   };
-  
+
   return {
-    boxes: [xBox, hubBox, fatBox1, fatBox2, onu1, onu2, onu3]
-  } as ChaoqianTopologyDto;
-}; 
+    boxes: [xBox, hubBox, fatBox1, fatBox2, onu1, onu2, onu3],
+  } as unknown as ChaoqianTopologyDto;
+};

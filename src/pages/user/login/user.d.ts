@@ -5,11 +5,11 @@ type LoginParam = {
 
 
 type UserInfo = {
-  userId?: string;
   user: Partial<UserBase>;
   token?: string;
   permissionCodes?: string[];
-  managementInventoryHouseIds: number[]
+  managementInventoryHouseIds: number[];
+  menus: Menus[];
 };
 
 

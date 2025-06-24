@@ -1,45 +1,45 @@
 export type ResourceStatistic={
-  type: AreaResourceType;
+  type: PorjectResourceType;
   totalCount: number;
 }
 
-export enum AreaResourceType {
-  ChaoqianXBox = 0,
-  ChaoqianHubBox = 1,
-  ChaoqianFatBox = 2,
-  ChaoqianFatEndBox = 3,
-  ChaoqianCableType0 = 11,
-  ChaoqianCableType1 = 12,
-  ChaoqianCableType2 = 13,
-  ChaoqianCableType3 = 14,
-  ChaoqianCableType4 = 15,
-  ChaoqianCableType5 = 16,
-  ChaoqianONU = 30,
+export enum PorjectResourceType {
+   XBox = 0,
+   HubBox = 1,
+   FatBox = 2,
+   FatEndBox = 3,
+   CableType0 = 11,
+   CableType1 = 12,
+   CableType2 = 13,
+   CableType3 = 14,
+   CableType4 = 15,
+   CableType5 = 16,
+   ONU = 30,
 }
 
-function toString(type: AreaResourceType): string {
+function toString(type: PorjectResourceType): string {
   switch (type) {
-    case AreaResourceType.ChaoqianXBox:
+    case PorjectResourceType.XBox:
       return 'XBox';
-    case AreaResourceType.ChaoqianHubBox:
+    case PorjectResourceType.HubBox:
       return 'HubBox';
-    case AreaResourceType.ChaoqianFatBox:
+    case PorjectResourceType.FatBox:
       return 'FatBox';
-    case AreaResourceType.ChaoqianFatEndBox:
+    case PorjectResourceType.FatEndBox:
       return 'FatEndBox';
-    case AreaResourceType.ChaoqianCableType0:
+    case PorjectResourceType.CableType0:
       return '12C MPO cable';
-    case AreaResourceType.ChaoqianCableType1:
+    case PorjectResourceType.CableType1:
       return '5mm round cable';
-    case AreaResourceType.ChaoqianCableType2:
+    case PorjectResourceType.CableType2:
       return '3mm round cable';
-    case AreaResourceType.ChaoqianCableType3:
+    case PorjectResourceType.CableType3:
       return '2*5 flat cable';
-    case AreaResourceType.ChaoqianCableType4:
+    case PorjectResourceType.CableType4:
       return '1C 4*7 flat cable';
-    case AreaResourceType.ChaoqianCableType5:
+    case PorjectResourceType.CableType5:
       return '12C 4*7 flat cable';
-    case AreaResourceType.ChaoqianONU:
+    case PorjectResourceType.ONU:
       return 'ONU';
     default:
       return '';
@@ -51,10 +51,11 @@ export type LatLng={
   longitude: number;
 }
 
-export type AreaDto={
+// 项目数据类型
+export type ProjectDto ={
   id: number;
   name: string;
-  mapZoom: number;
+  mapHeight: number;
   status: number;
   resourceStatistics: ResourceStatistic[];
   mapRangePoints: LatLng[];
@@ -62,6 +63,6 @@ export type AreaDto={
   floorTotal?: number; // 可选属性
 }
 
-export type AreaStatisticsQueryParam = {
+export type ProjectStatisticsQueryParam = {
   keyword?:string
 }

@@ -1,16 +1,16 @@
 import React, {useEffect} from "react";
 import {Form} from "antd";
-import {AreaDto} from "@/pages/project/type";
+import {ProjectDto} from "@/pages/project/type";
 
 interface Props  {
    onSave?: () => void;
    onCancel?: () => void;
    model: 'add' | 'edit';
    open:boolean;
-   data:AreaDto;
+   data:ProjectDto;
 }
 
-const AreaStatisticsSavePage:React.FC<Props> = (props)=>{
+const ProjectStatisticsSavePage:React.FC<Props> = (props)=>{
   const [form] = Form.useForm();
   useEffect(() => {
     if (props.open) {
@@ -23,4 +23,4 @@ const AreaStatisticsSavePage:React.FC<Props> = (props)=>{
    </div>
 }
 
-export default AreaStatisticsSavePage;
+export default ProjectStatisticsSavePage;

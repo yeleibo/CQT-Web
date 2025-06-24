@@ -8,7 +8,6 @@ const { REACT_APP_ENV = 'dev' } = process.env;
 
 export default defineConfig({
 
-  extraPostCSSPlugins: [require('tailwindcss')],
 
   /**
    * @name 启用model插件

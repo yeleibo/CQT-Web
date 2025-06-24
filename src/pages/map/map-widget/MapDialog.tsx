@@ -48,47 +48,6 @@ const MapDialog: React.FC<MapDialogProps> = ({ title, content, onClose, isVisibl
         onClick={onClose}
       ></Button>
     </div>
-    // <div
-    //   style={{
-    //     position: 'absolute',
-    //     width: '300px',
-    //     height: '200px',
-    //     backgroundColor: '#000000',
-    //     // backgroundColor: '#ffffff',
-    //     borderRadius: '10px',
-    //     overflowY: 'auto',
-    //     pointerEvents: 'auto',
-    //     display: this.isVisible ? 'block' : 'none',
-    //   }}
-    // >
-    //   {/* 标题 */}
-    //   <div
-    //     style={{
-    //       padding: '10px',
-    //       backgroundColor: '#ffffff',
-    //       fontSize: '18px',
-    //       fontWeight: 'bold',
-    //       textAlign: 'center',
-    //     }}
-    //   >
-    //     {title}
-    //   </div>
-    //
-    //   {/* 内容 */}
-    //   <div style={{ padding: '10px' }}>{content}</div>
-    //
-    //   {/* 关闭按钮 */}
-    //   <Button
-    //     icon={<CloseOutlined />}
-    //     onClick={this.closeDialog.bind(this)}
-    //     style={{
-    //       position: 'absolute',
-    //       top: '10px',
-    //       right: '10px',
-    //       cursor: 'pointer',
-    //     }}
-    //   />
-    // </div>,
   );
 };
 

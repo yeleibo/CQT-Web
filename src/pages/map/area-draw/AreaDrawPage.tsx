@@ -1,6 +1,4 @@
-import MapDrawer, { useBaseMapLayer } from '@/pages/map/MapTools/MapDrawer';
-import { BaseMapLayers } from '@/pages/map/MapTools/MapLayersTyping';
-import { initViewer, PointEntity, PolylineEntity } from '@/pages/map/MapTools/MapUtils';
+
 import { LatLng } from '@/pages/project/type';
 import { PageContainer } from '@ant-design/pro-components';
 import { Button } from 'antd';

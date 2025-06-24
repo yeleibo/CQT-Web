@@ -6,11 +6,12 @@ import { RequestConfig, RequestOptions } from '@@/plugin-request/request';
 import { LinkOutlined } from '@ant-design/icons';
 import type { Settings as LayoutSettings } from '@ant-design/pro-components';
 import { SettingDrawer } from '@ant-design/pro-components';
-import { Link, RunTimeLayoutConfig, SelectLang, history } from '@umijs/max';
+import { history, Link, RunTimeLayoutConfig, SelectLang } from '@umijs/max';
 import { Image, message } from 'antd';
 import 'cesium/Build/Cesium/Widgets/widgets.css';
 import defaultSettings from '../config/defaultSettings';
 import userDefaultAvatar from './assets/images/user_default_avatar.png';
+import SystemService from '@/pages/system/service';
 
 const isDev = process.env.NODE_ENV === 'development';
 const loginPath = '/user/login';
@@ -18,22 +19,51 @@ const loginPath = '/user/login';
 /**
  * @see  https://umijs.org/zh-CN/plugins/plugin-initial-state
  * */
+
+interface ApplicationConfig {
+  applicationName: string;
+  longitude: number;
+  latitude: number;
+  mapViewHeight: number;
+}
+
 export async function getInitialState(): Promise<{
   settings?: Partial<LayoutSettings>;
   currentUser?: UserInfo;
   loading?: boolean;
+  applicationConfig?: ApplicationConfig;
   fetchUserInfo?: () => Promise<UserInfo | undefined>;
 }> {
   const fetchUserInfo = async () => {
     try {
-      // console.log(user.result,'user')
-      let currentUser = await Service.queryCurrent();
-      return currentUser;
+      return await Service.me();
     } catch (error) {
       history.push(loginPath);
     }
     return undefined;
   };
+
+  const loadConfig = async () => {
+    {
+      try {
+        const response = await SystemService.configs();
+
+        // 验证并转换数据
+        const validatedConfig: ApplicationConfig = {
+          applicationName: response['ApplicationName'] || '综合资源管理平台',
+          longitude: Number(response['MapDefaultLongitude']) || 114.2933,
+          latitude: Number(response['MapDefaultLatitude']) || 30.5471,
+          mapViewHeight: Number(response['MapDefaultViewHeight']) || 180000,
+        };
+        return validatedConfig;
+      } catch (e) {
+        console.error(`错误${e}`);
+      }
+      return undefined;
+    }
+  };
+  const config = await loadConfig();
+
   // 如果不是登录页面，执行
   const { location } = history;
   if (location.pathname !== loginPath) {
@@ -41,11 +71,13 @@ export async function getInitialState(): Promise<{
     return {
       fetchUserInfo,
       currentUser,
+      applicationConfig: config,
       settings: defaultSettings as Partial<LayoutSettings>,
     };
   }
   return {
     fetchUserInfo,
+    applicationConfig: config,
     settings: defaultSettings as Partial<LayoutSettings>,
   };
 }
@@ -54,7 +86,7 @@ export async function getInitialState(): Promise<{
 export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) => {
   return {
     // 动态设置 title
-    title: initialState?.applicationConfig?.appName || 'Network Management System',
+    title: initialState?.applicationConfig?.applicationName || 'Network Management System',
     // rootContainer:(container:any)=>React.createElement(ConfigProvider, null, container),
     //用户旁边的操作设置
     actionsRender: () => (isDev ? [<Question key="doc" />, <SelectLang key="SelectLang" />] : []),
@@ -65,13 +97,13 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
         return <AvatarDropdown menu={true}>{avatarChildren}</AvatarDropdown>;
       },
     },
-    //水印
-    // waterMarkProps: {
-    //   content: initialState?.currentUser?.name,
-    // },
-    // rightContentRender: () => <TagView />,
-    //页脚
-    // footerRender: () => <Footer />,
+    // 修改 menu 配置
+    menu: {
+      params: { userId: initialState?.currentUser?.user.id },
+      request: async () => {
+        return initialState?.currentUser?.menus ?? [];
+      },
+    },
     //页面改变
     onPageChange: () => {
       const { location } = history;
@@ -117,10 +149,6 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
       );
     },
     ...initialState?.settings,
-    //配置菜单数据
-    menuDataRender: () => {
-      return getMenus(initialState);
-    },
   };
 };
 

@@ -1,6 +1,6 @@
-import MapDialog from '@/pages/map/MapTools/MapDialog';
 import * as Cesium from 'cesium';
 import { createRoot } from 'react-dom/client';
+import MapDialog from '@/pages/map/map-widget/MapDialog';
 
 //故障线路
 export function faultyCableMaterial() {
@@ -63,7 +63,7 @@ export function SpriteLineMaterial({
       material.alpha = colorImage.a * color.a;
       // 将采样得到的纹理的rgb值乘以1.5，设置为材质的diffuse颜色。
       // 这里乘以1.5是为了增强颜色的亮度。
-      material.diffuse = colorImage.rgb * 1.5;
+      material.diffuse = colorImage.rgb * 1.8;
       return material;
     }
   `;
@@ -135,7 +135,6 @@ export class CesiumMapDialog {
   private position: Cesium.Cartesian3;
   private container: HTMLDivElement;
   private isVisible: boolean = false;
-  private mapRoot: ReturnType<typeof createRoot>;
   private title: string;
   private content: string;
 
@@ -159,9 +158,6 @@ export class CesiumMapDialog {
     // 将弹窗元素添加到 Cesium 的容器中
     viewer.cesiumWidget.container.appendChild(this.container);
 
-    // 创建 React root
-    this.mapRoot = createRoot(this.container);
-
     // 关闭之前的弹窗
     CesiumMapDialog.activeDialog?.closeDialog();
 
@@ -180,19 +176,50 @@ export class CesiumMapDialog {
 
   // 渲染弹窗 React 组件
   private renderDialog() {
-    this.mapRoot.render(
-      <MapDialog
-        title={this.title}
-        content={this.content}
-        onClose={() => this.closeDialog()}
-        isVisible={this.isVisible}
-      />,
+    const ReactDOM = require('react-dom');
+    const React = require('react');
+    
+    ReactDOM.render(
+      React.createElement(MapDialog, {
+        title: this.title,
+        content: this.content,
+        onClose: () => this.closeDialog()
+      }),
+      this.container
     );
   }
 
   // 显示弹窗
   public showDialog() {
     this.isVisible = true;
+  }
+
+  // 隐藏弹窗
+  public hideDialog() {
+    this.isVisible = false;
+    this.renderDialog();
+  }
+
+  // 切换弹窗的显示状态
+  public toggleDialog() {
+    this.isVisible = !this.isVisible;
+    this.renderDialog();
+  }
+
+  // 设置弹窗标题
+  public setTitle(newTitle: string) {
+    this.title = newTitle;
+    if (this.isVisible) {
+      this.renderDialog();
+    }
+  }
+
+  // 设置弹窗内容
+  public setContent(newContent: string) {
+    this.content = newContent;
+    if (this.isVisible) {
+      this.renderDialog();
+    }
   }
 
   // 更新弹窗在屏幕上的位置
@@ -229,8 +256,11 @@ export class CesiumMapDialog {
     // 移除 DOM 元素
     // 延迟卸载以避免同步卸载问题
     setTimeout(() => {
-      this.mapRoot.unmount();
-      this.container.remove();
+      const ReactDOM = require('react-dom');
+      ReactDOM.unmountComponentAtNode(this.container);
+      if (this.container.parentNode) {
+        this.container.parentNode.removeChild(this.container);
+      }
     }, 0);
   }
 }

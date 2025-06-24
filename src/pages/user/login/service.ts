@@ -6,7 +6,7 @@ const Service={
     method: 'POST',
     data,
   }),
-  queryCurrent: ()=> request<UserInfo>(`/${SystemConst.API_BASE}/users/me`, {
+  me: ()=> request<UserInfo>(`/${SystemConst.API_BASE}/users/me`, {
     method: 'GET',
   }),
   changePassword:(password:string)=>request(`/${SystemConst.API_BASE}/account/change-password`,{

@@ -1,24 +1,23 @@
 import BoxInfo from '@/pages/map/BoxDetail';
 import { Box, BoxConnectingLine, BoxType, DataType } from '@/pages/map/BoxTyping';
-import MapDrawer, { useBaseMapLayer, useOtherMapLayers } from '@/pages/map/MapTools/MapDrawer';
-import { BaseMapLayers } from '@/pages/map/MapTools/MapLayersTyping';
-import { flyToLocation, initViewer } from '@/pages/map/MapTools/MapUtils';
-import { PageContainer } from '@ant-design/pro-components';
 import { Button, Collapse, List, Row } from 'antd';
 import Search from 'antd/es/input/Search';
 import * as Cesium from 'cesium';
 import { Cartesian3, Ion, ScreenSpaceEventHandler, ScreenSpaceEventType, Viewer } from 'cesium';
 import React, { useEffect, useRef, useState } from 'react';
+import { GetUserMapLayers, switchBaseLayer } from '@/pages/map/map-tools/MapLayersTyping';
+import { flyToLocation, initViewer } from './map-tools/MapUtils';
+import CoordTransforms from '@/pages/map/map-tools/CoordinateTransform';
+import MapLayersDrawer from '@/pages/map/map-widget/MapLayersDrawer';
 
 const Maps: React.FC = () => {
-  const viewerRef = useRef<null | Viewer>(null);
-  const viewerContainerRef = useRef(null);
+  const viewerRef = useRef<HTMLDivElement | null>(null);
+  const viewerInstance = useRef<Viewer | null>(null);
+
   //抽屉开关
   const [showDrawer, setShowDrawer] = useState(false);
-  //地图切换
-  const { baseMapLayer, changeBaseMapLayer } = useBaseMapLayer(BaseMapLayers.at(0)!);
   //盒子展示控制
-  const { showBoxType, selectedTypes } = useOtherMapLayers();
+  // const { showBoxType, selectedTypes } = useOtherMapLayers();
   //选中的数据
   const [checkData, setCheckData] = useState<any>();
   //打开数据对话框
@@ -93,79 +92,33 @@ const Maps: React.FC = () => {
 
   //初始化
   useEffect(() => {
-    initViewer('csm-viewer-container', baseMapLayer, async (viewer) => {
-      viewerRef.current = viewer;
-      Ion.defaultAccessToken =
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI3NWE4MTA4Ny0zYjc1LTRmNWYtYjBlNS0zMGZlZDAzYmM1YjUiLCJpZCI6MjUwNjUzLCJpYXQiOjE3Mjk4MzcxODJ9.jPcB3iLwMCIWC3RFGMnO-EmIYtI0OtSXaMBYPX9eEv8';
-      //相机视角
-      // viewer.camera.setView({
-      //   destination: Cartesian3.fromDegrees(115.58, 28.85, 12000),
-      // });
-      // const tileset = viewer.scene.primitives.add(
-      //   await Cesium.Cesium3DTileset.fromIonAssetId(96188),
-      // );
+    if(viewerRef.current){
+      viewerInstance.current = initViewer(viewerRef.current);
+      switchBaseLayer(viewerInstance.current, 'GoogleStandard');
+      flyToLocation({
+        viewer: viewerInstance.current,
+        position: CoordTransforms.CartographicToCartesian3(
+          106.629708,-6.171257, 10000
+        ),
+      });
+    }
 
-      // boxConnectingLine.forEach((e) => {
-      //   viewerRef.current?.entities.add(createPolylineEntity(e.latLng!, e));
-      // });
-      // boxData.forEach((e) => {
-      //   viewerRef.current?.entities.add(
-      //     createImageEntity(
-      //       Cesium.Cartesian3.fromDegrees(
-      //         e.latLng.longitude,
-      //         e.latLng.latitude,
-      //         0,
-      //         Cesium.Ellipsoid.WGS84,
-      //       ),
-      //       e,
-      //     ),
-      //   );
-      // });
-      // //加载数据
-      // let lineDataSource = new Cesium.CustomDataSource('boxConnectingLine');
-      // boxConnectingLine.forEach((e) => {
-      //   lineDataSource.entities.add(createPolylineEntity(e.latLng, e));
-      // });
-      // let boxDataSource = new Cesium.CustomDataSource('box');
-      // boxData.forEach((e) => {
-      //   boxDataSource.entities.add(createImageEntity(e.latLng, e));
-      // });
-      // let modelDataSource = new Cesium.CustomDataSource('model');
-      // modelDataSource.entities.add(
-      //   ModelEntity(
-      //     { latitude: 28.855654706737884, longitude: 115.57507307895555 },
-      //     {
-      //       id: 1498151,
-      //       name: '楼宇',
-      //       type: ModelType.building,
-      //       latLng: { latitude: 28.855654706737884, longitude: 115.57507307895555 },
-      //     },
-      //   ),
-      // );
-      // viewer.dataSources.add(boxDataSource);
-      // viewer.dataSources.add(lineDataSource);
-      // viewer.dataSources.add(modelDataSource);
 
-      // 启用广告牌聚合
-      // lineDataSource.clustering.enabled = true;
-      // lineDataSource.clustering.pixelRange = 15;
-      // lineDataSource.clustering.minimumClusterSize = 20;
-    });
     return () => {
-      if (viewerRef.current) {
-        viewerRef.current.destroy();
-        viewerRef.current = null;
+      if (viewerInstance.current) {
+        viewerInstance.current.destroy();
+        viewerInstance.current = null;
       }
     };
-  }, [baseMapLayer]);
+  }, []);
 
   //点击
   useEffect(() => {
-    const viewer = viewerRef.current;
+    const viewer = viewerInstance.current;
     if (viewer) {
       const handler = new ScreenSpaceEventHandler(viewer.scene.canvas);
       handler.setInputAction((event: any) => {
-        viewerRef.current?.entities.removeById('local');
+        viewerInstance.current?.entities.removeById('local');
         let pick = viewer.scene.pick(event.position);
         if (Cesium.defined(pick)) {
           if (pick.id.properties.type.getValue() === 2) {
@@ -185,10 +138,6 @@ const Maps: React.FC = () => {
     }
   }, []);
 
-  //抽屉开关
-  const DrawerToggle = (open: boolean) => {
-    setShowDrawer(open);
-  };
 
   //盒子开关
   const BoxInfoOk = () => {
@@ -219,104 +168,86 @@ const Maps: React.FC = () => {
 
   return (
     <>
-      <PageContainer pageHeaderRender={false}>
+      <div ref={viewerRef} style={{ width: '100%', height: '100vh' }}>
+        {viewerInstance && (
+          <MapLayersDrawer viewer={viewerInstance.current!} baseMapLayers={GetUserMapLayers(0)} />
+        )}
         <div
-          id="csm-viewer-container"
-          ref={viewerContainerRef}
-          style={{ width: '100%', height: '100%' }}
+          style={{
+            position: 'absolute',
+            left: '30px',
+            height: '300px',
+            width: '400px',
+            top: '80px',
+            zIndex: 1000,
+          }}
         >
-          <div style={{ position: 'absolute', left: '20px', top: '10px', zIndex: 1000 }}>
-            <Button
-              type="primary"
-              style={{ width: '50px', height: '50px' }}
-              onClick={() => DrawerToggle(true)}
-            >
-              图层
-            </Button>
-          </div>
-          <div
-            style={{
-              position: 'absolute',
-              left: '30px',
-              height: '300px',
-              width: '400px',
-              top: '80px',
-              zIndex: 1000,
-            }}
-          >
-            <Search
-              placeholder="Enter search text"
-              onSearch={handleSearch}
-              allowClear
-              enterButton
-              loading={loading}
-            />
-            {data.length > 0 && (
-              <div style={{ marginTop: '10px', overflowY: 'auto' }}>
-                <List
-                  style={{ backgroundColor: 'white' }}
-                  dataSource={data}
-                  renderItem={(e) => (
-                    <>
-                      <div style={{ marginBottom: '10px' }}>
-                        <Collapse
-                          onChange={() =>
-                            flyToLocation({
-                              viewer: viewerRef.current!,
-                              position: Cartesian3.fromDegrees(
-                                e.latLng.longitude,
-                                e.latLng.latitude,
-                              ),
-                              addMark: true,
-                            })
-                          }
-                          items={[
-                            {
-                              key: e.id,
-                              label: e.name,
-                              children: (
-                                <>
-                                  <Row>
-                                    <p>经度:</p>
-                                    <p>{e.latLng.longitude}</p>
-                                  </Row>
-                                  <Row>
-                                    <p>纬度:</p>
-                                    <p>{e.latLng.latitude}</p>
-                                  </Row>
-                                  <Button
-                                    type="primary"
-                                    style={{ width: '50px', height: '50px' }}
-                                    onClick={() => {
-                                      setCheckData(e);
-                                      BoxInfoOk();
-                                    }}
-                                  >
-                                    详情
-                                  </Button>
-                                </>
-                              ),
-                            },
-                          ]}
-                        />
-                      </div>
-                    </>
-                  )}
-                />
-              </div>
-            )}
-          </div>
-          <MapDrawer
-            baseMapLayers={baseMapLayer}
-            changeBaseMapLayer={(layer) => changeBaseMapLayer(layer, viewerRef.current!)}
-            onClose={() => DrawerToggle(false)}
-            open={showDrawer}
+          <Search
+            placeholder="Enter search text"
+            onSearch={handleSearch}
+            allowClear
+            enterButton
+            loading={loading}
           />
-          {dataModal && (
-            <BoxInfo close={BoxInfoOk} model={'add'} data={checkData} open={dataModal} />
+          {data.length > 0 && (
+            <div style={{ marginTop: '10px', overflowY: 'auto' }}>
+              <List
+                style={{ backgroundColor: 'white' }}
+                dataSource={data}
+                renderItem={(e) => (
+                  <>
+                    <div style={{ marginBottom: '10px' }}>
+                      <Collapse
+                        onChange={() =>
+                          flyToLocation({
+                            viewer: viewerInstance.current!,
+                            position: Cartesian3.fromDegrees(
+                              e.latLng.longitude,
+                              e.latLng.latitude,
+                            ),
+                          })
+                        }
+                        items={[
+                          {
+                            key: e.id,
+                            label: e.name,
+                            children: (
+                              <>
+                                <Row>
+                                  <p>经度:</p>
+                                  <p>{e.latLng.longitude}</p>
+                                </Row>
+                                <Row>
+                                  <p>纬度:</p>
+                                  <p>{e.latLng.latitude}</p>
+                                </Row>
+                                <Button
+                                  type="primary"
+                                  style={{ width: '50px', height: '50px' }}
+                                  onClick={() => {
+                                    setCheckData(e);
+                                    BoxInfoOk();
+                                  }}
+                                >
+                                  详情
+                                </Button>
+                              </>
+                            ),
+                          },
+                        ]}
+                      />
+                    </div>
+                  </>
+                )}
+              />
+            </div>
           )}
         </div>
-      </PageContainer>
+
+        {dataModal && (
+          <BoxInfo close={BoxInfoOk} model={'add'} data={checkData} open={dataModal} />
+        )}
+      </div>
     </>
   );
 };

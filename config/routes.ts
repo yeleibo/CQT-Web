@@ -1,6 +1,9 @@
 //包含两个/的才会开启多标签页
 
+import ProjectListPage from '@/pages/project/ProjectListPage';
+
 export default [
+  { path: '/', component: '@/pages/home/HomeRedirectPage' },
   {
     path: '/user',
     layout: false,
@@ -16,10 +19,20 @@ export default [
         path: '/home/index',
         component: '@/pages/home/index',
       },
+    ],
+  },
+  {
+    path: '/project',
+    name: 'Project',
+    routes: [
       {
-        name: '告警信息',
-        path: '/home/OpticalCableMonitoringWaringPage',
-        component: '@/pages/home/OpticalCableMonitoring/OpticalCableMonitoringWaringPage',
+        path: '/project/index',
+        component: '@/pages/project/ProjectListPage',
+      },
+      {
+        path: '/project/boxStatistics',
+        title: 'boxStatistics',
+        component: '@/pages/project/BoxStatisticsPage',
       },
     ],
   },
@@ -61,22 +74,6 @@ export default [
     ],
   },
   {
-    path: '/project',
-    name: 'Project',
-    routes: [
-      {
-        path: '/project/area',
-        title: 'zoneConfiguration',
-        component: '@/pages/project/ZoneConfigurationPage',
-      },
-      {
-        path: '/project/boxStatistics',
-        title: 'boxStatistics',
-        component: '@/pages/project/BoxStatisticsPage',
-      },
-    ],
-  },
-  {
     path: '/topology',
     name: '拓扑图',
     routes: [
@@ -87,13 +84,7 @@ export default [
       },
     ],
   },
-  {
-    path: '/area',
-    name: '区域管理',
-    routes: [
-      { path: '/area/area-draw', name: '区域管理', component: '@/pages/area/DeviceDetail' },
-    ],
-  },
+
   {
     path: '/map',
     name: '资源管理',
@@ -131,6 +122,5 @@ export default [
       },
     ],
   },
-  { path: '/', redirect: '/home/index' },
   { path: '*', layout: false, component: './404' },
 ];

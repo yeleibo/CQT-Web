@@ -81,7 +81,7 @@ export const getMenus = function (initialState: any): MenuDataItem[] {
       icon: 'icon-xiangmu',
       children: [
         {
-          path: '/project/area',
+          path: '/project/index',
           name: intl.formatMessage({ id: 'zoneConfiguration' }),
         },
         {

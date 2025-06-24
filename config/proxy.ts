@@ -14,8 +14,8 @@ export default {
   dev: {
     '/api/': {
       // 要代理的地址
-      target: 'http://61.175.230.9:8012',
-      // target: 'http://localhost:5103',
+      // target: 'http://61.175.230.9:8012',
+      target: 'http://localhost:5103',
       changeOrigin: true,
     },
     '/api1/': {
