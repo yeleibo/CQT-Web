@@ -1,0 +1,113 @@
+/* 公共卡片样式 */
+.stats-card {
+  background: linear-gradient(to bottom, #FFFFFF, #DEEFFF);
+  border-radius: 9px;
+  box-shadow: 0 4px 24px 0 rgba(56, 139, 255, 0.08);
+  width: 100%;
+  font-family: 'PingFang SC', 'Microsoft YaHei', Arial, sans-serif;
+  border: 2px solid #ffffff;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  max-height: 100%;
+  margin: 0;
+  padding: 1px;
+}
+
+/* 公共卡片头部样式 */
+.stats-header {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: 48px;
+  height: 48px;
+  flex-shrink: 0;
+  background: #fff url('/标题栏.png') bottom center no-repeat;
+  background-size: 100% 100%;
+  padding-inline: 15px;
+}
+
+/* 公共头部图标样式 */
+.stats-header-icon {
+  width: 24px;
+  height: 24px;
+  margin-right: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 公共标题样式 */
+.stats-title {
+  font-size: 20px;
+  font-weight: bold;
+  color: #222;
+  letter-spacing: 2px;
+  flex: none;
+}
+
+/* 公共头部间隔样式 */
+.stats-header-spacer {
+  flex: 1;
+}
+
+/* 公共更多按钮样式 */
+.stats-more {
+  font-size: 16px;
+  color: #333;
+  opacity: 0.7;
+  cursor: pointer;
+  font-weight: 400;
+  transition: color 0.2s;
+}
+
+.stats-more:hover {
+  color: #388BFF;
+}
+
+/* 公共内容区域样式 */
+.stats-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 16px;
+  box-sizing: border-box;
+  flex: 1;
+  min-height: 0;
+  /*overflow: hidden;*/
+}
+
+/* 响应式样式 */
+@media (max-width: 1200px) {
+  .stats-title {
+    font-size: 18px;
+  }
+}
+
+@media (max-width: 800px) {
+  .stats-title {
+    font-size: 16px;
+  }
+}
+
+/* 公共滚动条样式 */
+.stats-scrollable::-webkit-scrollbar {
+  width: 4px;
+}
+
+.stats-scrollable::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+}
+
+.stats-scrollable::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+}
+
+.stats-scrollable::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}

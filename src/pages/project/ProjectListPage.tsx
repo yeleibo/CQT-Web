@@ -47,7 +47,7 @@ const ProjectListPage: React.FC = () => {
       valueType: 'text',
       search: false,
       render: (text, record) =>
-        record.status === 0
+        record.status === ''
           ? intl.formatMessage({ id: 'unSubmitted' })
           : intl.formatMessage({ id: 'submitted' }),
     },
@@ -81,7 +81,7 @@ const ProjectListPage: React.FC = () => {
           try {
             await ProjectService.updateProjectStatistics({
               ...record,
-              status: 1
+              status: '1'
             });
             message.success(intl.formatMessage({ id: 'submitSuccess' }));
             actionRef.current?.reload();
@@ -123,7 +123,7 @@ const ProjectListPage: React.FC = () => {
             search={{ labelWidth: 120 }}
             columns={columns}
             request={async (params) => {
-              const areas = await ProjectService.getProjectStatistics(params);
+              const areas = await ProjectService.getProjectList(params);
               return { data: areas, success: true, total: areas.length };
             }}
           />

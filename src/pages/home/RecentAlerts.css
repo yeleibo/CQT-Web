@@ -1,0 +1,117 @@
+/*
+ * RecentAlerts.css - 告警信息组件样式
+ * 注意：通用卡片样式已移至commonStyles.css
+ */
+
+/* 告警内容区域 */
+.recent-alerts-content {
+  display: flex;
+  flex-direction: column;
+  padding: 12px;
+  box-sizing: border-box;
+  min-height: 0;
+  /* 已在内联样式中设置flex: none和height */
+}
+
+/* 无告警数据时的提示 */
+.recent-alerts-empty {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  color: #7A8CA4;
+  font-size: 16px;
+}
+
+/* 告警列表容器 */
+.recent-alerts-list {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  height: 100%;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+  gap: 10px; /* 增加项目之间的垂直间距 */
+}
+
+/* 列表滚动效果 */
+.recent-alerts-list.scrolling {
+  opacity: 0.9;
+}
+
+/* 单个告警项目 */
+.recent-alerts-item {
+  display: flex;
+  align-items: center;
+  border-radius: 0; /* 取消圆角 */
+  transition: all 0.2s ease;
+  flex: 0 0 auto; /* 修改为自动高度 */
+  padding: 10px 12px; /* 增加上下内边距 */
+  height: 40px; /* 固定高度 */
+  box-sizing: border-box;
+}
+
+/* 奇数项样式 - 浅蓝背景 */
+.recent-alerts-item:nth-child(odd) {
+  background: rgba(188, 222, 252, 0.12);
+  border: none;
+}
+
+/* 偶数项样式 - 白底灰边框 */
+.recent-alerts-item:nth-child(even) {
+  background: rgb(237, 250, 255);
+  border: none;
+}
+
+/* 告警图标容器 */
+.recent-alerts-item-icon-container {
+  position: relative;
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  margin-right: 12px; /* 添加间距替代删除的gap */
+}
+
+/* 告警状态图标 - 外圈 */
+.recent-alerts-item-icon-outer {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 1px solid; /* 改为1px边框，颜色通过内联样式设置 */
+  box-sizing: border-box;
+}
+
+/* 告警状态图标 - 中间层 - 移除此层 */
+.recent-alerts-item-icon-path {
+  display: none; /* 不再需要中间层 */
+}
+
+/* 告警状态图标 - 内圈 */
+.recent-alerts-item-icon-inner {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  /* 背景色通过内联样式动态设置 */
+}
+
+/* 告警文本样式 */
+.recent-alerts-item-text {
+  font-size: 16px;
+  color: #415B73;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 400;
+  font-family: "Microsoft YaHei", sans-serif;
+}
+
+/* 响应式样式 */
+@media (max-width: 800px) {
+  .recent-alerts-item-text {
+    font-size: 12px;
+  }
+}

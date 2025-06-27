@@ -2,6 +2,7 @@ import * as Cesium from 'cesium';
 import { Cartesian3, Entity, Property, Viewer } from 'cesium';
 import CoordTransforms from '@/pages/map/map-tools/CoordinateTransform';
 import { SpriteLineMaterial } from '@/pages/map/map-tools/CesiumMaterial';
+import { MapLayer } from './MapLayersTyping';
 
 const viewerOptions = (is3D: boolean): Viewer.ConstructorOptions => ({
   animation: false, //是否创建动画小器件，左下角仪表

@@ -10,7 +10,7 @@ import {
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Device } from '../map/BoxTyping';
 import { flyToLocation, initViewer } from '../map/map-tools/MapUtils';
-import { switchBaseLayer } from '@/pages/map/map-tools/MapLayersTyping';
+import { GetUserMapLayers, switchBaseLayer } from '@/pages/map/map-tools/MapLayersTyping';
 import CoordTransforms from '@/pages/map/map-tools/CoordinateTransform';
 import { MapSearch } from '@/pages/map/map-widget/MapSearch';
 import { PageContainer } from '@ant-design/pro-components';
@@ -19,6 +19,7 @@ import { useIntl } from '@@/plugin-locale';
 import { DeleteOutlined, UndoOutlined } from '@ant-design/icons';
 import ProjectService from './ProjectService';
 import { ProjectDto } from './type';
+import MapLayersDrawer from '@/pages/map/map-widget/MapLayersDrawer';
 
 // 定义点位类型
 interface PointData {
@@ -40,7 +41,7 @@ const ProjectDetailPage: React.FC<ProjectAddProps> = (props) => {
   const intl = useIntl();
   const [form] = Form.useForm();
   const [submitLoading, setSubmitLoading] = useState(false);
-  const [projectStatus, setProjectStatus] = useState<number>(props.projectData?.status || 0);
+  const [projectStatus, setProjectStatus] = useState<string>(props.projectData?.status || '');
 
   // 绘制相关状态
   const [isDrawing, setIsDrawing] = useState<boolean>(false);
@@ -227,7 +228,7 @@ const ProjectDetailPage: React.FC<ProjectAddProps> = (props) => {
     if (!viewerInstance.current) return;
 
     // 如果已提交，不允许绘制
-    if (projectStatus === 1) return;
+    if (projectStatus !== '') return;
 
     setIsDrawing(true);
     console.log("开始绘制模式");
@@ -249,7 +250,7 @@ const ProjectDetailPage: React.FC<ProjectAddProps> = (props) => {
 
       // 左键点击添加点
       handler.current.setInputAction((click: any) => {
-        if (!viewerInstance.current || projectStatus === 1) return;
+        if (!viewerInstance.current || projectStatus !== '') return;
 
         // 获取点击位置
         const cartesian = viewerInstance.current.scene.pickPosition(click.position);
@@ -274,7 +275,7 @@ const ProjectDetailPage: React.FC<ProjectAddProps> = (props) => {
 
       // 右键点击闭合路径
       handler.current.setInputAction(() => {
-        if (!viewerInstance.current || projectStatus === 1 || pointsArray.current.length < 3) {
+        if (!viewerInstance.current || projectStatus !== '' || pointsArray.current.length < 3) {
           message.info('至少需要3个点才能闭合路径');
           return;
         }
@@ -359,7 +360,7 @@ const ProjectDetailPage: React.FC<ProjectAddProps> = (props) => {
 
   // 清除所有实体
   const clearAllEntities = () => {
-    if (!viewerInstance.current || !isMounted.current || projectStatus === 1) return;
+    if (!viewerInstance.current || !isMounted.current || projectStatus !== '') return;
 
     // 清除点标记
     markersRef.current.forEach(marker => {
@@ -394,7 +395,7 @@ const ProjectDetailPage: React.FC<ProjectAddProps> = (props) => {
 
   // 撤销上一个点
   const undoLastPoint = () => {
-    if (pointsArray.current.length === 0 || projectStatus === 1) {
+    if (pointsArray.current.length === 0 || projectStatus !== '') {
       message.info('没有点可以撤销');
       return;
     }
@@ -442,7 +443,7 @@ const ProjectDetailPage: React.FC<ProjectAddProps> = (props) => {
   const handleSubmit = async () => {
     try {
       // 如果已提交，不允许再次提交
-      if (projectStatus === 1) {
+      if (projectStatus !== '') {
         message.info('项目已提交，无法修改');
         return;
       }
@@ -625,7 +626,7 @@ const ProjectDetailPage: React.FC<ProjectAddProps> = (props) => {
               rules={[{ required: true }]}
               style={{ width: '300px' }}
             >
-              <Input disabled={projectStatus === 1} />
+              <Input disabled={projectStatus !== ''} />
             </Form.Item>
           </Form>
         </div>
@@ -644,7 +645,7 @@ const ProjectDetailPage: React.FC<ProjectAddProps> = (props) => {
               searchData={searchData}
               loading={searchLoading}
             />
-            {projectStatus !== 1 && (
+            {projectStatus !== '' && (
               <div style={{
                 position: 'absolute',
                 top: '10px',

@@ -1,73 +1,450 @@
 /* styles.css */
+@import './commonStyles.css';
+
+.ant-pro-page-container-children-container {
+  padding: 0;
+}
+
+.ant-pro-layout .ant-pro-layout-content {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  background-color: transparent;
+  position: relative;
+  padding-block: 0;
+  padding-inline: 0;
+}
 
 .main-body {
   display: flex;
   flex-direction: column;
-  background-image: url('/home_bg.png');
-  background-size: cover; /* 确保背景图片覆盖整个区域 */
-  background-position: center; /* 背景图片居中显示 */
-  background-repeat: no-repeat; /* 防止背景图片重复 */
-  /*width: 100%;*/
-  height: 100vh;
-}
-
-.main-header {
-  display: flex;
-  flex-direction: column;
-  background-color: transparent;
+  padding: 16px 24px;
+  width: 100%;
+  height: calc(100vh - 56px);
+  z-index: 10;
+  position: relative;
+  box-sizing: border-box;
+  overflow: hidden; /* 防止整体出现滚动条 */
 }
 
 .main-container {
   display: flex;
   width: 100%;
-  height: 100%;
+  height: calc(100% - 72px);
   justify-content: space-between;
+  overflow: hidden; /* 防止内容溢出 */
+  gap: 18px;
+  margin-top: 10px;
 }
 
 .dataLeft, .dataRight {
-  width: 20%;
+  width: 22%;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  padding: 20px;
+  gap: 18px;
+  z-index: 5;
+  overflow-y: auto; /* 允许垂直滚动，但仅在内容区 */
+  overflow-x: hidden; /* 防止水平溢出 */
+  padding-right: 4px; /* 为滚动条预留空间 */
+  box-sizing: border-box;
+  height: 100%;
+}
+
+.dataLeft > *, .dataRight > * {
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 专门为需要填满空间的元素添加样式 */
+.dataLeft > .fill-space, .dataRight > .fill-space {
+  flex: 1;
+}
+
+/* 自定义滚动条样式 */
+.dataLeft::-webkit-scrollbar,
+.dataRight::-webkit-scrollbar,
+.fiber-stats-legend::-webkit-scrollbar {
+  width: 4px;
+}
+
+.dataLeft::-webkit-scrollbar-track,
+.dataRight::-webkit-scrollbar-track,
+.fiber-stats-legend::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+}
+
+.dataLeft::-webkit-scrollbar-thumb,
+.dataRight::-webkit-scrollbar-thumb,
+.fiber-stats-legend::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+}
+
+.dataLeft::-webkit-scrollbar-thumb:hover,
+.dataRight::-webkit-scrollbar-thumb:hover,
+.fiber-stats-legend::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
 }
 
 .dataCenter {
-  width: 50%;
-  height: 95%;
+  width: 56%;
+  height: 100%;
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  overflow: hidden; /* 防止内容溢出 */
+  padding: 0; /* 调整水平内边距 */
+  box-sizing: border-box; /* 确保内边距不增加总宽度 */
+  gap: 18px;
+}
+
+  .dataCenter > * {
+    width: 100%;
+  }
+
+/*.title {*/
+/*  display: flex;*/
+/*  justify-content: center;*/
+/*  align-items: center;*/
+/*  !*margin-top: 10px;*!*/
+/*  font-size: 24px;*/
+/*  color: rgba(255,255,255,0.8);*/
+/*}*/
+/* home.css */
+
+
+/* HomeHeader 头部样式 */
+.home-header-root {
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.home-header-left,
+.home-header-right {
+  display: flex;
+  align-items: center;
+  color: rgba(226, 245, 255, 0.95);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.home-header-right {
+  justify-content: flex-end;
+}
+
+.home-header-title-container {
+  position: relative;
+  width: 100%;
+  height: 48px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.home-header-title {
+  font-size: 38px;
+  font-weight: 700;
+  letter-spacing: 6.17px;
+  line-height: 60px;
+  padding: 4px 16px;
+  font-family: "DOUYU", sans-serif;
+  background: transparent;
+  pointer-events: none;
+}
+
+.home-header-location-icon {
+  font-size: 16px;
+  margin-right: 6px;
+}
+
+.home-header-text {
+  line-height: 24px;
+  font-weight: 500;
+  font-size: 16px;
+  margin-inline: 10px;
+  color: #415B73;
+}
+
+@media (max-width: 900px) {
+  .home-header-content {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 12px 10px;
+    min-height: 56px;
+  }
+  .home-header-title {
+    font-size: 22px;
+    margin: 8px 0;
+  }
+  .home-header-left, .home-header-right {
+    font-size: 14px;
+  }
+}
+
+
+/* 近期告警信息组件样式 */
+.recent-alerts-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  background: rgba(22, 119, 255, 0.1);
+  border-bottom: 1px solid rgba(22, 119, 255, 0.2);
+}
+
+.recent-alerts-title-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.recent-alerts-icon {
+  width: 20px;
+  height: 20px;
+  position: relative;
+}
+
+.recent-alerts-icon-outer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: rgba(22, 119, 255, 0.2);
+  animation: subtle-pulse 2s infinite;
+}
+
+.recent-alerts-icon-middle {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: rgba(22, 119, 255, 0.4);
+  animation: subtle-pulse 2s infinite 0.3s;
+}
+
+.recent-alerts-icon-inner {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(22, 119, 255, 1);
+  animation: subtle-pulse 2s infinite 0.6s;
+}
+
+.recent-alerts-title {
+  font-size: 18px;
+  font-weight: bold;
+  color: #ffffff;
+  letter-spacing: 1px;
+}
+
+.recent-alerts-more-btn {
+  color: rgba(0, 0, 0, 1) !important;
+  font-size: 14px !important;
+  padding: 0 !important;
+}
+
+.recent-alerts-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(22, 119, 255, 0.5) transparent;
+  position: relative;
+}
+
+.recent-alerts-empty {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  color: rgba(226, 245, 255, 0.7);
+  font-size: 14px;
+}
+
+.recent-alerts-list {
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  gap: 16px;
+  opacity: 1;
+  transition: opacity 0.3s ease;
 }
 
-.map-show {
-  width: 100%;
-  height: 65%;
-  padding: 10px;
+.recent-alerts-list.scrolling {
+  opacity: 0.9;
 }
 
-.gc-show {
-  width: 100%;
-  height: 30%;
-  padding: 10px;
+@keyframes subtle-pulse {
+  0% {
+    opacity: 0.7;
+    transform: scale(0.95);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+  100% {
+    opacity: 0.7;
+    transform: scale(0.95);
+  }
 }
 
-.title {
+.recent-alerts-item {
   display: flex;
-  justify-content: center;
   align-items: center;
-  margin-top: 10px;
-  font-size: 24px;
-  color: rgba(255,255,255,0.8);
+  gap: 12px;
+  padding: 8px 12px;
+  /*border-radius: 8px;*/
+  /*background: rgba(22, 119, 255, 0.1);*/
+  /*border: 1px solid rgba(22, 119, 255, 0.15);*/
+  transition: all 0.2s ease;
 }
 
-.headerContent {
+.recent-alerts-item-icon-container {
+  position: relative;
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.recent-alerts-item-icon-outer {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.recent-alerts-item-icon-path {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.recent-alerts-item-icon-inner {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #FF4500;
+}
+
+.recent-alerts-item-text {
+  font-size: 14px;
+  color: rgba(226, 245, 255, 0.95);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 告警控制器样式 */
+.alert-controls {
+  position: absolute;
+  top: 62px;
+  right: 24px;
+  z-index: 20;
   display: flex;
-  justify-content: space-between;
-  margin-top: 22px;
+  align-items: center;
+  padding: 6px 12px;
+  color: #222222;
+  backdrop-filter: blur(4px);
+}
+
+.alert-control-label {
+  line-height: 24px;
+  font-weight: 500;
+  font-size: 16px;
   margin-inline: 10px;
-  padding: 10px;
-  background: linear-gradient(to right, #2b52c9, #1b3582);
+  color: #415B73;
+}
+
+@media (max-width: 900px) {
+  .recent-alerts-title {
+    font-size: 16px;
+  }
+  .recent-alerts-header {
+    padding: 12px 10px 0 10px;
+    height: 48px;
+  }
+  .recent-alerts-content {
+    padding: 0 10px 0 10px;
+  }
+}
+
+@media (max-width: 600px) {
+  .recent-alerts-title {
+    font-size: 14px;
+  }
+  .recent-alerts-header {
+    padding: 8px 4px 0 4px;
+    height: 40px;
+  }
+  .recent-alerts-content {
+    padding: 0 4px 0 4px;
+  }
+}
+
+/* 辅助类：强制重新计算布局 */
+.force-relayout {
+  transform: translateZ(0);
+}
+
+/* 确保dataRight容器高度正确 */
+.dataRight {
+  height: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto; /* 允许垂直滚动 */
+  overflow-x: hidden; /* 防止水平溢出 */
+  padding-right: 4px; /* 为滚动条预留空间 */
+}
+
+/* 修改dataLeft统一样式 */
+.dataLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  overflow-y: auto;
+  max-height: calc(100vh - 150px);
+  flex: 1;
+  min-width: 280px;
+  padding-right: 4px; /* 为滚动条预留空间 */
+}
+
+/* 添加统计卡片间距和排列 */
+.stats-item {
+  margin-bottom: 15px;
+}
+
+/* 当卡片比较多时添加滚动条样式 */
+.dataLeft::-webkit-scrollbar {
+  width: 4px;
+}
+
+.dataLeft::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+}
+
+.dataLeft::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 4px;
 }
 

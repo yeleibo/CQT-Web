@@ -1,14 +1,18 @@
-import { ProjectDto, ProjectStatisticsQueryParam } from '@/pages/project/type';
+import { ProjectDto, ProjectStatisticsQueryParam, ResourceData } from '@/pages/project/type';
 import {request} from "@umijs/max";
 import SystemConst from "@/utils/const";
 
 const ProjectService = {
-  getProjectStatistics: (params: ProjectStatisticsQueryParam) => request(`/${SystemConst.API_BASE}/projects`, {
+  getProjectList: (params: ProjectStatisticsQueryParam) => request<ProjectDto[]>(`/${SystemConst.API_BASE}/projects`, {
     method: 'GET',
     params
   }),
 
-  getProjectDetail: (id: number) => request(`/${SystemConst.API_BASE}/projects/${id}`, {
+  getProjectDetail: (id: number) => request<ProjectDto>(`/${SystemConst.API_BASE}/projects/${id}`, {
+    method: 'GET',
+  }),
+
+  getProjectStatistics: (id: number) => request<ResourceData>(`/${SystemConst.API_BASE}/projects/statistics/${id}`, {
     method: 'GET',
   }),
 
@@ -27,3 +31,4 @@ const ProjectService = {
 }
 
 export default ProjectService;
+

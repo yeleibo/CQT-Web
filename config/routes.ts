@@ -1,7 +1,5 @@
 //包含两个/的才会开启多标签页
 
-import ProjectListPage from '@/pages/project/ProjectListPage';
-
 export default [
   { path: '/', component: '@/pages/home/HomeRedirectPage' },
   {
@@ -26,50 +24,15 @@ export default [
     name: 'Project',
     routes: [
       {
+        name: '项目',
         path: '/project/index',
         component: '@/pages/project/ProjectListPage',
       },
       {
+        name: '盒子统计',
         path: '/project/boxStatistics',
         title: 'boxStatistics',
         component: '@/pages/project/BoxStatisticsPage',
-      },
-    ],
-  },
-  {
-    path: '/tenant',
-    name: '客户设置',
-    routes: [
-      {
-        path: '/tenant/tenantList',
-        title: 'operatorManagement',
-        component: '@/pages/tenant/TenantListPage',
-      },
-    ],
-  },
-  {
-    path: '/create-code',
-    name: 'createCode',
-    routes: [
-      {
-        path: '/create-code/boxCode',
-        name: 'BoxCodes',
-        component: '@/pages/create-code/BoxCodeCreatePage',
-      },
-      {
-        path: '/create-code/cascadeCode',
-        name: 'CascadeCableCodes',
-        component: '@/pages/create-code/CascadeCodePage',
-      },
-      {
-        path: '/create-code/dropCode',
-        name: 'DropCableCodes',
-        component: '@/pages/create-code/DropCablePage',
-      },
-      {
-        path: '/create-code/codeOrder',
-        name: 'CodeOrder',
-        component: '@/pages/create-code/CodeOrderListPage',
       },
     ],
   },
@@ -89,15 +52,7 @@ export default [
     path: '/map',
     name: '资源管理',
     icon: 'icon-xiangmu',
-    routes: [
-      { path: '/map', redirect: '/map/page' },
-      { path: '/map/page', name: '资源地图', component: '@/pages/map/maps' },
-      {
-        path: '/map/area-draw',
-        name: '区域管理',
-        component: '@/pages/map/area-draw/AreaDrawPage',
-      },
-    ],
+    routes: [{ path: '/map/index', name: '资源地图', component: '@/pages/map/maps' }],
   },
   {
     path: '/organize-manage',
@@ -119,6 +74,43 @@ export default [
         path: '/organize-manage/role',
         title: 'roleManagement',
         component: '@/pages/organize-manage/role/RoleListPage',
+      },
+    ],
+  },
+  {
+    path: '/tenant',
+    name: '客户设置',
+    routes: [
+      {
+        path: '/tenant/tenantList',
+        title: 'operatorManagement',
+        component: '@/pages/tenant/TenantListPage',
+      },
+    ],
+  },
+  {
+    path: '/create-code',
+    name: '编码创建',
+    routes: [
+      {
+        path: '/create-code/boxCode',
+        name: 'BoxCodes',
+        component: '@/pages/create-code/BoxCodeCreatePage',
+      },
+      {
+        path: '/create-code/cascadeCode',
+        name: 'CascadeCableCodes',
+        component: '@/pages/create-code/CascadeCodePage',
+      },
+      {
+        path: '/create-code/dropCode',
+        name: 'DropCableCodes',
+        component: '@/pages/create-code/DropCablePage',
+      },
+      {
+        path: '/create-code/codeOrder',
+        name: 'CodeOrder',
+        component: '@/pages/create-code/CodeOrderListPage',
       },
     ],
   },

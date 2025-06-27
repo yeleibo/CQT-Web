@@ -1,16 +1,25 @@
 import {
+  Device,
+  LatLng,
+  OpticalCableData,
   OpticalCableMonitoringModel,
   OpticalCableMonitoringWaringQueryParam,
   OpticalCableMonitoringWaringState,
   OpticalCableMonitoringWarning,
 } from '@/pages/home/OpticalCableMonitoring/typings';
-import { LatLng } from '@/pages/project/type';
-import SystemConst from '@/utils/const';
 import { request } from '@@/exports';
+import SystemConst from '@/utils/const';
+
+
+const headers = {
+  Authorization:
+    'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIxNzhlN2MxYzMwZmQ0MjllYWJiYzJhOGNiZTQ4MmUyYiIsInVuaXF1ZV9uYW1lIjoiYWRtaW4iLCJuYW1laWQiOiI4MiIsIm5hbWUiOiLns7vnu5_nrqHnkIblkZgiLCJyb2xlaWRzIjoiWzQwMTA4OTI2ODE5MTMwMSw0MDM2MDQxODU0MTk4NDUsNDA0MTM0OTQxOTIxMzQ5LDQwNTIxNTAxNzQwMjQzN10iLCJtYW5hZ2VtZW50X29yZ2FuaXplX2lkcyI6IlsyNCwxMiwyMCwyMywyNywxMyw2LDcsOCw5LDIsMywxMSwyNSwyOCwyNiwyOSwzMCwzMSwzMiwzMywzNCwzNSwzNiwxLDM3XSIsImJyYW5jaF9pZCI6IjEiLCJuYmYiOjE3MzMzOTE0NjgsImV4cCI6MTczNDU5MTQ2OCwiaXNzIjoiZGVxaW5nIiwiYXVkIjoibWFuYWdlciJ9.39GE-dN4LKnrf6PwWuIMuuxRHwonIxuygB7WqGZSMA8',
+};
 
 const OpticalCableMonitoringService = {
-  getOpticalCableMonitoringModelList: () =>
-    request<OpticalCableMonitoringModel>(`/api1/?postType=75&routeId=0`, {
+  //获取主要机房和线路列表 主要线路数据
+  getMainLineData: () =>
+    request<OpticalCableMonitoringModel>(`/gis/?postType=75&routeId=0`, {
       method: 'GET',
     }).then((value: any) => {
       const result: OpticalCableMonitoringModel = {
@@ -47,45 +56,40 @@ const OpticalCableMonitoringService = {
 
       return result;
     }),
+
+  //获取告警列表(无位置信息)
+  getList: async (params: OpticalCableMonitoringWaringQueryParam) =>
+    request<OpticalCableMonitoringWarning[]>(
+      `/${SystemConst.API_BASE}/optical-cable-monitoring/alarms`,
+      {
+        method: 'GET',
+        params,
+        // headers: headers,
+      },
+    ),
+
   getOpticalCableMonitoringWaringModelList: async (
     params: OpticalCableMonitoringWaringQueryParam,
   ): Promise<OpticalCableMonitoringWarning[]> => {
     try {
       // 初始请求，获取警告列表
-      const response = await request<OpticalCableMonitoringWarning[]>(
-        `/api1/${SystemConst.API_BASE}/window/optical-cable-monitoring/alarms`,
-        {
-          method: 'GET',
-          params,
-          headers: {
-            authorization:
-              'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJlZTY2ODdjMjM4ODg0YmQ3OGE3NGE2ZDI3OGJlMTY4NSIsInVuaXF1ZV9uYW1lIjoiYWRtaW4iLCJuYW1laWQiOiI4MiIsIm5hbWUiOiLns7vnu5_nrqHnkIblkZgiLCJyb2xlaWRzIjoiWzQwMTA4OTI2ODE5MTMwMSw0MDM2MDQxODU0MTk4NDUsNDA0MTM0OTQxOTIxMzQ5LDQwNTIxNTAxNzQwMjQzN10iLCJtYW5hZ2VtZW50X29yZ2FuaXplX2lkcyI6IlsyNCwxMiwyMCwyMywyNywxMyw2LDcsOCw5LDIsMywxMSwyNSwyOCwyNiwyOSwzMCwzMSwzMiwzMywzNCwzNSwzNiwxLDM3XSIsImJyYW5jaF9pZCI6IjEiLCJuYmYiOjE3MjkyMzI0MTAsImV4cCI6MTczMDQzMjQxMCwiaXNzIjoiZGVxaW5nIiwiYXVkIjoibWFuYWdlciJ9.uLv_xrtzeztI9R2Rb6m4n76T-j3MIUfmEwD2Qm3m-ZY', // 同样推荐使用环境变量
-          },
-        },
-      );
-
-      const warnings = response;
+      const warnings = await OpticalCableMonitoringService.getList(params);
 
       // 使用 Promise.all 并行处理所有警告项的详细信息请求
-      const processedWarnings: OpticalCableMonitoringWarning[] = await Promise.all(
+      return await Promise.all(
         warnings.map(async (item) => {
           try {
             // 构建详细信息请求的 URL 和参数
-            const detailsResponse = await request<OpticalCableMonitoringWarning[]>(
-              `/api1/?postType=80`,
+            const detailsData: OpticalCableData = await request<OpticalCableData>(
+              `/gis/?postType=80`,
               {
                 params: {
                   serial: item.cableId,
-                  length: item.distanceFromStartStation.toString(),
+                  length: item.distanceFromStartStation?.toString(),
                 },
-                headers: {
-                  authorization:
-                    'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJlZTY2ODdjMjM4ODg0YmQ3OGE3NGE2ZDI3OGJlMTY4NSIsInVuaXF1ZV9uYW1lIjoiYWRtaW4iLCJuYW1laWQiOiI4MiIsIm5hbWUiOiLns7vnu5_nrqHnkIblkZgiLCJyb2xlaWRzIjoiWzQwMTA4OTI2ODE5MTMwMSw0MDM2MDQxODU0MTk4NDUsNDA0MTM0OTQxOTIxMzQ5LDQwNTIxNTAxNzQwMjQzN10iLCJtYW5hZ2VtZW50X29yZ2FuaXplX2lkcyI6IlsyNCwxMiwyMCwyMywyNywxMyw2LDcsOCw5LDIsMywxMSwyNSwyOCwyNiwyOSwzMCwzMSwzMiwzMywzNCwzNSwzNiwxLDM3XSIsImJyYW5jaF9pZCI6IjEiLCJuYmYiOjE3MjkyMzI0MTAsImV4cCI6MTczMDQzMjQxMCwiaXNzIjoiZGVxaW5nIiwiYXVkIjoibWFuYWdlciJ9.uLv_xrtzeztI9R2Rb6m4n76T-j3MIUfmEwD2Qm3m-ZY', // 同样推荐使用环境变量
-                },
+                // headers: headers,
               },
             );
-
-            const detailsData = detailsResponse;
 
             // 处理 faultPoint
             if (detailsData?.faultPoint) {
@@ -133,13 +137,36 @@ const OpticalCableMonitoringService = {
           };
         }),
       );
-
-      return processedWarnings;
     } catch (error) {
       console.error('获取光缆监控警告列表失败:', error);
       return []; // 根据需求，可以返回空数组或抛出错误
     }
   },
+  /**
+   @param param 关键字查询
+   */
+  keywordSearch: async (param: { Text: string }) =>
+    request<Device[]>(`/gis/?postType=2&branch=1&userId=82&layers=26,27,37,38,39,40,41`, {
+      params: param,
+      method: 'GET',
+      headers: headers,
+    }),
+  //点位查询
+  pointSearch: async (params: { lng: number; lat: number }) =>
+    request<Device[]>(
+      `/gis/?postType=3&branch=1&userId=82&zoomLevel=13&layers=26,27,37,38,39,40,41`,
+      {
+        params: params,
+        method: 'GET',
+        headers: headers,
+      },
+    ),
+
+  // 模拟故障
+  test: async (id: string) =>
+    request(`/${SystemConst.API_BASE}/optical-cable-monitoring/test/${id}`, {
+      method: 'GET',
+    }),
 };
 
 export default OpticalCableMonitoringService;

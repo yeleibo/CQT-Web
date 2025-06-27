@@ -1,8 +1,3 @@
-export type ResourceStatistic={
-  type: PorjectResourceType;
-  totalCount: number;
-}
-
 export enum PorjectResourceType {
    XBox = 0,
    HubBox = 1,
@@ -56,7 +51,7 @@ export type ProjectDto ={
   id: number;
   name: string;
   mapHeight: number;
-  status: number;
+  status: string;
   resourceStatistics: ResourceStatistic[];
   mapRangePoints: LatLng[];
   isFloor?: boolean; // 可选属性
@@ -66,3 +61,27 @@ export type ProjectDto ={
 export type ProjectStatisticsQueryParam = {
   keyword?:string
 }
+
+// 子类：ResourceStatistic
+export type ResourceStatistic = {
+  name: string;
+  unit: string | null;
+  value: number;
+  items: ResourceStatistic[]; // 递归嵌套
+};
+
+// 子类：DailyInstallation
+export type DailyInstallation = {
+  id: number;
+  type: string;
+  name: string;
+  action: string;
+  code: string;
+  createTime: string | null;
+};
+
+// 总类：ResourceData
+export type ResourceData = {
+  resourceStatistics: ResourceStatistic[];
+  dailyInstallations: DailyInstallation[];
+};

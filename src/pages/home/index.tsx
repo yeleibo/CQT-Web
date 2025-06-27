@@ -1,142 +1,131 @@
-import { EngineeringStaticsByOrganize, ResourceStaticModel } from '@/pages/home/DataModel';
-// @ts-ignore
-import CableCarousel from '@/pages/home/HomeRight';
-// @ts-ignore
-import { Decoration5, Decoration8 } from '@jiaminghi/data-view-react';
-import React, { useEffect, useState } from 'react';
-import PieChart from './HomeLeft';
+import FiberResourceStats from '@/pages/home/FiberResourceStats';
+import HomeHeader from '@/pages/home/HomeHeader';
+import React, { useCallback, useEffect, useState } from 'react';
 import './home.css';
-const Home: React.FC = () => {
-  enum CableState {
-    Normal = 'Normal',
-    Warning = 'Warning',
-    Critical = 'Critical',
-  }
+import RecentAlerts from './RecentAlerts';
+import ResourceMap from '@/pages/home/ResourceMap';
+import ProjectService from '@/pages/project/ProjectService';
+import { DailyInstallation, ProjectDto, ResourceData, ResourceStatistic } from '@/pages/project/type';
+import { message } from 'antd';
 
-  interface CableData {
-    state: CableState;
-    cableName: string;
-  }
-  const resourceData: ResourceStaticModel = {
-    name: '光纤资源管理 ',
-    totalAmount: 5148.06,
-    unitName: '千米 ',
-    item: [
-      {
-        name: '钟管分公司',
-        amount: 820.36,
-        percent: 15,
-      },
-      {
-        name: '武康分公司',
-        amount: 2081.15,
-        percent: 40,
-      },
-      {
-        name: '乾元分公司',
-        amount: 1044.74,
-        percent: 20,
-      },
-      {
-        name: '新市分公司',
-        amount: 1198.41,
-        percent: 23,
-      },
-      {
-        name: '其他',
-        amount: 3,
-        percent: 2,
-      },
-    ],
+const HomePage: React.FC = () => {
+  // 项目列表状态
+  const [projectList, setProjectList] = useState<ProjectDto[]>([]);
+  // 当前选中的项目ID
+  const [selectedProjectId, setSelectedProjectId] = useState<number | null>(null);
+  // 资源统计数据
+  const [resourceData, setResourceData] = useState<ResourceData | null>(null);
+  // 加载状态
+  const [loading, setLoading] = useState(false);
+
+  // 获取项目相关数据
+  const fetchProjectData = async (projectId: number) => {
+    if (!projectId) return;
+
+    setLoading(true);
+    try {
+      // 获取项目统计数据
+      const data = await ProjectService.getProjectStatistics(projectId);
+      setResourceData(data);
+    } catch (e) {
+      console.error('获取项目数据失败:', e);
+      message.error('获取项目数据失败');
+    } finally {
+      setLoading(false);
+    }
   };
-  const data: CableData[] = [
-    { state: CableState.Normal, cableName: 'YBGC-莫干山镇燎原村安置二期管道地...' },
-    { state: CableState.Warning, cableName: 'YBGC-新市镇新联路建设涉及广电线路...' },
-    { state: CableState.Critical, cableName: 'YBGC-新市镇河东路明德机械制造南门...' },
-    { state: CableState.Normal, cableName: 'FCGC-莫干山镇安置房项目广电接入工程' },
-    { state: CableState.Warning, cableName: 'YBGC-阜溪街道英溪北路（环城北路至...' },
-    { state: CableState.Critical, cableName: 'YBGC-新市镇谢家园路建设涉及广电线...' },
-    { state: CableState.Normal, cableName: 'JKGC-康乾街道新琪村监控工程' },
-    { state: CableState.Warning, cableName: 'YBGC-阜溪街道纬六路广电地埋管道工程' },
-    {
-      state: CableState.Critical,
-      cableName: 'YBGC-武康街道灵山街（岭头路-莫干山镇安置房项目广电接入工程',
-    },
-    { state: CableState.Critical, cableName: 'YBGC-武康街道灵山街（岭头路-联合123141ddddd241' },
-    {
-      state: CableState.Critical,
-      cableName: 'YBGC-武康街道灵山街（岭头路-莫干山镇安置房项目广电接入工程',
-    },
-    { state: CableState.Critical, cableName: 'YBGC-武康街道灵山街（岭头路-联合12314dddd1241' },
-    { state: CableState.Critical, cableName: 'YBGC-武康街道灵山街（岭头路-联合12314dddd1241' },
-    {
-      state: CableState.Critical,
-      cableName: 'YBGC-武康街道灵山街（岭头路-莫干山镇安置房项目广电接入工程',
-    },
-    { state: CableState.Critical, cableName: 'YBGC-武康街道灵山街（岭头路-联合12314asdasdasd241' },
-  ];
-  const barChartData: EngineeringStaticsByOrganize[] = [
-    { organizeName: '武康分公司', totalAmount: 209, finishedAmount: 199 },
-    { organizeName: '千元分公司', totalAmount: 44, finishedAmount: 43 },
-    { organizeName: '新市分公司', totalAmount: 137, finishedAmount: 133 },
-    { organizeName: '中观分公司', totalAmount: 85, finishedAmount: 83 },
-    { organizeName: '工程规划部', totalAmount: 13, finishedAmount: 12 },
-    { organizeName: '项目运维部', totalAmount: 13, finishedAmount: 12 },
-  ];
 
-  const [currentTime, setCurrentTime] = useState(new Date().toLocaleString());
-  //
+  // 获取项目列表
+  const fetchProjectList = useCallback(async () => {
+    try {
+      // 获取项目列表
+      const projectsData = await ProjectService.getProjectList({});
+      if (projectsData && Array.isArray(projectsData)) {
+        setProjectList(projectsData);
+        // 如果有项目，默认选中第一个并获取相关数据
+        if (projectsData.length > 0) {
+          setSelectedProjectId(projectsData[0].id);
+          await fetchProjectData(projectsData[0].id);
+        }
+      }
+    } catch (e) {
+      console.error('获取项目列表失败:', e);
+      message.error('获取项目列表失败');
+    }
+  }, []);
+
+  // 处理项目选择变化
+  const handleProjectChange = async (projectId: number) => {
+    setSelectedProjectId(projectId);
+    await fetchProjectData(projectId);
+  };
+
   useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentTime(new Date().toLocaleString());
-    }, 1000);
-    return () => clearInterval(timer);
+    fetchProjectList();
+  }, [fetchProjectList]);
+
+  // 在组件挂载和窗口大小变化时重新计算高度
+  useEffect(() => {
+    const adjustLayout = () => {
+      const rightPanel = document.querySelector('.dataRight');
+      if (rightPanel) {
+        // 强制更新布局
+        rightPanel.classList.add('force-relayout');
+        setTimeout(() => {
+          rightPanel.classList.remove('force-relayout');
+        }, 0);
+      }
+    };
+
+    adjustLayout();
+    window.addEventListener('resize', adjustLayout);
+    return () => window.removeEventListener('resize', adjustLayout);
   }, []);
 
   return (
     <>
-      {/*<FullScreenContainer>*/}
-      <div className="main-body">
-        <div className="main-header">
-          <div className="title">
-            <div style={{ fontSize: '48px', color: 'rgba(255,255,255,0.8)' }}>TranMile</div>
-          </div>
-          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <div style={{ flex: '1', display: 'flex', justifyContent: 'flex-start' }}>
-              <Decoration8 style={{ height: '30px', width: '300px' }} />
+      <div>
+        <div
+          style={{
+            backgroundImage: `url(${require('@/assets/home/home_bg.png')})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+            backgroundColor: '#505050',
+            position: 'absolute',
+            zIndex: 10,
+            flexDirection: 'column',
+            width: '100%',
+            height: '100%',
+          }}
+        ></div>
+        <div className="main-body">
+          <HomeHeader
+            projectList={projectList}
+            selectedProjectId={selectedProjectId}
+            onProjectChange={handleProjectChange}
+          />
+          <div className="main-container">
+            <div className="dataLeft">
+              {resourceData?.resourceStatistics?.map((statistic, index) => (
+                <div key={`stat-${index}`} className="stats-item">
+                  <FiberResourceStats data={statistic} />
+                </div>
+              ))}
             </div>
-            <div style={{ flex: '1', display: 'flex', justifyContent: 'center' }}>
-              <Decoration5 dur={3} style={{ height: '40px' }} />
+            <div className="dataCenter">
+              <div className="stats-card">
+                <ResourceMap projectId={selectedProjectId} />
+              </div>
             </div>
-            <div style={{ flex: '1', display: 'flex', justifyContent: 'flex-end' }}>
-              <Decoration8 reverse={true} style={{ height: '30px', width: '300px' }} />
+            <div className="dataRight">
+              {resourceData && <RecentAlerts data={resourceData.dailyInstallations || []} />}
             </div>
-          </div>
-          <div className="title"> {currentTime}</div>
-        </div>
-        <div className="main-container">
-          <div className="dataLeft">
-            <PieChart data={resourceData}></PieChart>
-            <PieChart data={resourceData}></PieChart>
-            <PieChart data={resourceData}></PieChart>
-          </div>
-
-          <div className="dataCenter">
-            {/*<div className="map-show">*/}
-            {/*  <HomeCenter></HomeCenter>*/}
-            {/*</div>*/}
-            {/*<div className="gc-show">*/}
-            {/*  <BarChart data={barChartData}></BarChart>*/}
-            {/*</div>*/}
-          </div>
-          <div className="dataRight">
-            <CableCarousel data={data} />
           </div>
         </div>
       </div>
-      {/*</FullScreenContainer>*/}
     </>
   );
 };
 
-export default Home;
+export default HomePage;
