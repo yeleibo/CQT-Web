@@ -13,7 +13,7 @@ export default defineConfig({
    * @name 启用model插件
    * @description 使用@umijs/plugin-model进行状态管理
    */
-  plugins: ['@umijs/plugin-model'],
+  // plugins: ['@umijs/plugin-model'],
 
   /**
    * @name 开启 hash 模式
