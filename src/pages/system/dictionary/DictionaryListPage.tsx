@@ -1,4 +1,5 @@
 import DeleteButton from '@/components/DelectButton';
+import ResizableTitle from '@/components/ResizableTitle';
 import DictionaryAddPage from '@/pages/system/dictionary/DictionaryAddPage';
 import DictionaryService from '@/pages/system/dictionary/DictionaryService';
 import {
@@ -10,7 +11,6 @@ import { PlusOutlined } from '@ant-design/icons';
 import { ActionType, PageContainer, ProTable, type ProColumns } from '@ant-design/pro-components';
 import { Button, Col, Row, Spin, Tree, TreeDataNode, message } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
-import ResizableTitle from '@/components/ResizableTitle';
 
 const DictionaryListPage: React.FC = () => {
   const actionRef = useRef<ActionType>();
@@ -144,7 +144,7 @@ const DictionaryListPage: React.FC = () => {
       title: '启用',
       dataIndex: 'enable',
       search: false,
-      render: (_, record) => record.enable ? '是' : '否',
+      render: (_, record) => (record.enable ? '是' : '否'),
     },
     {
       title: '操作',
@@ -176,21 +176,22 @@ const DictionaryListPage: React.FC = () => {
   // 列宽拖拽处理
   const handleResize =
     (index: number) =>
-      (e: React.SyntheticEvent<Element>, { size }: { size: { width: number } }) => {
-        const nextColumns = [...columns];
-        nextColumns[index] = {
-          ...nextColumns[index],
-          width: size.width,
-        };
-        setColumns(nextColumns);
+    (e: React.SyntheticEvent<Element>, { size }: { size: { width: number } }) => {
+      const nextColumns = [...columns];
+      nextColumns[index] = {
+        ...nextColumns[index],
+        width: size.width,
       };
+      setColumns(nextColumns);
+    };
 
   const mergedColumns = columns.map((col, index) => ({
     ...col,
-    onHeaderCell: (column: any) => ({
-      width: column.width,
-      onResize: handleResize(index),
-    }) as any,
+    onHeaderCell: (column: any) =>
+      ({
+        width: column.width,
+        onResize: handleResize(index),
+      } as any),
   }));
 
   const components = {
@@ -204,8 +205,8 @@ const DictionaryListPage: React.FC = () => {
   }
 
   return (
-    <Row style={{margin: '20px'}}>
-      <Col span={4} style={{ width: 200,  }}>
+    <Row style={{ margin: '20px' }}>
+      <Col span={4} style={{ width: 200 }}>
         <div style={{ marginLeft: 10 }}>
           <h3>字典分类</h3>
         </div>

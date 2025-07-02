@@ -51,7 +51,7 @@ export type ProjectDto ={
   id: number;
   name: string;
   mapHeight: number;
-  status: string;
+  status?: string;
   resourceStatistics: ResourceStatistic[];
   mapRangePoints: LatLng[];
   isFloor?: boolean; // 可选属性

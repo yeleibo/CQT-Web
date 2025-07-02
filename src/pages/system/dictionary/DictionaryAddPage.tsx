@@ -44,7 +44,7 @@ const DictionaryAddPage = (props: Props) => {
       if (model === 'add') {
         extraFormData = { ...formData, dictionaryId: dictionaryId }; // 使用传递的 dictionaryId
       } else {
-        extraFormData = { ...data, ...formData };
+        extraFormData = { ...data, ...formData,dictionaryCode: dictionaryCode };
       }
 
       setLoading(true);

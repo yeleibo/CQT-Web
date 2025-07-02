@@ -1,16 +1,58 @@
-import { useModel } from '@@/exports';
-import { Cartesian3, Viewer, WebMapServiceImageryProvider } from 'cesium';
-import React, { useEffect, useRef, useState } from 'react';
-import { flyToLocation, initViewer, MapEffects } from '@/pages/map/map-tools/MapUtils';
-import { switchBaseLayer } from '@/pages/map/map-tools/MapLayersTyping';
+import GeoJsonService from '@/pages/map/GeoJsonService';
 import CoordTransforms from '@/pages/map/map-tools/CoordinateTransform';
-import { ProjectDto } from '@/pages/project/type';
-import * as Cesium from 'cesium';
+import { switchBaseLayer } from '@/pages/map/map-tools/MapLayersTyping';
+import { flyToLocation, initViewer } from '@/pages/map/map-tools/MapUtils';
 import ProjectService from '@/pages/project/ProjectService';
+import { ProjectDto } from '@/pages/project/type';
+import { useModel } from '@@/exports';
+import * as Cesium from 'cesium';
+import { Viewer } from 'cesium';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { message } from 'antd';
 
 interface ResourceMapProps {
   projectId: number | null;
 }
+
+// 提取地图事件处理为自定义Hook
+const useMapEvents = (viewer: Viewer | null) => {
+  useEffect(() => {
+    if (!viewer) return;
+
+    const handler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas);
+
+    handler.setInputAction((movement: { position: Cesium.Cartesian2 }) => {
+      const pickedObject = viewer.scene.pick(movement.position);
+      if (pickedObject && pickedObject.id && pickedObject.id.properties) {
+        const properties = pickedObject.id.properties;
+        const props: { [key: string]: any } = {};
+        properties.propertyNames.forEach((name: string | number) => {
+          props[name] = properties[name].getValue(Cesium.JulianDate.now());
+        });
+        console.log('点击的要素属性：', props);
+        // 这里可以处理点击事件，例如显示信息框等
+      }
+    }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
+
+    return () => {
+      handler.destroy();
+    };
+  }, [viewer]);
+};
+
+// 提取图标获取逻辑
+const getPointIconByType = (type: string): string => {
+  switch (type) {
+    case 'XBox':
+      return require('@/assets/map/box1.png');
+    case 'FatBox':
+      return require('@/assets/map/box2.png');
+    case 'OLT':
+      return require('@/assets/map/box3.png');
+    default:
+      return require('@/assets/map/local.png');
+  }
+};
 
 const ResourceMap: React.FC<ResourceMapProps> = ({ projectId }) => {
   const viewerRef = useRef<HTMLDivElement | null>(null);
@@ -18,26 +60,110 @@ const ResourceMap: React.FC<ResourceMapProps> = ({ projectId }) => {
   const { initialState } = useModel('@@initialState');
   const entitiesRef = useRef<Cesium.Entity[]>([]);
   const [projectData, setProjectData] = useState<ProjectDto | null>(null);
+  const dataSourceRef = useRef<Cesium.GeoJsonDataSource | null>(null);
+
+  // 使用自定义Hook处理地图事件
+  useMapEvents(viewerInstance.current);
 
   // 获取项目详细信息（只用于获取地图边界）
-  const fetchProjectDetail = async (id: number) => {
+  const fetchProjectDetail = useCallback(async (id: number) => {
     if (!id) return;
 
     try {
-
       const data = await ProjectService.getProjectList({});
       // 筛选data中id为传入id
       const project = data.find((item: ProjectDto) => item.id === id);
-      if (data) {
+      if (data && project) {
         setProjectData(project);
+      } else {
+        message.error('未找到项目数据');
       }
     } catch (e) {
-      console.error('获取项目边界数据失败:', e);
+      const errorMsg = '获取项目边界数据失败';
+      console.error(errorMsg, e);
+      message.error(errorMsg);
     }
-  };
+  }, []);
+
+  // 获取并显示项目的GeoJSON数据
+  const fetchAndDisplayGeoJson = useCallback(async (id: number) => {
+    if (!viewerInstance.current || !id) return;
+
+    try {
+      // 清除之前的数据源
+      if (dataSourceRef.current && viewerInstance.current) {
+        viewerInstance.current.dataSources.remove(dataSourceRef.current, true);
+        dataSourceRef.current = null;
+      }
+
+      // 获取项目GeoJSON数据
+      const geojsonData = await GeoJsonService.getGeoJsonOfProject(id);
+
+      if (viewerInstance.current && geojsonData) {
+        // 创建数据源
+        const dataSource = new Cesium.GeoJsonDataSource();
+
+        // 加载GeoJSON数据
+        await dataSource.load(geojsonData, {
+          stroke: Cesium.Color.HOTPINK,
+          fill: Cesium.Color.PINK.withAlpha(0.5),
+          strokeWidth: 5,
+          clampToGround: true,
+        });
+
+        // 处理实体样式
+        const entities = dataSource.entities.values;
+
+        // 使用批量处理优化性能
+        const entityUpdates = [];
+
+        for (let i = 0; i < entities.length; i++) {
+          const entity = entities[i];
+
+          // 检查是否为点实体
+          if (entity.position && entity.properties) {
+            try {
+              // 获取类型属性
+              const type:string = entity.properties.getValue('type').type;
+
+              entityUpdates.push(() => {
+                entity.billboard = new Cesium.BillboardGraphics({
+                  image: getPointIconByType(type),
+                  height: 35,
+                  width: 35,
+                  disableDepthTestDistance: Number.POSITIVE_INFINITY,
+                  distanceDisplayCondition: new Cesium.DistanceDisplayCondition(0, 80000),
+                });
+              });
+            } catch (error) {
+              console.error('设置实体样式错误:', error);
+            }
+          }
+        }
+
+        // 批量执行实体更新
+        entityUpdates.forEach(update => update());
+
+        // 添加数据源到查看器
+        await viewerInstance.current.dataSources.add(dataSource);
+        dataSourceRef.current = dataSource;
+
+        // 尝试缩放到数据源范围
+        try {
+          await viewerInstance.current.zoomTo(dataSource);
+        } catch (error) {
+          console.warn('无法自动缩放到数据源范围:', error);
+        }
+      }
+    } catch (error) {
+      const errorMsg = '获取或显示项目GeoJSON数据失败';
+      console.error(errorMsg, error);
+      message.error(errorMsg);
+    }
+  }, []);
 
   // 显示项目边界
-  const displayProjectBoundary = () => {
+  const displayProjectBoundary = useCallback(() => {
     if (!viewerInstance.current || !projectData || !projectData.mapRangePoints) return;
 
     // 清除现有实体
@@ -65,8 +191,9 @@ const ResourceMap: React.FC<ResourceMapProps> = ({ projectId }) => {
       });
 
       // 计算中心点
-      let sumLon = 0, sumLat = 0;
-      points.forEach(point => {
+      let sumLon = 0,
+        sumLat = 0;
+      points.forEach((point) => {
         positions.push(point.longitude, point.latitude);
         sumLon += point.longitude;
         sumLat += point.latitude;
@@ -83,8 +210,8 @@ const ResourceMap: React.FC<ResourceMapProps> = ({ projectId }) => {
           positions: Cesium.Cartesian3.fromDegreesArray(positions),
           width: 3,
           material: Cesium.Color.fromCssColorString('#3aff24'),
-          clampToGround: true
-        }
+          clampToGround: true,
+        },
       });
 
       const addedEntity = viewerInstance.current.entities.add(polylineEntity);
@@ -99,50 +226,33 @@ const ResourceMap: React.FC<ResourceMapProps> = ({ projectId }) => {
         // 飞到位置
         flyToLocation({
           viewer: viewerInstance.current,
-          position: CoordTransforms.CartographicToCartesian3(
-            centerLon, centerLat, height
-          ),
+          position: CoordTransforms.CartographicToCartesian3(centerLon, centerLat, height),
         });
       }
     } catch (e) {
       console.error('显示项目边界失败:', e);
+      message.error('显示项目边界失败');
     }
-  };
+  }, [projectData]);
 
   // 清除实体
-  const clearEntities = () => {
+  const clearEntities = useCallback(() => {
     if (!viewerInstance.current) return;
 
-    entitiesRef.current.forEach(entity => {
+    entitiesRef.current.forEach((entity) => {
       if (entity && viewerInstance.current) {
         viewerInstance.current.entities.remove(entity);
       }
     });
 
     entitiesRef.current = [];
-  };
+  }, []);
 
-  const init = async () => {
+  // 初始化地图
+  const init = useCallback(async () => {
     if (viewerRef.current) {
       try {
-        // 创建一个简单的DIV并使用原生的Cesium API初始化
-        viewerInstance.current = new Cesium.Viewer(viewerRef.current, {
-          animation: false,
-          baseLayerPicker: false,
-          fullscreenButton: false,
-          geocoder: false,
-          homeButton: false,
-          infoBox: false,
-          sceneModePicker: false,
-          selectionIndicator: false,
-          timeline: false,
-          navigationHelpButton: false,
-          scene3DOnly: false,
-        });
-
-        // 取消显示左下角版权信息
-        (viewerInstance.current.cesiumWidget.creditContainer as HTMLElement).style.display = 'none';
-
+        viewerInstance.current = initViewer(viewerRef.current);
         switchBaseLayer(viewerInstance.current, 'GoogleSatellite');
 
         // 设置默认视角
@@ -155,42 +265,56 @@ const ResourceMap: React.FC<ResourceMapProps> = ({ projectId }) => {
         });
       } catch (e) {
         console.error('初始化地图失败:', e);
+        message.error('初始化地图失败');
       }
     }
-  };
+  }, [initialState]);
 
   // 初始化
   useEffect(() => {
     init();
     return () => {
       clearEntities();
+      // 清除数据源
+      if (dataSourceRef.current && viewerInstance.current) {
+        viewerInstance.current.dataSources.remove(dataSourceRef.current);
+      }
       if (viewerInstance.current) {
         viewerInstance.current.destroy();
       }
     };
-  }, []);
+  }, [init, clearEntities]);
 
   // 当projectId变化时获取项目数据
   useEffect(() => {
     if (projectId) {
-      fetchProjectDetail(projectId);
+      // 使用Promise.all并行请求数据
+      Promise.all([
+        fetchProjectDetail(projectId),
+        fetchAndDisplayGeoJson(projectId)
+      ]).catch(error => {
+        console.error('加载项目数据失败:', error);
+      });
     } else {
       setProjectData(null);
       clearEntities();
+      // 清除数据源
+      if (dataSourceRef.current && viewerInstance.current) {
+        viewerInstance.current.dataSources.remove(dataSourceRef.current);
+        dataSourceRef.current = null;
+      }
     }
-  }, [projectId]);
+  }, [projectId, fetchProjectDetail, fetchAndDisplayGeoJson, clearEntities]);
 
   // 当项目数据变化时更新地图
   useEffect(() => {
     if (viewerInstance.current && projectData) {
       displayProjectBoundary();
     }
-  }, [projectData]);
+  }, [projectData, displayProjectBoundary]);
 
   return (
-    <>
-      <div ref={viewerRef} style={{ width: '100%', height: '100%' }} />
-    </>
+    <div ref={viewerRef} style={{ width: '100%', height: '100%' }} />
   );
 };
 

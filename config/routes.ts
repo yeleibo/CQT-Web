@@ -37,18 +37,6 @@ export default [
     ],
   },
   {
-    path: '/topology',
-    name: '拓扑图',
-    routes: [
-      {
-        name: '地图',
-        path: '/topology/topo',
-        component: '@/pages/topology/TopologyPage',
-      },
-    ],
-  },
-
-  {
     path: '/map',
     name: '资源管理',
     icon: 'icon-xiangmu',
@@ -74,6 +62,35 @@ export default [
         path: '/organize-manage/role',
         title: 'roleManagement',
         component: '@/pages/organize-manage/role/RoleListPage',
+      },
+    ],
+  },
+  {
+    path: '/system',
+    name: '系统管理',
+    icon: 'icon-chengyuanguanli',
+    routes: [
+      { path: '/system', redirect: '/system/dictionary' },
+      {
+        path: '/system/dictionary',
+        name: '数据字典',
+        component: '@/pages/system/dictionary/DictionaryListPage',
+      },
+      {
+        path: '/system/systemConfig',
+        name: '系统配置',
+        component: '@/pages/system/commonSystemConfig/CommonSystemConfig',
+      },
+    ],
+  },
+  {
+    path: '/topology',
+    name: '拓扑图',
+    routes: [
+      {
+        name: '地图',
+        path: '/topology/topo',
+        component: '@/pages/topology/TopologyPage',
       },
     ],
   },

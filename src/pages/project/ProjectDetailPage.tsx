@@ -44,7 +44,6 @@ const ProjectDetailPage: React.FC<ProjectAddProps> = (props) => {
   const [projectStatus, setProjectStatus] = useState<string>(props.projectData?.status || '');
 
   // 绘制相关状态
-  const [isDrawing, setIsDrawing] = useState<boolean>(false);
   const handler = useRef<ScreenSpaceEventHandler | null>(null);
   const pointsArray = useRef<PointData[]>([]); // 存储点位经纬度
   const markersRef = useRef<Entity[]>([]);     // 存储点标记实体
@@ -109,6 +108,122 @@ const ProjectDetailPage: React.FC<ProjectAddProps> = (props) => {
     }
   };
 
+  // 开始绘制
+  const startDrawing = (resetPoints = false) => {
+    if (!viewerInstance.current) return;
+
+    // 如果已提交，不允许绘制
+    if (projectStatus !== '') return;
+
+    setIsDrawing(true);
+    console.log("开始绘制模式");
+
+    // 如果需要重置点位数组
+    if (resetPoints) {
+      pointsArray.current = [];
+    }
+
+    // 确保之前的handler被销毁
+    if (handler.current) {
+      handler.current.destroy();
+      handler.current = null;
+    }
+
+    // 创建新的事件处理器
+    if (viewerInstance.current.scene && viewerInstance.current.scene.canvas) {
+      handler.current = new ScreenSpaceEventHandler(viewerInstance.current.scene.canvas);
+
+      // 左键点击添加点
+      handler.current.setInputAction((click: any) => {
+        if (!viewerInstance.current || projectStatus !== '') return;
+
+        // 获取点击位置
+        const cartesian = viewerInstance.current.scene.pickPosition(click.position);
+        if (!cartesian) {
+          // 如果无法获取准确位置，使用椭球体上的位置
+          const ray = viewerInstance.current.camera.getPickRay(click.position);
+          if (ray) {
+            const newCartesian = viewerInstance.current.scene.globe.pick(ray, viewerInstance.current.scene);
+            if (!newCartesian) {
+              // 如果仍无法获取位置，使用射线与椭球体的交点
+              Cesium.IntersectionTests.rayEllipsoid(ray, Cesium.Ellipsoid.WGS84);
+              return;
+            }
+            addPointAtCartesian(newCartesian);
+          }
+          return;
+        }
+
+        addPointAtCartesian(cartesian);
+
+      }, ScreenSpaceEventType.LEFT_CLICK);
+
+      // 右键点击闭合路径
+      handler.current.setInputAction(() => {
+        if (!viewerInstance.current || projectStatus !== '' || pointsArray.current.length < 3) {
+          message.info('至少需要3个点才能闭合路径');
+          return;
+        }
+
+        // 闭合路径（连接首尾点）
+        closePolyline();
+
+        // 完成绘制
+        setIsDrawing(false);
+
+        // 移除事件监听
+        if (handler.current) {
+          handler.current.destroy();
+          handler.current = null;
+        }
+
+      }, ScreenSpaceEventType.RIGHT_CLICK);
+
+      // 防止浏览器默认右键菜单
+      if (viewerRef.current) {
+        viewerRef.current.oncontextmenu = (e) => {
+          e.preventDefault();
+          return false;
+        };
+      }
+    }
+  };
+
+  // 清除所有实体
+  const clearAllEntities = () => {
+    if (!viewerInstance.current || !isMounted.current || projectStatus !== '') return;
+
+    // 清除点标记
+    markersRef.current.forEach(marker => {
+      if (marker && viewerInstance.current) {
+        viewerInstance.current.entities.remove(marker);
+      }
+    });
+
+    // 清除线段
+    if (polylineRef.current && viewerInstance.current) {
+      viewerInstance.current.entities.remove(polylineRef.current);
+      polylineRef.current = null;
+    }
+
+    // 重置引用
+    markersRef.current = [];
+    pointsArray.current = [];
+
+    // 重置事件处理器
+    if (handler.current) {
+      handler.current.destroy();
+      handler.current = null;
+    }
+
+    // 清除后重新开始绘制
+    safeSetTimeout(() => {
+      if (isMounted.current && viewerInstance.current) {
+        startDrawing(true);
+      }
+    }, 100);
+  };
+
   // 初始化项目数据
   const initProjectData = () => {
     if (!props.projectData) return;
@@ -119,7 +234,7 @@ const ProjectDetailPage: React.FC<ProjectAddProps> = (props) => {
     });
 
     // 设置项目状态
-    setProjectStatus(props.projectData.status);
+    setProjectStatus(props.projectData.status ?? '');
 
     // 解析并加载地图范围点
     if (props.projectData.mapRangePoints) {
@@ -223,86 +338,7 @@ const ProjectDetailPage: React.FC<ProjectAddProps> = (props) => {
     });
   };
 
-  // 开始绘制
-  const startDrawing = (resetPoints = false) => {
-    if (!viewerInstance.current) return;
 
-    // 如果已提交，不允许绘制
-    if (projectStatus !== '') return;
-
-    setIsDrawing(true);
-    console.log("开始绘制模式");
-
-    // 如果需要重置点位数组
-    if (resetPoints) {
-      pointsArray.current = [];
-    }
-
-    // 确保之前的handler被销毁
-    if (handler.current) {
-      handler.current.destroy();
-      handler.current = null;
-    }
-
-    // 创建新的事件处理器
-    if (viewerInstance.current.scene && viewerInstance.current.scene.canvas) {
-      handler.current = new ScreenSpaceEventHandler(viewerInstance.current.scene.canvas);
-
-      // 左键点击添加点
-      handler.current.setInputAction((click: any) => {
-        if (!viewerInstance.current || projectStatus !== '') return;
-
-        // 获取点击位置
-        const cartesian = viewerInstance.current.scene.pickPosition(click.position);
-        if (!cartesian) {
-          // 如果无法获取准确位置，使用椭球体上的位置
-          const ray = viewerInstance.current.camera.getPickRay(click.position);
-          if (ray) {
-            const newCartesian = viewerInstance.current.scene.globe.pick(ray, viewerInstance.current.scene);
-            if (!newCartesian) {
-              // 如果仍无法获取位置，使用射线与椭球体的交点
-              Cesium.IntersectionTests.rayEllipsoid(ray, Cesium.Ellipsoid.WGS84);
-              return;
-            }
-            addPointAtCartesian(newCartesian);
-          }
-          return;
-        }
-
-        addPointAtCartesian(cartesian);
-
-      }, ScreenSpaceEventType.LEFT_CLICK);
-
-      // 右键点击闭合路径
-      handler.current.setInputAction(() => {
-        if (!viewerInstance.current || projectStatus !== '' || pointsArray.current.length < 3) {
-          message.info('至少需要3个点才能闭合路径');
-          return;
-        }
-
-        // 闭合路径（连接首尾点）
-        closePolyline();
-
-        // 完成绘制
-        setIsDrawing(false);
-
-        // 移除事件监听
-        if (handler.current) {
-          handler.current.destroy();
-          handler.current = null;
-        }
-
-      }, ScreenSpaceEventType.RIGHT_CLICK);
-
-      // 防止浏览器默认右键菜单
-      if (viewerRef.current) {
-        viewerRef.current.oncontextmenu = (e) => {
-          e.preventDefault();
-          return false;
-        };
-      }
-    }
-  };
 
   // 在指定的笛卡尔坐标添加点
   const addPointAtCartesian = (cartesian: Cesium.Cartesian3) => {
@@ -358,40 +394,7 @@ const ProjectDetailPage: React.FC<ProjectAddProps> = (props) => {
     });
   };
 
-  // 清除所有实体
-  const clearAllEntities = () => {
-    if (!viewerInstance.current || !isMounted.current || projectStatus !== '') return;
 
-    // 清除点标记
-    markersRef.current.forEach(marker => {
-      if (marker && viewerInstance.current) {
-        viewerInstance.current.entities.remove(marker);
-      }
-    });
-
-    // 清除线段
-    if (polylineRef.current && viewerInstance.current) {
-      viewerInstance.current.entities.remove(polylineRef.current);
-      polylineRef.current = null;
-    }
-
-    // 重置引用
-    markersRef.current = [];
-    pointsArray.current = [];
-
-    // 重置事件处理器
-    if (handler.current) {
-      handler.current.destroy();
-      handler.current = null;
-    }
-
-    // 清除后重新开始绘制
-    safeSetTimeout(() => {
-      if (isMounted.current && viewerInstance.current) {
-        startDrawing(true);
-      }
-    }, 100);
-  };
 
   // 撤销上一个点
   const undoLastPoint = () => {
@@ -461,7 +464,7 @@ const ProjectDetailPage: React.FC<ProjectAddProps> = (props) => {
       const projectData: any = {
         id: props.id || 0,
         name: formData.projectName,
-        status: 0,
+        status: '',
         mapHeight: getCurrentCameraHeight(),
         resourceStatistics: "[]",
         mapRangePoints: formattedPoints
@@ -605,7 +608,7 @@ const ProjectDetailPage: React.FC<ProjectAddProps> = (props) => {
         header={{
           title: props.id !== undefined ? '详情' : '新增',
           extra: [
-            projectStatus !== 1 && (
+            projectStatus !== '' && (
               <Button
                 key="submit"
                 type="primary"

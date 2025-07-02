@@ -3,7 +3,7 @@ import {SystemConfig} from "@/pages/system/commonSystemConfig/type";
 import {Form, message} from "antd";
 import {ModalForm} from "@ant-design/pro-form";
 import {ProFormText} from "@ant-design/pro-components";
-import SystemConfigService from "@/pages/system/commonSystemConfig/service";
+import SystemService from '@/pages/system/service';
 
 interface CommonEditProps {
   onClose: () => void;
@@ -26,7 +26,7 @@ const CommonEdit: React.FC<CommonEditProps> = (props) => {
     const formData = await form.validateFields();
     try {
       if(formData.id ){
-        await SystemConfigService.update(formData);
+        await SystemService.updateConfig(formData);
         message.success('配置成功');
         if(props.onClose){
           props.onClose();

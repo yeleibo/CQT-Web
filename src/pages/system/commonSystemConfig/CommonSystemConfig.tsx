@@ -1,11 +1,11 @@
 import React, { useRef, useState } from 'react';
 import { ActionType, PageContainer, ProColumns, ProTable } from '@ant-design/pro-components';
-import SysConfigService from '@/pages/system/commonSystemConfig/service';
 import { Button } from 'antd';
 import SysConfigEdit from "@/pages/system/commonSystemConfig/edit";
 import {SystemConfig} from "@/pages/system/commonSystemConfig/type";
 import CommonEdit from "@/pages/system/commonSystemConfig/commonEdit";
 import ResizableTitle from '@/components/ResizableTitle';
+import SystemService from '@/pages/system/service';
 
 const CommonSystemConfig: React.FC = () => {
   const [current, setCurrent] = useState<SystemConfig>();
@@ -115,8 +115,8 @@ const CommonSystemConfig: React.FC = () => {
             labelWidth: 120,
             defaultCollapsed: false, // 默认展开搜索栏
           }}
-          request={async (params) => {
-            let data = await SysConfigService.list();
+          request={async () => {
+            let data = await SystemService.getConfigList();
             return { data: data, success: true, total: data.length };
           }}
           columns={mergedColumns}

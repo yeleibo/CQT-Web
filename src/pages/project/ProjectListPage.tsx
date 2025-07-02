@@ -37,7 +37,7 @@ const ProjectListPage: React.FC = () => {
       render: (text, record, index) => index + 1,
     },
     {
-      title: intl.formatMessage({ id: 'areaName' }),
+      title: intl.formatMessage({ id: 'name' }),
       dataIndex: 'name',
       valueType: 'text',
       search: false,

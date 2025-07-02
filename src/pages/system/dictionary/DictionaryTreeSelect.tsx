@@ -10,6 +10,10 @@ const DictionaryTreeSelect: React.FC<
 > = (props) => {
   const [dictionaryTreeData, setDictionaryTreeData] = useState<BaseOptionType[]>([]);
   useEffect(() => {
+    if(props.dictionaryCode === undefined || props.dictionaryCode === '') {
+      // 如果没有传入字典编码，则不进行查询
+      return;
+    }
     const queryParams: DictionaryQueryParam = {
       dictionaryCode: props.dictionaryCode,
     };
