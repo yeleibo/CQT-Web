@@ -1,12 +1,11 @@
-
 import { Pie } from '@ant-design/charts';
 import './FiberResourceStats.css';
 import './commonStyles.css';
 import headerIcon from '@/assets/home/header_icon.svg';
-import { ResourceStatistic } from '@/pages/project/type'; // 也可以用相对路径
+import { ResourceGroup } from '@/pages/project/type';
 
 interface Props {
-  data: ResourceStatistic;
+  data: ResourceGroup;
 }
 
 const colorList = ['#2B8EF3', '#3CD495', '#BEE5FB', '#48E5E5', '#2B8EF3'];
@@ -19,7 +18,6 @@ const FiberResourceStats = (props: Props) => {
   const pieData = data.items.map((item, index) => ({
     name: item.name,
     value: item.value,
-    // amount: item.amount,
     color: colorList[index % colorList.length],
   }));
 
@@ -40,7 +38,7 @@ const FiberResourceStats = (props: Props) => {
       {
         type: 'text',
         style: {
-          text: `${data.value}\n${data.unit}`,
+          text: `${data.value}\n${data.unit || ''}`,
           x: '50%',
           y: '50%',
           textAlign: 'center',
@@ -51,11 +49,10 @@ const FiberResourceStats = (props: Props) => {
     ],
     // 鼠标悬停时的提示信息
     tooltip: {
-      // title: `${data.name}`,
       items: [
         (datum: any) => ({
-          name: datum.name, // 指定 item 的名字
-          value: `${datum.amount} ${data.unit}`, // 使用 y 通道的值
+          name: datum.name,
+          value: `${datum.value} ${data.unit || ''}`,
         }),
       ],
     },

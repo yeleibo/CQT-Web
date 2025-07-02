@@ -52,7 +52,7 @@ export type ProjectDto ={
   name: string;
   mapHeight: number;
   status?: string;
-  resourceStatistics: ResourceStatistic[];
+  resourceStatistics: ResourceGroup[];
   mapRangePoints: LatLng[];
   isFloor?: boolean; // 可选属性
   floorTotal?: number; // 可选属性
@@ -63,11 +63,11 @@ export type ProjectStatisticsQueryParam = {
 }
 
 // 子类：ResourceStatistic
-export type ResourceStatistic = {
+export type ResourceGroup = {
   name: string;
   unit: string | null;
   value: number;
-  items: ResourceStatistic[]; // 递归嵌套
+  items: ResourceGroup[] | null; // 递归嵌套，可能为null
 };
 
 // 子类：DailyInstallation
@@ -82,6 +82,6 @@ export type DailyInstallation = {
 
 // 总类：ResourceData
 export type ResourceData = {
-  resourceStatistics: ResourceStatistic[];
-  dailyInstallations: DailyInstallation[];
+  resourceGroups: ResourceGroup[];
+  dailyInstalled: DailyInstallation[];
 };

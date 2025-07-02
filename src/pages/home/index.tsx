@@ -5,7 +5,7 @@ import './home.css';
 import RecentAlerts from './RecentAlerts';
 import ResourceMap from '@/pages/home/ResourceMap';
 import ProjectService from '@/pages/project/ProjectService';
-import { DailyInstallation, ProjectDto, ResourceData, ResourceStatistic } from '@/pages/project/type';
+import { DailyInstallation, ProjectDto, ResourceData, ResourceGroup } from '@/pages/project/type';
 import { message } from 'antd';
 
 const HomePage: React.FC = () => {
@@ -14,7 +14,7 @@ const HomePage: React.FC = () => {
   // 当前选中的项目ID
   const [selectedProjectId, setSelectedProjectId] = useState<number | null>(null);
   // 资源统计数据
-  const [resourceData, setResourceData] = useState<ResourceData | null>(null);
+  const [resourceData, setResourceData] = useState<ResourceData>();
   // 加载状态
   const [loading, setLoading] = useState(false);
 
@@ -107,7 +107,7 @@ const HomePage: React.FC = () => {
           />
           <div className="main-container">
             <div className="dataLeft">
-              {resourceData?.resourceStatistics?.map((statistic, index) => (
+              {resourceData?.resourceGroups?.map((statistic, index) => (
                 <div key={`stat-${index}`} className="stats-item">
                   <FiberResourceStats data={statistic} />
                 </div>
@@ -119,7 +119,12 @@ const HomePage: React.FC = () => {
               </div>
             </div>
             <div className="dataRight">
-              {resourceData && <RecentAlerts data={resourceData.dailyInstallations || []} />}
+              <div style={{height:'50%'}}>
+                {resourceData && <RecentAlerts data={resourceData.dailyInstalled || []} />}
+              </div>
+              <div style={{height:'50%'}}>
+                {resourceData && <RecentAlerts data={resourceData.dailyInstalled || []} />}
+              </div>
             </div>
           </div>
         </div>
