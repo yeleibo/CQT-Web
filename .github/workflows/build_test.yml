@@ -12,7 +12,7 @@ env:
   # docker镜像仓库地址
   REGISTRY: crpi-1arm6bubvql3ps3r.cn-beijing.personal.cr.aliyuncs.com
   # github.repository as <account>/<repo>
-  IMAGE_NAME: xfw-release/chaoqian-web
+  IMAGE_NAME: xfw-test/chaoqian-web
 
 jobs:
   build_and_push:
