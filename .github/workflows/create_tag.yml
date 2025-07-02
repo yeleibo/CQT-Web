@@ -9,7 +9,7 @@ env:
   # docker镜像仓库地址
   REGISTRY: crpi-1arm6bubvql3ps3r.cn-beijing.personal.cr.aliyuncs.com
   # github.repository as <account>/<repo>
-  IMAGE_NAME: xfw-test/chaoqian-web
+  IMAGE_NAME: xfw-test/cqt-web
 
 jobs:
   build_and_push:
@@ -68,7 +68,7 @@ jobs:
           password: ${{ secrets.SSH_USER_PW }}
           port: 22
           script: |
-            cd /root/my-docker/x-test
+            cd /root/my-docker/cqt-test
             docker-compose pull
             docker-compose up -d
 
@@ -79,13 +79,13 @@ jobs:
       - name: Send message to DingTalk
         uses: zcong1993/actions-ding@v4.0.0
         with:
-          dingToken: 2b4c30a4f26b9ec01054f0ed687fd60a6bb3a8a493dd0cb3e2ee2898cbe7e0a2
+          dingToken: ${{ secrets.DINGTOKEN }}
           # https://open.dingtalk.com/document/orgapp/group-messaging-apis-for-interactive-service-windows
           body: |
             {
               "msgtype": "markdown",
               "markdown": {
-                  "text": "# ChaoQianWeb更新通知\n\n * 更新的内容: ${{ env.COMMIT_MESSAGE }}",
-                  "title": "GithubAction:ChaoQianWeb更新通知"
+                  "text": "# CQT-Web更新通知\n\n * 更新的内容: ${{ env.COMMIT_MESSAGE }}",
+                  "title": "GithubAction:CQT-Web更新通知"
               }
             }
