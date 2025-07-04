@@ -23,18 +23,18 @@ const PermissionSelectDialog: React.FC<PermissionSelectProps> = (props) => {
   const [allPermissions, setAllPermissions] = useState<Permission[]>();
 
   const intl = useIntl();
-  const initModule = props.role.permissions
-    .filter((e) => e.type === PermissionType.module)
-    .map((e) => e.id);
-  const initMenu = props.role.permissions
-    .filter((e) => e.type === PermissionType.menu)
-    .map((e) => e.id);
-  const initButton = props.role.permissions
-    .filter((e) => e.type === PermissionType.button)
-    .map((e) => e.id);
-  const initData = props.role.permissions
-    .filter((e) => e.type === PermissionType.data)
-    .map((e) => e.id);
+  const initModule = props.role?.permissions
+    ?.filter((e) => e.type === PermissionType.module)
+    .map((e) => e.id) || [];
+  const initMenu = props.role?.permissions
+    ?.filter((e) => e.type === PermissionType.menu)
+    .map((e) => e.id) || [];
+  const initButton = props.role?.permissions
+    ?.filter((e) => e.type === PermissionType.button)
+    .map((e) => e.id) || [];
+  const initData = props.role?.permissions
+    ?.filter((e) => e.type === PermissionType.data)
+    .map((e) => e.id) || [];
   const [selectedModulePermissions, setSelectedModulePermissions] = useState<number[]>(initModule);
   const [selectedMenuPermissions, setSelectedMenuPermissions] = useState<number[]>(initMenu);
   const [selectedButtonPermissions, setSelectedButtonPermissions] = useState<number[]>(initButton);

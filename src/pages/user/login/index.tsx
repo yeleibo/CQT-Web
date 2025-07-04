@@ -92,7 +92,6 @@ const Login: React.FC = () => {
       });
 
        Token.set(loginInfo.token);
-        message.success(intl.formatMessage({ id: 'loginSuccessful' }));
         await fetchUserInfo();
         const urlParams = new URL(window.location.href).searchParams;
         history.push(urlParams.get('redirect') || '/');

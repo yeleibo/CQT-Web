@@ -76,7 +76,7 @@ export { filterTreeData };
 const RoleUserSelect: React.FC<RoleUserSelectDialogProps> = (props) => {
   const { allOrganize, allUsers, loading } = useOrganizeData();
   const [selectedUserIds, setSelectedUserIds] = useState<number[]>(
-    props.role.users.map((user) => user.id),
+    props.role?.users?.map((user) => user.id) || [],
   );
   const [searchValue, setSearchValue] = useState('');
   const [loadingSubmit, setLoadingSubmit] = useState<boolean>(false); // Separate loading state for submit
@@ -170,7 +170,7 @@ const RoleUserSelect: React.FC<RoleUserSelectDialogProps> = (props) => {
                   <div>
                     <div>{user.name}</div>
                     <div>
-                      ${intl.formatMessage({ id: 'department' })}: {user.organizeName}
+                      {intl.formatMessage({ id: 'department' })}: {user.organizeName}
                     </div>
                   </div>
                   <Button

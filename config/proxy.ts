@@ -18,12 +18,6 @@ export default {
       target: 'http://localhost:5103',
       changeOrigin: true,
     },
-    '/api1/': {
-      // 要代理的地址
-      target: 'http://113.214.4.18:8002',
-      changeOrigin: true,
-      pathRewrite: { '^/api1': '' },
-    },
   },
 
   /**
