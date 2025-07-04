@@ -1,4 +1,3 @@
-import { LatLng } from '@/pages/project/type';
 
 //gis服务的
 interface DeviceImage {
@@ -8,6 +7,10 @@ interface DeviceImage {
 interface DevicePort {
   portNum: number;
   status: number;
+}
+type LatLng={
+  lat: number;
+  lon: number;
 }
 export type Device = {
   layerName: string;

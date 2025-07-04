@@ -51,7 +51,9 @@ export const MapSearch: React.FC<MapSearchProps> = ({ viewer, onSearch, searchDa
           allowClear
           enterButton
           onClear={() => {
-            viewer.entities.removeById('localMarker');
+            if(viewer !== null && viewer.entities.getById('localMarker')){
+              viewer.entities.removeById('localMarker');
+            }
           }}
           // loading={loading}
         />

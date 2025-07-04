@@ -146,7 +146,7 @@ const OpticalCableMonitoringService = {
    @param param 关键字查询
    */
   keywordSearch: async (param: { Text: string }) =>
-    request<Device[]>(`/gis/?postType=2&branch=1&userId=82&layers=26,27,37,38,39,40,41`, {
+    request<Device[]>(`/gis/?postType=2&branch=1&userId=82&layers=26,27,37,38,39,40,41&chaoqianAreaId=614419418062917`, {
       params: param,
       method: 'GET',
       headers: headers,
@@ -154,7 +154,7 @@ const OpticalCableMonitoringService = {
   //点位查询
   pointSearch: async (params: { lng: number; lat: number }) =>
     request<Device[]>(
-      `/gis/?postType=3&branch=1&userId=82&zoomLevel=13&layers=26,27,37,38,39,40,41`,
+      `/gis/?postType=3&branch=1&userId=82&zoomLevel=13&layers=26,27,37,38,39,40,41&chaoqianAreaId=614419418062917`,
       {
         params: params,
         method: 'GET',

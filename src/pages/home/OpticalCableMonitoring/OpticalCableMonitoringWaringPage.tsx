@@ -3,11 +3,7 @@ import {
   OpticalCableMonitoringWaringStateToString,
   OpticalCableMonitoringWarning,
 } from '@/pages/home/OpticalCableMonitoring/typings';
-import { CesiumMapDialog } from '@/pages/mapResource/map-tools/CesiumMaterial';
-import CoordTransforms from '@/pages/mapResource/map-tools/CoordinateTransform';
-import { GetUserMapLayers } from '@/pages/mapResource/map-tools/MapLayersTyping';
-import { flyToLocation, initViewer, MapEffects } from '@/pages/mapResource/map-tools/MapUtils';
-import MapLayersDrawer from '@/pages/mapResource/map-widget/MapLayersDrawer';
+
 import CommonSelectDialog from '@/pages/organize-manage/common';
 import UserService from '@/pages/organize-manage/user/UserService';
 import { useModel } from '@@/exports';
@@ -17,7 +13,9 @@ import * as Cesium from 'cesium';
 import { Cartesian3, Viewer } from 'cesium';
 import React, { useEffect, useRef, useState } from 'react';
 import { history } from 'umi';
-import { useSerialStore } from '@/pages/home/OpticalStore';
+import { flyToLocation, initViewer, MapEffects } from '@/pages/map/map-tools/MapUtils';
+import CoordTransforms from '@/pages/map/map-tools/CoordinateTransform';
+import { CesiumMapDialog } from '@/pages/map/map-tools/CesiumMaterial';
 
 const OpticalCableMonitoringWaringPage: React.FC = () => {
   const viewerRef = useRef<HTMLDivElement | null>(null);
@@ -29,7 +27,6 @@ const OpticalCableMonitoringWaringPage: React.FC = () => {
   const [activeKey, setActiveKey] = useState<string>('');
   const [faultLinePrimitive, setFaultLinePrimitive] = useState<Cesium.Primitive>();
   const [openUserDialog, setOpenUserDialog] = useState<boolean>(false);
-  const sendData = useSerialStore((s) => s.sendData);
 
   const init = async () => {
     if (viewerRef.current) {
@@ -285,17 +282,6 @@ const OpticalCableMonitoringWaringPage: React.FC = () => {
             if (!selectedItem) {
               message.error('未找到对应的故障信息');
               return;
-            }
-            try {
-              await UserService.sendNotification({
-                userIds: selectedIds,
-                message: `故障告警：光缆:${selectedItem.cableName}, 故障信息：${
-                  selectedItem.faultInfo ?? ''
-                }, 故障时间:${selectedItem.createTime?.toLocaleString() ?? ''}`,
-              });
-              message.success('发送成功');
-            } catch (e) {
-              message.error('发送失败');
             }
           }}
           fetchFunction={() => UserService.all()}

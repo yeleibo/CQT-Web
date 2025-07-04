@@ -115,7 +115,6 @@ const ProjectDetailPage: React.FC<ProjectAddProps> = (props) => {
     // 如果已提交，不允许绘制
     if (projectStatus !== '') return;
 
-    setIsDrawing(true);
     console.log("开始绘制模式");
 
     // 如果需要重置点位数组
@@ -167,9 +166,6 @@ const ProjectDetailPage: React.FC<ProjectAddProps> = (props) => {
 
         // 闭合路径（连接首尾点）
         closePolyline();
-
-        // 完成绘制
-        setIsDrawing(false);
 
         // 移除事件监听
         if (handler.current) {
@@ -621,13 +617,13 @@ const ProjectDetailPage: React.FC<ProjectAddProps> = (props) => {
           ],
         }}
       >
-        <div style={{ display: 'flex', justifyContent: 'center' }}>
+        <div style={{ display: 'flex'}}>
           <Form form={form} layout="horizontal" style={{ marginBottom: 16 }}>
             <Form.Item
               name="projectName"
-              label={intl.formatMessage({ id: 'Project name' }) || "Project name"}
+              label={intl.formatMessage({ id: 'Project name' }) || "Name"}
               rules={[{ required: true }]}
-              style={{ width: '300px' }}
+              style={{ width: '300px', fontSize:'20px'}}
             >
               <Input disabled={projectStatus !== ''} />
             </Form.Item>

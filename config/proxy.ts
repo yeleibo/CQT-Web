@@ -18,8 +18,19 @@ export default {
       target: 'http://localhost:5103',
       changeOrigin: true,
     },
+    '/gis/': {
+      // 要代理的地址
+      target: 'http://61.175.230.9:8012',
+      // target: 'https://fgcs.hunantv.com:8002', // 湖南tv
+      // target: 'http://localhost:7221',
+      // target: 'http://192.168.31.94:8000',
+      // target: 'http://39.102.103.37:8023',
+      // 重写路径
+      pathRewrite: { '^/gis': '' },
+      changeOrigin: true,
+      secure: false,
+    },
   },
-
   /**
    * @name 详细的代理配置
    * @doc https://github.com/chimurai/http-proxy-middleware

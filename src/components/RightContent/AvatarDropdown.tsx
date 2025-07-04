@@ -8,7 +8,9 @@ import React, { useCallback, useState } from 'react';
 import { flushSync } from 'react-dom';
 import HeaderDropdown from '../HeaderDropdown';
 import { ModalForm, ProFormText } from '@ant-design/pro-form';
-import service from "@/pages/user/login/service"; // 引入 axios 或其他用于发送网络请求的库
+import service from "@/pages/user/login/service";
+import { createHash } from 'crypto'; // 引入 axios 或其他用于发送网络请求的库
+
 
 export type GlobalHeaderRightProps = {
   menu?: boolean;
@@ -141,7 +143,7 @@ export const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu, childre
       setFormData(values);
       if (formType === 'settings') {
         // 发送网络请求更新密码
-        service.changePassword(values.confirmPassword)
+        service.changePassword({ password: createHash("md5").update(values.password.toString(),"utf8").digest("hex") });
         message.success('密码更新成功');
       } else {
         // 处理个人中心的其他表单提交

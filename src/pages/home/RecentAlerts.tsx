@@ -108,7 +108,7 @@ const RecentAlerts: React.FC<RecentAlertsProps> = ({ heightRatio = 1, data = [] 
           }}
         >
           {data.length === 0 ? (
-            <div className="recent-alerts-empty">暂无动态信息</div>
+            <div className="recent-alerts-empty" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>暂无动态信息</div>
           ) : (
             <div
               className={`recent-alerts-list ${data.length > MAX_DISPLAY_COUNT ? 'scrolling' : ''}`}

@@ -1,17 +1,20 @@
-
+import Service from '@/pages/user/login/service';
+import { LoginParam } from '@/pages/user/login/user';
+import Token from '@/utils/token';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { LoginForm, ProFormText } from '@ant-design/pro-components';
+import { ProFormCheckbox } from '@ant-design/pro-form/lib';
 import { Helmet, history, useModel } from '@umijs/max';
-import {Alert, message} from 'antd';
+import { Alert, Flex, Image } from 'antd';
 import { createStyles } from 'antd-style';
-import React, { useState } from 'react';
-import { flushSync } from 'react-dom';
-import Settings from '../../../../config/defaultSettings';
+import React, { useEffect, useState } from 'react';
 import './login.css';
-import Service from "@/pages/user/login/service";
-import Token from "@/utils/token";
-import {useIntl} from "@@/plugin-locale";
+import { createHash } from "crypto";
+import { flushSync } from 'react-dom';
+
+
 const useStyles = createStyles(({ token }) => {
+
   return {
     action: {
       marginLeft: '8px',
@@ -37,12 +40,27 @@ const useStyles = createStyles(({ token }) => {
     },
     container: {
       display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
+      flexDirection: 'column',
+      justifyContent: 'center', // 垂直方向居中
+      alignItems: 'center', // 水平方向居中
+      width: '100%',
       height: '100vh',
-      overflow: 'auto',
-      backgroundImage: "url('/web_login_bg.png')",
-      backgroundSize: '100% 100%',
+      position: 'relative',
+      overflow: 'hidden',
+      backgroundImage: `url(${require('@/assets/home/login_background.png')})`,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+    },
+    loginBox: {
+      width: '50%',
+      minWidth: '800px',
+      maxWidth: '1200px',
+      height: '60%',
+      minHeight: '400px',
+      backgroundColor: 'rgba(255, 255, 255, 0.95)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
     },
   };
 });
@@ -60,12 +78,17 @@ const LoginMessage: React.FC<{
     />
   );
 };
+
 const Login: React.FC = () => {
   const [userLoginState, setUserLoginState] = useState<API.LoginResult>({});
   const [type] = useState<string>('account');
+  const [scale, setScale] = useState(1);
   const { initialState, setInitialState } = useModel('@@initialState');
   const { styles } = useStyles();
-  const intl = useIntl();
+  const [rememberPassword, setRememberPassword] = useState<boolean>(
+    localStorage.getItem('password') !== undefined && localStorage.getItem('password') !== null,
+  );
+
   const fetchUserInfo = async () => {
     const userInfo = await initialState?.fetchUserInfo?.();
     if (userInfo) {
@@ -77,104 +100,190 @@ const Login: React.FC = () => {
       });
     }
   };
+
+  useEffect(() => {
+    const handleResize = () => {
+      const baseWidth = 1920; // 设计稿的基准宽度
+      const currentWidth = window.innerWidth;
+      // 计算缩放比例，但限制最小和最大值，防止过度缩放
+      let newScale = currentWidth / baseWidth;
+      // 限制缩放范围，避免过小或过大
+      newScale = Math.max(0.7, Math.min(newScale, 1.2));
+      setScale(newScale);
+    };
+
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   const handleSubmit = async (values: LoginParam) => {
-      //用户明和密码缓存
-      if(values.account!==null){
-        localStorage.setItem("account",values.account);
-      }
-      if(values.password!==null){
-        localStorage.setItem("password",values.password);
-      }
+    //用户名和密码缓存
+    if (values.account !== null) {
+      localStorage.setItem('account', values.account!);
+    }
+    if (values.password !== null && rememberPassword) {
+      localStorage.setItem('password', values.password);
+    } else {
+      localStorage.removeItem('password');
+    }
+    //是否需要修改密码
+    const isChangePassword: boolean =
+      values.password === 'abc@123456';
 
-      // 登录
-      const loginInfo = await Service.login({
-        ...values,
-      });
+    setInitialState((s) => ({
+      ...s,
+      isChangePassword,
+    }));
+    // 登录
+    const loginInfo = await Service.login({
+      account: values.account,
+      password: createHash("md5").update(values.password.toString(),"utf8").digest("hex")
+    });
 
-       Token.set(loginInfo.token);
-        await fetchUserInfo();
-        const urlParams = new URL(window.location.href).searchParams;
-        history.push(urlParams.get('redirect') || '/');
-        return;
-
-      // 如果失败去设置用户错误信息
-      setUserLoginState(loginInfo);
-
+    Token.set(loginInfo.token);
+    await fetchUserInfo();
+    const urlParams = new URL(window.location.href).searchParams;
+    const url = urlParams.get('redirect');
+    history.push(url || '/');
+    return;
   };
   const { status, type: loginType } = userLoginState;
   return (
     <div className={styles.container}>
       <Helmet>
-        <title>
-          {intl.formatMessage({ id: 'login' })}- {Settings.title}
-        </title>
+        <title>{'登录'}</title>
       </Helmet>
-      <div
-        style={{
-          flex: '1',
-          padding: '32px 0',
-          marginTop:'250px'
-        }}
-      >
-        <LoginForm
-          contentStyle={{
-            minWidth: 280,
-            maxWidth: '75vw',
+
+      <div className={styles.loginBox}>
+        <Flex
+          align={'center'}
+          justify={'center'}
+          style={{
+            width: '100%',
+            height: '100%',
           }}
-          submitter={{
-            searchConfig: {
-              submitText: intl.formatMessage({ id: 'login' }), // 修改登录按钮的文本为"登录"
-            },
-          }}
-          initialValues={{
-            autoLogin: true,
-          }}
-          onFinish={async (values) => {
-            await handleSubmit(values as LoginParam);
-          }}
+          vertical={false}
+          gap={0}
         >
-          {status === 'error' && loginType === 'account' && (
-            <LoginMessage content={`${intl.formatMessage({ id: 'loginError' })}(admin/ant.design)`} />
-          )}
-          {type === 'account' && (
-            <>
-              <ProFormText
-                name="account"
-                initialValue={ localStorage.getItem("account")}
-                fieldProps={{
-                  size: 'large',
-                  style: {
-                    height: '50px',
-                  },
-                  prefix: <UserOutlined />,
+          <Image
+            src="/login_logo.png"
+            preview={false}
+            height={'100%'}
+            width={'50%'}
+            style={{ objectFit: 'cover' }}
+          />
+          <div
+            style={{
+              width: '50%',
+              height: '100%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              overflow: 'hidden',
+            }}
+          >
+            <div
+              style={{
+                transform: `scale(${scale})`,
+                transformOrigin: 'center center',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: '100%',
+              }}
+            >
+              <LoginForm
+                contentStyle={{
+                  minWidth: 280,
+                  maxWidth: '100vw',
                 }}
-                rules={[
-                  {
-                    required: true,
-                    message: `${intl.formatMessage({ id: 'userRequired' })}！`,
-                  },
-                ]}
-              />
-              <ProFormText.Password
-                name="password"
-                initialValue={ localStorage.getItem("password")}
-                fieldProps={{
-                  size: 'large',
-                  style: {
-                    height: '50px',
-                  },
-                  prefix: <LockOutlined />,
+                title={
+                  <div
+                    style={{
+                      color: 'black',
+                      marginTop: '198px',
+                      fontSize: '24px',
+                      height: '80px', // 高度设置为 auto 以适应换行
+                      maxWidth: '400px', // 设定极限宽度
+                      textAlign: 'left', // 确保文本左对齐
+                      wordWrap: 'break-word', // 允许单词内换行
+                      whiteSpace: 'pre-wrap', // 保留空格并自动换行
+                    }}
+                  >
+                    {initialState?.applicationConfig?.applicationName}
+                  </div>
+                }
+                initialValues={{
+                  autoLogin: true,
                 }}
-                rules={[
-                  {
-                    required: true,
-                    message: `${intl.formatMessage({id:'passwordRequired'})}！`,
-                  },
-                ]}
-              />
-            </>
-          )}
-        </LoginForm>
+                onFinish={async (values) => {
+                  await handleSubmit(values as LoginParam);
+                }}
+              >
+                {status === 'error' && loginType === 'account' && (
+                  <LoginMessage content={'错误的用户名和密码(admin/ant.design)'} />
+                )}
+                {type === 'account' && (
+                  <div
+                    style={{
+                      marginTop: 144,
+                    }}
+                  >
+                    <ProFormText
+                      name="account"
+                      initialValue={localStorage.getItem('account')}
+                      fieldProps={{
+                        size: 'large',
+                        style: {
+                          height: '50px',
+                        },
+                        prefix: <UserOutlined />,
+                      }}
+                      placeholder="用户名"
+                      rules={[
+                        {
+                          required: true,
+                          message: '用户名是必填项！',
+                        },
+                      ]}
+                    />
+                    <ProFormText.Password
+                      name="password"
+                      initialValue={localStorage.getItem('password')}
+                      fieldProps={{
+                        size: 'large',
+                        style: {
+                          height: '50px',
+                        },
+                        prefix: <LockOutlined />,
+                      }}
+                      placeholder="密码"
+                      rules={[
+                        {
+                          required: true,
+                          message: '密码是必填项！',
+                        },
+                      ]}
+                    />
+                    <ProFormCheckbox
+                      name="remember"
+                      fieldProps={{
+                        checked: rememberPassword, // 控制是否勾选
+                        onChange: (e) => {
+                          const checked = e.target.checked;
+                          setRememberPassword(checked);
+                        },
+                      }}
+                    >
+                      记住密码
+                    </ProFormCheckbox>
+                  </div>
+                )}
+              </LoginForm>
+            </div>
+          </div>
+        </Flex>
       </div>
     </div>
   );

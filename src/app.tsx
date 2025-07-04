@@ -12,6 +12,7 @@ import 'cesium/Build/Cesium/Widgets/widgets.css';
 import defaultSettings from '../config/defaultSettings';
 import userDefaultAvatar from './assets/images/user_default_avatar.png';
 import SystemService from '@/pages/system/service';
+import { UserInfo } from '@/pages/user/login/user';
 
 const isDev = process.env.NODE_ENV === 'development';
 const loginPath = '/user/login';
@@ -108,7 +109,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
     onPageChange: () => {
       const { location } = history;
       // 解析查询字符串
-      const searchParams = new URLSearchParams(history.location.search);
+      const searchParams = new URLSearchParams(location.search);
       const userToken = searchParams.get('token'); // 'yourParam' 是你想要的查询参数
       // 如果没有登录，并且路由参数里没有token，重定向到 login
       if (!initialState?.currentUser && location.pathname !== loginPath && userToken === null) {
@@ -203,7 +204,7 @@ export const request: RequestConfig = {
       // let url:string;
       // url = API_URL + config?.url;
       // // 在这里打印请求数据
-      if (process.env.NODE_ENV === 'development') {
+      if (process.env.NODE_ENV === 'development ') {
         console.log('发起请求:', { config });
       }
       // 拦截请求配置，进行个性化处理。

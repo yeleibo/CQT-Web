@@ -1,8 +1,9 @@
+import { Menus } from '@/pages/system/menus/typings';
+
 type LoginParam = {
   password: string;
-  account:string;
+  account: string;
 };
-
 
 type UserInfo = {
   user: Partial<UserBase>;
@@ -12,11 +13,12 @@ type UserInfo = {
   menus: Menus[];
 };
 
-
 type UserBase = {
   id: number;
   name: string;
   account: string;
   organizeName: string;
-  signature: Uint8Array
+  organizeId: number;
+  signature: Uint8Array;
+  lastChangePasswordTime: Date;
 };
