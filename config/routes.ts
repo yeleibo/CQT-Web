@@ -23,6 +23,7 @@ export default [
     path: '/project',
     name: 'Project',
     routes: [
+      { path: '/project', redirect: '/project/index' },
       {
         name: '项目',
         path: '/project/index',
@@ -40,7 +41,9 @@ export default [
     path: '/map',
     name: '资源管理',
     icon: 'icon-xiangmu',
-    routes: [{ path: '/map/index', name: '资源地图', component: '@/pages/map/maps' }],
+    routes: [
+      { path: '/map', redirect: '/map/index' },
+      { path: '/map/index', name: '资源地图', component: '@/pages/map/maps' }],
   },
   {
     path: '/organize-manage',
